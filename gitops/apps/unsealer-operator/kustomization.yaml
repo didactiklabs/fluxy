@@ -1,0 +1,3 @@
+resources:
+- https://raw.githubusercontent.com/aamoyel/vault-unsealer-operator/main/deploy/bundle.yml
+- unseal.yaml

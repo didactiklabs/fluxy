@@ -1,0 +1,22 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterSecretStore
+metadata:
+  name: vault-backend
+spec:
+  provider:
+    vault:
+      server: "http://vault.vault.svc"
+      path: "secrets"
+      version: "v2"
+      # caProvider:
+      #   type: Secret
+      #   name: didactiklabs-ca
+      #   namespace: vault-unsealer-operator-system
+      #   key: ca.crt
+      auth:
+        kubernetes:
+          mountPath: "kubernetes"
+          role: "external-secrets"
+          serviceAccountRef:
+            name: "vault-auth"
+            namespace: "external-secrets"

@@ -1,0 +1,4 @@
+resources:
+- chart.yaml
+- vault-store.yaml
+- rbac.yaml

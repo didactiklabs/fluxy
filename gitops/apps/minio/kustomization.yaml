@@ -1,0 +1,7 @@
+namespace: minio
+resources:
+- namespace.yaml
+- deployment.yaml
+- ingress.yaml
+- service.yaml
+- pvc.yaml

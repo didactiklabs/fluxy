@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: powerdns
+  labels:
+    app: powerdns
+spec:
+  selector:
+    matchLabels:
+      app: powerdns
+  template:
+    metadata:
+      labels:
+        app: powerdns
+    spec:
+      containers:
+      - image: pschiffe/pdns-mysql:4.7
+        name: powerdns
+        ports:
+        - name: api
+          containerPort: 8081
+        - name: dns
+          containerPort: 53
+          protocol: UDP
+        env:
+        - name: PDNS_gmysql_host
+          value: 'powerdns-db'
+        - name: PDNS_gmysql_port
+          value: '3306'
+        - name: PDNS_gmysql_user
+          valueFrom:
+            secretKeyRef:
+              name: pdns-mariadb
+              key: user
+        - name: PDNS_gmysql_dbname
+          valueFrom:
+            secretKeyRef:
+              name: pdns-mariadb
+              key: database
+        - name: PDNS_gmysql_password
+          valueFrom:
+            secretKeyRef:
+              name: pdns-mariadb
+              key: password
+        - name: PDNS_master
+          value: 'yes'
+        - name: PDNS_api
+          value: 'yes'
+        - name: PDNS_api_key
+          valueFrom:
+            secretKeyRef:
+              name: powerdns
+              key: api_key
+        - name: PDNS_webserver
+          value: 'yes'
+        - name: PDNS_webserver_address
+          value: '0.0.0.0'
+        - name: PDNS_webserver-allow-from
+          value: '127.0.0.1,10.254.0.0/16,10.207.0.0/16,10.0.0.0/8'
+        - name: PDNS_webserver_password
+          valueFrom:
+            secretKeyRef:
+              name: powerdns
+              key: webserver_password
+        - name: PDNS_version_string
+          value: 'anonymous'
+        - name: PDNS_default_ttl
+          value: '1500'
+        - name: PDNS_allow_notify_from
+          value: '0.0.0.0'
+        - name: PDNS_allow_axfr_ips
+          value: '127.0.0.1'
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: powerdns
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: powerdns
+  data:
+  - secretKey: api_key
+    remoteRef:
+      key: secrets/powerdns/server
+      property: api_key
+  - secretKey: webserver_password
+    remoteRef:
+      key: secrets/powerdns/server
+      property: webserver_password

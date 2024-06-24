@@ -1,0 +1,11 @@
+namespace: powerdns
+resources:
+- ns.yaml
+- db-deploy.yaml
+- db-pvc.yaml
+- db-svc.yaml
+- pdns-deploy.yaml
+- pdns-svc.yaml
+- wui-deploy.yaml
+- wui-ing.yaml
+- wui-svc.yaml

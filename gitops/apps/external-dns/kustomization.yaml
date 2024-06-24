@@ -1,0 +1,4 @@
+namespace: external-dns
+resources:
+- deploy.yaml
+- rbac.yaml

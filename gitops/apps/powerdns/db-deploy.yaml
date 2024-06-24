@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pdns-mariadb
+  labels:
+    app: pdns-mariadb
+spec:
+  selector:
+    matchLabels:
+      app: pdns-mariadb
+  template:
+    metadata:
+      labels:
+        app: pdns-mariadb
+    spec:
+      containers:
+      - image: mariadb:10.9.6
+        name: mariadb
+        ports:
+        - name: mysql
+          containerPort: 3306
+        env:
+        - name: MYSQL_RANDOM_ROOT_PASSWORD
+          value: '1'
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: pdns-mariadb
+              key: database
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: pdns-mariadb
+              key: user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pdns-mariadb
+              key: password
+        volumeMounts:
+        - mountPath: "/var/lib/mysql"
+          name: data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: powerdns-db
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: pdns-mariadb
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: pdns-mariadb
+    template:
+      engineVersion: v2
+      data:
+        database_uri: "mysql://{{ .user }}:{{ .password }}@powerdns-db/{{ .database }}"
+        database: "{{ .database }}"
+        user: "{{ .user }}"
+        password: "{{ .password }}"
+  data:
+  - secretKey: database
+    remoteRef:
+      key: secrets/powerdns/mariadb
+      property: database
+  - secretKey: user
+    remoteRef:
+      key: secrets/powerdns/mariadb
+      property: user
+  - secretKey: password
+    remoteRef:
+      key: secrets/powerdns/mariadb
+      property: password

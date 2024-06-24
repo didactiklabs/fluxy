@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: powerdns
+  annotations:
+    cert-manager.io/cluster-issuer: root-didactiklabs
+spec:
+  rules:
+  - host: "dns.didactik.labs"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: powerdns-wui
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - "dns.didactik.labs"
+    secretName: pdns-admin-tls

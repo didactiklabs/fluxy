@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pdns-wui
+  labels:
+    app: pdns-wui
+spec:
+  selector:
+    matchLabels:
+      app: pdns-wui
+  template:
+    metadata:
+      labels:
+        app: pdns-wui
+    spec:
+      containers:
+      - image: powerdnsadmin/pda-legacy:latest
+        name: powerdns-admin
+        ports:
+        - name: http
+          containerPort: 80
+        env:
+        - name: GUNICORN_TIMEOUT
+          value: '60'
+        - name: GUNICORN_WORKERS
+          value: '2'
+        - name: SQLALCHEMY_DATABASE_URI
+          valueFrom:
+            secretKeyRef:
+              name: pdns-mariadb
+              key: database_uri
+      #   - name: REQUESTS_CA_BUNDLE
+      #     value: '/certs/ca.crt'
+      #   volumeMounts:
+      #     - name: cacert
+      #       readOnly: true
+      #       mountPath: "/certs"
+      # volumes:
+      #   - name: cacert
+      #     secret:
+      #       secretName: didactiklabs-ca

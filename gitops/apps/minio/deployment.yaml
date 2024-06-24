@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+spec:
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+      - name: minio
+        image: minio/minio:RELEASE.2024-01-05T22-17-24Z
+        args:
+        - server
+        - /storage
+        - --console-address
+        - ":9001"
+        env:
+        - name: MINIO_API_ROOT_ACCESS
+          value: "off"
+        ports:
+        - name: api
+          containerPort: 9000
+        - name: console
+          containerPort: 9001
+        volumeMounts:
+        - name: storage
+          mountPath: "/storage"
+      volumes:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: minio

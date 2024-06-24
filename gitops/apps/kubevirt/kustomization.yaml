@@ -1,0 +1,3 @@
+resources:
+- https://github.com/kubevirt/kubevirt/releases/download/v1.2.2/kubevirt-operator.yaml
+- kubevirt-cr.yaml

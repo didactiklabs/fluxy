@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentik-postgres
+  labels:
+    app: authentik-postgres
+spec:
+  selector:
+    matchLabels:
+      app: authentik-postgres
+  template:
+    metadata:
+      labels:
+        app: authentik-postgres
+    spec:
+      containers:
+      - image: postgres:15.3
+        name: postgres
+        ports:
+        - name: postgres
+          containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          value: authentik
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: authentik-postgres
+              key: password
+        - name: POSTGRES_DB
+          value: authentik
+        - name: PGDATA
+          value: "/var/lib/postgresql/data/pgdata"
+        volumeMounts:
+        - mountPath: "/var/lib/postgresql/data"
+          name: data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: authentik-db
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: authentik-postgres
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: authentik-postgres
+  data:
+  - secretKey: password
+    remoteRef:
+      key: secrets/authentik/postgres
+      property: password

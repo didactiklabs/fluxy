@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vaultwarden
+  annotations:
+    cert-manager.io/cluster-issuer: root-didactiklabs
+spec:
+  rules:
+  - host: "bitwarden.didactik.labs"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vaultwarden
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - "bitwarden.didactik.labs"
+    secretName: vaultwarden-tls

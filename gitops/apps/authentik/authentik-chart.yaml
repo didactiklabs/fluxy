@@ -1,0 +1,98 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: authentik
+  namespace: flux-system
+spec:
+  interval: 1h0m0s
+  url: https://charts.goauthentik.io
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: authentik
+  namespace: flux-system
+spec:
+  targetNamespace: authentik
+  interval: 1h0m0s
+  chart:
+    spec:
+      chart: authentik
+      version: "2024.*"
+      sourceRef:
+        kind: HelmRepository
+        name: authentik
+        namespace: flux-system
+  values:
+    authentik:
+      avatars: none
+      log_level: info
+      outposts:
+        container_image_base: ghcr.io/goauthentik/%(type)s:%(version)s
+      postgresql:
+        host: 'authentik-postgres'
+        name: postgres
+        port: 5432
+        user: authentik
+      redis:
+        host: '{{ .Release.Name }}-redis-master'
+    blueprints: []
+    env:
+      AUTHENTIK_IMPERSONATION: false
+      AUTHENTIK_BOOTSTRAP_EMAIL: "contact@didactik.labs"
+    envValueFrom:
+      AUTHENTIK_POSTGRESQL__PASSWORD:
+        secretKeyRef:
+          name: authentik-postgres
+          key: password
+      AUTHENTIK_SECRET_KEY:
+        secretKeyRef:
+          name: authentik
+          key: secretkey
+      AUTHENTIK_BOOTSTRAP_PASSWORD:
+        secretKeyRef:
+          name: authentik
+          key: password
+      AUTHENTIK_BOOTSTRAP_TOKEN:
+        secretKeyRef:
+          name: authentik
+          key: token
+    ingress:
+      annotations:
+        cert-manager.io/cluster-issuer: root-didactiklabs
+      enabled: true
+      hosts:
+      - host: auth.didactik.labs
+        paths:
+        - path: /
+          pathType: Prefix
+      labels: {}
+      tls:
+      - hosts:
+        - auth.didactik.labs
+        secretName: authentik-tls
+    livenessProbe:
+      enabled: true
+      httpGet:
+        path: /-/health/live/
+        port: http
+      initialDelaySeconds: 40
+      periodSeconds: 12
+    postgresql:
+      enabled: false
+    redis:
+      architecture: standalone
+      auth:
+        enabled: false
+      enabled: true
+      master:
+        persistence:
+          enabled: false
+    serviceAccount:
+      automountServiceAccountToken: true
+      create: true
+    prometheus:
+      serviceMonitor:
+        create: false
+      rules:
+        create: false

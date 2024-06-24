@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: powerdns-api
+spec:
+  selector:
+    app: powerdns
+  ports:
+  - port: 80
+    targetPort: api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: powerdns-dns
+  annotations:
+    io.cilium/lb-ipam-ips: "10.254.128.1"
+spec:
+  type: LoadBalancer
+  selector:
+    app: powerdns
+  ports:
+  - port: 53
+    targetPort: dns
+    protocol: UDP
