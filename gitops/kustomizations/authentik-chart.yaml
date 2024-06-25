@@ -22,6 +22,46 @@ spec:
         kind: HelmRepository
         name: authentik
   values:
+    global:
+      env:
+      - name: AUTHENTIK_IMPERSONATION
+        value: "false"
+      - name: AUTHENTIK_BOOTSTRAP_EMAIL
+        value: "contact@didactik.labs"
+      - name: AUTHENTIK_POSTGRESQL__PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: authentik-postgres
+            key: password
+      - name: AUTHENTIK_SECRET_KEY
+        valueFrom:
+          secretKeyRef:
+            name: authentik
+            key: secretkey
+      - name: AUTHENTIK_BOOTSTRAP_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: authentik
+            key: password
+      - name: AUTHENTIK_BOOTSTRAP_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: authentik
+            key: token
+    server:
+      ingress:
+        enabled: true
+        annotations:
+          cert-manager.io/cluster-issuer: root-didactiklabs
+        hosts:
+        - auth.didactik.labs
+        paths:
+        - /
+        pathType: Prefix
+        tls:
+        - hosts:
+          - auth.didactik.labs
+          secretName: authentik-tls
     authentik:
       avatars: none
       log_level: info
@@ -34,47 +74,6 @@ spec:
         user: authentik
       redis:
         host: '{{ .Release.Name }}-redis-master'
-    env:
-      AUTHENTIK_IMPERSONATION: false
-      AUTHENTIK_BOOTSTRAP_EMAIL: "contact@didactik.labs"
-    envValueFrom:
-      AUTHENTIK_POSTGRESQL__PASSWORD:
-        secretKeyRef:
-          name: authentik-postgres
-          key: password
-      AUTHENTIK_SECRET_KEY:
-        secretKeyRef:
-          name: authentik
-          key: secretkey
-      AUTHENTIK_BOOTSTRAP_PASSWORD:
-        secretKeyRef:
-          name: authentik
-          key: password
-      AUTHENTIK_BOOTSTRAP_TOKEN:
-        secretKeyRef:
-          name: authentik
-          key: token
-    ingress:
-      annotations:
-        cert-manager.io/cluster-issuer: root-didactiklabs
-      enabled: true
-      hosts:
-      - host: auth.didactik.labs
-        paths:
-        - path: /
-          pathType: Prefix
-      labels: {}
-      tls:
-      - hosts:
-        - auth.didactik.labs
-        secretName: authentik-tls
-    livenessProbe:
-      enabled: true
-      httpGet:
-        path: /-/health/live/
-        port: http
-      initialDelaySeconds: 40
-      periodSeconds: 12
     postgresql:
       enabled: false
     redis:
@@ -88,8 +87,3 @@ spec:
     serviceAccount:
       automountServiceAccountToken: true
       create: true
-    prometheus:
-      serviceMonitor:
-        create: false
-      rules:
-        create: false

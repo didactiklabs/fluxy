@@ -36,7 +36,8 @@ spec:
         config: |
           ui = true
           listener "tcp" {
-            address       = "0.0.0.0:8200"
+            tls_disable = true
+            address = "0.0.0.0:8200"
           }
           storage "file" {
             path = "/vault/data"
@@ -52,7 +53,8 @@ spec:
         pathType: Prefix
         hosts:
           - host: vault.didactik.labs
-            paths: "/"
+            paths:
+            - /
         tls:
         - secretName: vault-tls
           hosts:

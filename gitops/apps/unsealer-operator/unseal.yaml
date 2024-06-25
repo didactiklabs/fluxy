@@ -7,5 +7,4 @@
    vaultNodes:
      - http://vault.vault.svc
    thresholdKeysSecret: thresholdkeys
-   caCertSecret: didactiklabs-ca
    retryCount: 3
