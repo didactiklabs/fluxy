@@ -2,7 +2,7 @@ apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: authentik
-  namespace: flux-system
+  namespace: authentik
 spec:
   interval: 1h0m0s
   url: https://charts.goauthentik.io
@@ -11,9 +11,8 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: authentik
-  namespace: flux-system
+  namespace: authentik
 spec:
-  targetNamespace: authentik
   interval: 1h0m0s
   chart:
     spec:
@@ -22,7 +21,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: authentik
-        namespace: flux-system
   values:
     authentik:
       avatars: none
