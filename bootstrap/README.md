@@ -5,9 +5,8 @@
 Configure the first control plane (with root user):
 
 ```bash
-# kubeadm config file path = ./kubernetes/config.yaml
 # You need to copy the file on the remote control-plane
-kubeadm init --config FILE
+kubeadm init --config kubernetes/config.yaml
 ```
 
 ## CNI (Cilium)
