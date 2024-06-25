@@ -15,10 +15,11 @@ metadata:
 spec:
   targetNamespace: external-secrets
   install:
-    createNamespace: true
+    createNamespace: false
   chart:
     spec:
       chart: external-secrets
+      version: "0.9.19"
       sourceRef:
         kind: HelmRepository
         name: external-secrets

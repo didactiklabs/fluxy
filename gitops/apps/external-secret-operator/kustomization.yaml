@@ -1,5 +1,4 @@
 resources:
-- chart.yaml
 - vault-store.yaml
 - rbac.yaml
 - ns.yaml
