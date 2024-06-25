@@ -5,7 +5,7 @@ metadata:
 spec:
   provider:
     vault:
-      server: "http://vault.vault.svc"
+      server: "http://vault.vault.svc:8200"
       path: "secrets"
       version: "v2"
       # caProvider:

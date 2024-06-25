@@ -5,6 +5,6 @@
    namespace: vault-unsealer-operator-system
  spec:
    vaultNodes:
-     - http://vault.vault.svc
+     - http://vault.vault.svc:8200
    thresholdKeysSecret: thresholdkeys
    retryCount: 3
