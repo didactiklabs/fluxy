@@ -1,0 +1,10 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: openebs-1t-ssd
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: local.csi.openebs.io
+parameters:
+  storage: "lvm"
+  volgroup: "kube1t"
