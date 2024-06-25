@@ -1,4 +1,2 @@
-namespace: vault
 resources:
 - namespace.yaml
-- chart.yaml
