@@ -34,7 +34,6 @@ spec:
         user: authentik
       redis:
         host: '{{ .Release.Name }}-redis-master'
-    blueprints: []
     env:
       AUTHENTIK_IMPERSONATION: false
       AUTHENTIK_BOOTSTRAP_EMAIL: "contact@didactik.labs"
