@@ -8,12 +8,3 @@ provisioner: local.csi.openebs.io
 parameters:
   storage: "lvm"
   volgroup: "kube1t"
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: openebs-gojo-2t
-provisioner: local.csi.openebs.io
-parameters:
-  storage: "lvm"
-  volgroup: "kube2t"
