@@ -2,7 +2,7 @@ apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: hashicorp
-  namespace: flux-system
+  namespace: vault
 spec:
   interval: 1h0m0s
   url: https://helm.releases.hashicorp.com
@@ -11,9 +11,8 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: vault
-  namespace: flux-system
+  namespace: vault
 spec:
-  targetNamespace: vault
   interval: 1h0m0s
   chart:
     spec:
@@ -22,7 +21,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: hashicorp
-        namespace: flux-system
+        namespace: vault
   values:
     global:
       tlsDisable: true
