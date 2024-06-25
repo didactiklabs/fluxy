@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: minio
 spec:
+  storageClassName: openebs-gojo
   accessModes:
     - ReadWriteOnce
   volumeMode: Filesystem
