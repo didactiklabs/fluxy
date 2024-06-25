@@ -14,7 +14,7 @@ spec:
       nodeName: gojo
       containers:
       - name: minio
-        image: minio/minio:RELEASE.2024-01-05T22-17-24Z
+        image: minio/minio:RELEASE.2024-06-22T05-26-45Z.fips
         args:
         - server
         - /storage
