@@ -15,7 +15,7 @@ metadata:
 spec:
   targetNamespace: openebs
   install:
-    createNamespace: false
+    createNamespace: true
   chart:
     spec:
       chart: openebs
@@ -25,7 +25,5 @@ spec:
         name: openebs
   interval: 1h0m0s
   values:
-    engines:
-      replicated:
-        mayastor:
-          enabled: false
+    mayastor:
+      enabled: false
