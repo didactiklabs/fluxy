@@ -24,3 +24,9 @@ spec:
         kind: HelmRepository
         name: openebs
   interval: 1h0m0s
+  values:
+    lvmNode:
+      tolerations:
+      - key: "dedicated"
+        operator: "Equal"
+        effect: "NoSchedule"
