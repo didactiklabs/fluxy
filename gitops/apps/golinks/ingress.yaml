@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: golinks
+  annotations:
+    cert-manager.io/cluster-issuer: root-didactiklabs
+spec:
+  rules:
+    - host: 'go.didactik.labs'
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: golinks
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - 'go.didactik.labs'
+      secretName: golinks-tls

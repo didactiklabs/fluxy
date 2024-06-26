@@ -4,13 +4,13 @@ metadata:
   name: authentik-outpost
 spec:
   rules:
-  - host: "virt.didactik.labs"
-    http:
-      paths:
-      - path: /outpost.goauthentik.io
-        pathType: Prefix
-        backend:
-          service:
-            name: authentik-authentik
-            port:
-              number: 80
+    - host: 'virt.didactik.labs'
+      http:
+        paths:
+          - path: /outpost.goauthentik.io
+            pathType: Prefix
+            backend:
+              service:
+                name: authentik-authentik
+                port:
+                  number: 80

@@ -18,16 +18,16 @@ spec:
         runAsGroup: 65532
         fsGroup: 65532
       containers:
-      - image: ghcr.io/tailscale/golink:main
-        name: golink
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 80
-        env:
-        volumeMounts:
-        - mountPath: "/home/nonroot"
-          name: data
+        - image: ghcr.io/tailscale/golink:main
+          name: golink
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+          volumeMounts:
+            - mountPath: '/home/nonroot'
+              name: data
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: golinks
+        - name: data
+          persistentVolumeClaim:
+            claimName: golinks
