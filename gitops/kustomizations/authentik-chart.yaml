@@ -36,17 +36,17 @@ spec:
       - name: AUTHENTIK_SECRET_KEY
         valueFrom:
           secretKeyRef:
-            name: authentik
+            name: authentik-bootstrap
             key: secretkey
       - name: AUTHENTIK_BOOTSTRAP_PASSWORD
         valueFrom:
           secretKeyRef:
-            name: authentik
+            name: authentik-bootstrap
             key: password
       - name: AUTHENTIK_BOOTSTRAP_TOKEN
         valueFrom:
           secretKeyRef:
-            name: authentik
+            name: authentik-bootstrap
             key: token
     server:
       ingress:
@@ -68,12 +68,12 @@ spec:
       outposts:
         container_image_base: ghcr.io/goauthentik/%(type)s:%(version)s
       postgresql:
-        host: 'authentik-postgres'
+        host: "{{ .Release.Name }}-postgres"
         name: postgres
         port: 5432
         user: authentik
       redis:
-        host: '{{ .Release.Name }}-redis-master'
+        host: "{{ .Release.Name }}-redis-master"
     postgresql:
       enabled: false
     redis:
