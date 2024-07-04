@@ -8,6 +8,7 @@ provisioner: local.csi.openebs.io
 parameters:
   storage: "lvm"
   volgroup: "openebs"
+  shared: "yes"
 allowedTopologies:
 - matchLabelExpressions:
   - key: openebs.io/nodename
@@ -22,6 +23,7 @@ provisioner: local.csi.openebs.io
 parameters:
   storage: "lvm"
   volgroup: "openebs"
+  shared: "yes"
 allowedTopologies:
 - matchLabelExpressions:
   - key: openebs.io/nodename
