@@ -13,7 +13,7 @@ apiServer:
     oidc-ca-file: /etc/ssl/certs/didactiklabs-ca.crt
     oidc-issuer-url: "https://auth.didactik.labs/application/o/kubernetes/"
     oidc-groups-claim: groups
-    oidc-groups-prefix: 'oidc:'
+    oidc-groups-prefix: oidc-
 ---
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: InitConfiguration

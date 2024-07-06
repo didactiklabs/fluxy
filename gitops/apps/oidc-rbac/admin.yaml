@@ -4,7 +4,7 @@ metadata:
   name: oidc-cluster-admin
 subjects:
 - kind: Group
-  name: "'oidc:'k8s-admin"
+  name: oidc-k8s-admin
 roleRef:
   kind: ClusterRole
   name: cluster-admin
