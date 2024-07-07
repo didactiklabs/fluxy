@@ -6,7 +6,7 @@ metadata:
     cert-manager.io/cluster-issuer: root-didactiklabs
 spec:
   rules:
-  - host: "bitwarden.didactik.labs"
+  - host: "vaultwarden.didactik.labs"
     http:
       paths:
       - path: /
@@ -18,5 +18,5 @@ spec:
               number: 80
   tls:
   - hosts:
-    - "bitwarden.didactik.labs"
+    - "vaultwarden.didactik.labs"
     secretName: vaultwarden-tls

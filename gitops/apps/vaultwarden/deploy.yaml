@@ -22,7 +22,7 @@ spec:
           containerPort: 80
         env:
         - name: DOMAIN
-          value: "https://bitwarden.didactik.labs"
+          value: "https://vaultwarden.didactik.labs"
         - name: ADMIN_TOKEN
           valueFrom:
             secretKeyRef:
@@ -55,7 +55,7 @@ spec:
               name: vaultwarden
               key: client_secret
         - name: SSO_AUTHORITY
-          value: "https://auth.didactik.labs/application/o/bitwarden/"
+          value: "https://auth.didactik.labs/application/o/vaultwarden/"
         readinessProbe:
           httpGet:
             path: /
@@ -99,7 +99,6 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: startup
-  namespace: bitwarden
 data:
   bitwarden_rs.sh: |-
     #!/usr/bin/env sh
