@@ -1,3 +1,4 @@
 resources:
 - chart.yaml
 - storage-classes.yaml
+- snapclass.yaml
