@@ -1,0 +1,4 @@
+namespace: velero
+resources:
+- namespace.yaml
+- secret.yaml
