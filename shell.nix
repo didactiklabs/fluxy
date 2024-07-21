@@ -11,5 +11,6 @@ pkgs.mkShell {
     pkgs.kustomize
     pkgs.terraform
     pkgs.velero
+    pkgs.vault-medusa
   ];
 }
