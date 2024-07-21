@@ -1,0 +1,50 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: topolvm-csi
+  namespace: flux-system
+spec:
+  interval: 1h0m0s
+  url: https://topolvm.github.io/topolvm
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: topolvm-csi
+  namespace: flux-system
+spec:
+  targetNamespace: topolvm-system
+  chart:
+    spec:
+      chart: topolvm
+      version: "15.1.1"
+      sourceRef:
+        kind: HelmRepository
+        name: topolvm-csi
+  interval: 1h0m0s
+  values:
+    controller:
+      replicaCount: 1
+    lvmd:
+      args: [ "--lvm-path", "/run/current-system/sw/bin/lvm" ]
+      tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          effect: "NoSchedule"
+      deviceClasses:
+        - name: ssd
+          volume-group: kubernetes
+          default: true
+    node:
+      args: [ "--lvm-path", "/run/current-system/sw/bin/lvm" ]
+      tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          effect: "NoSchedule"
+    storageClasses:
+      - name: topolvm
+        storageClass:
+          fsType: ext4
+          isDefaultClass: true
+          volumeBindingMode: WaitForFirstConsumer
+          allowVolumeExpansion: true

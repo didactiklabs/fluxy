@@ -1,0 +1,5 @@
+resources:
+- chart.yaml
+- namespace.yaml
+- storage-classes.yaml
+- snapclass.yaml
