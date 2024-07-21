@@ -1,9 +1,9 @@
-kind: VolumeSnapshotClass
 apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
 metadata:
-  name: lvmpv-snapclass
+  name: topolvm
   annotations:
     snapshot.storage.kubernetes.io/is-default-class: "true"
     velero.io/csi-volumesnapshot-class: "true"
-driver: local.csi.openebs.io
+driver: topolvm.io
 deletionPolicy: Delete
