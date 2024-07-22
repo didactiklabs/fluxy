@@ -32,9 +32,11 @@ spec:
           operator: "Equal"
           effect: "NoSchedule"
       deviceClasses:
-        - name: ssd
+        - name: thin
+          type: thin
           volume-group: kubernetes
           default: true
+          spare-gb: 10
     node:
       args: [ "--lvm-path", "/run/current-system/sw/bin/lvm" ]
       tolerations:
@@ -44,7 +46,7 @@ spec:
     storageClasses:
       - name: topolvm
         storageClass:
-          fsType: ext4
+          fsType: xfs
           isDefaultClass: true
           volumeBindingMode: WaitForFirstConsumer
           allowVolumeExpansion: true
