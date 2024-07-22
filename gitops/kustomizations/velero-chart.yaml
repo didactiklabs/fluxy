@@ -23,6 +23,9 @@ spec:
         name: velero
   values:
     deployNodeAgent: true
+    nodeAgent:
+      containerSecurityContext:
+        privileged: true
     configuration:
       features: EnableCSI
       backupStorageLocation:
@@ -37,11 +40,7 @@ spec:
             s3Url: http://minio.minio.svc:9000
       volumeSnapshotLocation:
         - name: default
-          provider: aws
-          config:
-            region: minio
-            s3ForcePathStyle: true
-            s3Url: http://minio.minio.svc:9000
+          provider: csi
     initContainers:
       - name: velero-plugin-for-aws
         image: velero/velero-plugin-for-aws:v1.8.1
