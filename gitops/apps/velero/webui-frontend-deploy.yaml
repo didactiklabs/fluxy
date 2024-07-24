@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webui-frontend
+  labels:
+    app: webui-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webui-frontend
+  template:
+    metadata:
+      labels:
+        app: webui-frontend
+    spec:
+      containers:
+        - name: webserver
+          image: docker.io/dserio83/velero-ui:0.1.14
+          imagePullPolicy: Always
+          env:
+            - name: NEXT_PUBLIC_REFRESH_DATATABLE_AFTER
+              value: "1500"
+            - name: NEXT_PUBLIC_REFRESH_RECENT
+              value: "5000"
+            - name: NEXT_PUBLIC_VELERO_API_URL
+              value: "https://velero.didactik.labs/api"
+            - name: NEXT_PUBLIC_VELERO_API_WS
+              value: "ws://velero.didactik.labs/ws"
+          ports:
+            - name: http
+              containerPort: 3000

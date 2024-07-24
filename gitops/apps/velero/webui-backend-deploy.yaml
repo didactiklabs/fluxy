@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webui-backend
+  labels:
+    app: webui-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webui-backend
+  template:
+    metadata:
+      labels:
+        app: webui-backend
+    spec:
+      serviceAccountName: webui-backend
+      containers:
+        - name: api
+          image: docker.io/dserio83/velero-api:0.1.16
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8001
+              name: api
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: DEBUG_LEVEL
+              value: "info"
+            - name: K8S_IN_CLUSTER_MODE
+              value: "True"
+            - name: K8S_VELERO_NAMESPACE
+              value: "velero"
+            - name: K8S_VELERO_UI_NAMESPACE
+              value: "velero"
+            - name: ORIGINS_1
+              value: "https://velero.didactik.labs"
+            - name: API_ENDPOINT_URL
+              value: "0.0.0.0"
+            - name: API_ENDPOINT_PORT
+              value: "8001"
+            - name: VELERO_WATCHDOG_URL
+              value: "webui-watchdog"
+            - name: VELERO_WATCHDOG_PORT
+              value: "8001"
+            - name: REPORT_CRONJOB_NAME
+              value: "velero-ui-report"
+            - name: VELERO_CLI_VERSION
+              value: "v1.14.0"
+            - name: API_RATE_LIMITER_L1
+              value: "60:120"
+            - name: API_ENABLE_DOCUMENTATION
+              value: "1"
+            - name: API_TOKEN_EXPIRATION_MIN
+              value: "30"
+            - name: API_TOKEN_REFRESH_EXPIRATION_DAYS
+              value: "7"
+            - name: VELERO_CLI_DEST_PATH
+              value: "/usr/local/bin"
+            - name: VELERO_CLI_PATH
+              value: "/app/velero-client"
+            - name: VELERO_CLI_PATH_CUSTOM
+              value: "/app/velero-client-binary"
+            - name: SECURITY_PATH_DATABASE
+              value: "./data"
+            - name: SECURITY_TOKEN_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: velero-ui-keys
+                  key: TOKEN_KEY
+            - name: SECURITY_REFRESH_TOKEN_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: velero-ui-keys
+                  key: REFRESH_TOKEN_KEY
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: DEFAULT_ADMIN_USERNAME
+              value: admin
+            - name: DEFAULT_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: velero-ui-keys
+                  key: admin-password

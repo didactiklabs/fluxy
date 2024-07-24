@@ -2,3 +2,12 @@ namespace: velero
 resources:
 - namespace.yaml
 - secret.yaml
+- webui-frontend-deploy.yaml
+- webui-frontend-svc.yaml
+- webui-ingress.yaml
+- webui-backend-rbac.yaml
+- webui-backend-deploy.yaml
+- webui-backend-svc.yaml
+- webui-watchdog-rbac.yaml
+- webui-watchdog-deploy.yaml
+- webui-watchdog-svc.yaml
