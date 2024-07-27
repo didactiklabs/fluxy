@@ -50,18 +50,7 @@ spec:
             key: token
     server:
       ingress:
-        enabled: true
-        annotations:
-          cert-manager.io/cluster-issuer: root-didactiklabs
-        hosts:
-        - auth.didactik.labs
-        paths:
-        - /
-        pathType: Prefix
-        tls:
-        - hosts:
-          - auth.didactik.labs
-          secretName: authentik-tls
+        enabled: false
     authentik:
       avatars: none
       log_level: info

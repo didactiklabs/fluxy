@@ -6,3 +6,4 @@ resources:
 - db-svc.yaml
 - authentik-secrets.yaml
 - apps-protect-ing.yaml
+- httproute.yaml
