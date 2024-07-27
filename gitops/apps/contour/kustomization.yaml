@@ -1,0 +1,5 @@
+namespace: projectcontour
+resources:
+- https://raw.githubusercontent.com/projectcontour/contour/release-1.29/examples/render/contour-gateway-provisioner.yaml
+- gateway-class.yaml
+- public-gateway.yaml
