@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns-internal
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: external-dns-internal
+  template:
+    metadata:
+      labels:
+        app: external-dns-internal
+    spec:
+      serviceAccountName: external-dns
+      containers:
+        - name: external-dns
+          image: registry.k8s.io/external-dns/external-dns:v0.14.2
+          args:
+            - --source=ingress
+            - --source=service
+            - --provider=pdns
+            - --domain-filter=didactik.labs
+            - --log-level=debug
+            - --interval=30s
+          env:
+            - name: EXTERNAL_DNS_PDNS_SERVER
+              value: "http://powerdns-api.powerdns.svc"
+            - name: EXTERNAL_DNS_PDNS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: external-dns-internal
+                  key: api_key
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: external-dns-internal
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: external-dns-internal
+  data:
+    - secretKey: api_key
+      remoteRef:
+        key: secrets/powerdns/server
+        property: api_key

@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 30m
   path: ./gitops/apps/external-dns
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: infra

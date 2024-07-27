@@ -1,4 +1,5 @@
 namespace: external-dns
 resources:
-- deploy.yaml
+- internal-deploy.yaml
+- cloudflare-deploy.yaml
 - rbac.yaml
