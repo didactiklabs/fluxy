@@ -10,8 +10,7 @@ apiServer:
   extraArgs:
     enable-admission-plugins: DefaultTolerationSeconds
     oidc-client-id: kubernetes
-    oidc-ca-file: /etc/ssl/certs/didactiklabs-ca.crt
-    oidc-issuer-url: "https://auth.didactik.labs/application/o/kubernetes/"
+    oidc-issuer-url: "https://auth.didactik.io/application/o/kubernetes/"
     oidc-groups-claim: groups
     oidc-groups-prefix: oidc-
 ---
