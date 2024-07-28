@@ -56,7 +56,7 @@ kind: CronJob
 metadata:
   name: velero-ui-report
 spec:
-  schedule: "0 */12 * * *"
+  schedule: "0 0 * * *"
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 0
   jobTemplate:
