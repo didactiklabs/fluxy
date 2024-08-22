@@ -17,37 +17,37 @@ spec:
   chart:
     spec:
       chart: authentik
-      version: "2024.6.1"
+      version: '2024.6.1'
       sourceRef:
         kind: HelmRepository
         name: authentik
   values:
     global:
       env:
-      - name: AUTHENTIK_IMPERSONATION
-        value: "false"
-      - name: AUTHENTIK_BOOTSTRAP_EMAIL
-        value: "contact@didactik.labs"
-      - name: AUTHENTIK_POSTGRESQL__PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: authentik-postgres
-            key: password
-      - name: AUTHENTIK_SECRET_KEY
-        valueFrom:
-          secretKeyRef:
-            name: authentik-bootstrap
-            key: secretkey
-      - name: AUTHENTIK_BOOTSTRAP_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: authentik-bootstrap
-            key: password
-      - name: AUTHENTIK_BOOTSTRAP_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: authentik-bootstrap
-            key: token
+        - name: AUTHENTIK_IMPERSONATION
+          value: 'false'
+        - name: AUTHENTIK_BOOTSTRAP_EMAIL
+          value: 'contact@didactik.labs'
+        - name: AUTHENTIK_POSTGRESQL__PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: authentik-postgres
+              key: password
+        - name: AUTHENTIK_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: authentik-bootstrap
+              key: secretkey
+        - name: AUTHENTIK_BOOTSTRAP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: authentik-bootstrap
+              key: password
+        - name: AUTHENTIK_BOOTSTRAP_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: authentik-bootstrap
+              key: token
     server:
       ingress:
         enabled: false
@@ -57,16 +57,16 @@ spec:
       outposts:
         container_image_base: ghcr.io/goauthentik/%(type)s:%(version)s
       postgresql:
-        host: "{{ .Release.Name }}-postgres"
+        host: '{{ .Release.Name }}-postgres'
         name: postgres
         port: 5432
         user: authentik
       redis:
-        host: "{{ .Release.Name }}-redis-master"
+        host: '{{ .Release.Name }}-redis-master'
     postgresql:
       enabled: false
     redis:
-      architecture: standalone
+      architecture: replication
       auth:
         enabled: false
       enabled: true

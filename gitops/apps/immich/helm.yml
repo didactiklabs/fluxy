@@ -65,6 +65,7 @@ spec:
           size: 10Gi
     redis:
       enabled: true
+      architecture: replication
     # Immich components
     server:
       enabled: true
@@ -75,8 +76,6 @@ spec:
       ingress:
         main:
           enabled: false
-    microservices:
-      enabled: true
     machine-learning:
       enabled: true
       env:
