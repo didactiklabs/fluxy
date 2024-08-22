@@ -1,0 +1,7 @@
+namespace: immich
+resources:
+  - helm.yml
+  - httproute.yaml
+  - namespace.yml
+  - pvc.yml
+  - secrets.yml
