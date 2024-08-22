@@ -36,7 +36,7 @@ spec:
             key: password
             name: immich-secrets
     image:
-      tag: v1.106.1
+      tag: v1.112.1
     immich:
       probes:
         liveness:
