@@ -1,0 +1,16 @@
+allowVolumeExpansion: true
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: topolvm-hdd
+parameters:
+  csi.storage.k8s.io/fstype: xfs
+  topolvm.io/device-class: hdd-thin
+provisioner: topolvm.io
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+allowedTopologies:
+  - matchLabelExpressions:
+      - key: topology.topolvm.io/node
+        values:
+          - frieren

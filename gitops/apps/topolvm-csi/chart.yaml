@@ -42,7 +42,7 @@ spec:
             overprovision-ratio: 5.0
         - name: hdd-thin
           type: thin
-          volume-group: immich
+          volume-group: hdd
           spare-gb: 10
           thin-pool:
             name: "pool0"
@@ -58,11 +58,5 @@ spec:
         storageClass:
           fsType: xfs
           isDefaultClass: true
-          volumeBindingMode: WaitForFirstConsumer
-          allowVolumeExpansion: true
-      - name: topolvm-hdd
-        storageClass:
-          fsType: xfs
-          isDefaultClass: false
           volumeBindingMode: WaitForFirstConsumer
           allowVolumeExpansion: true
