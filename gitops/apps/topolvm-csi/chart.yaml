@@ -40,6 +40,13 @@ spec:
           thin-pool:
             name: "pool0"
             overprovision-ratio: 5.0
+        - name: hdd-thin
+          type: thin
+          volume-group: immich
+          spare-gb: 10
+          thin-pool:
+            name: "pool0"
+            overprovision-ratio: 5.0
     node:
       args: [ "--lvm-path", "/run/current-system/sw/bin/lvm" ]
       tolerations:
@@ -51,5 +58,11 @@ spec:
         storageClass:
           fsType: xfs
           isDefaultClass: true
+          volumeBindingMode: WaitForFirstConsumer
+          allowVolumeExpansion: true
+      - name: topolvm-hdd
+        storageClass:
+          fsType: xfs
+          isDefaultClass: false
           volumeBindingMode: WaitForFirstConsumer
           allowVolumeExpansion: true
