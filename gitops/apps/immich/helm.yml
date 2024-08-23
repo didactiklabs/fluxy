@@ -47,7 +47,7 @@ spec:
             initialDelaySeconds: 120
       persistence:
         library:
-          existingClaim: immich
+          existingClaim: immich-data
     # Dependencies
     postgresql:
       enabled: true
