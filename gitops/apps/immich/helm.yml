@@ -17,7 +17,7 @@ spec:
   chart:
     spec:
       chart: immich
-      version: '0.7.1'
+      version: '0.7.2'
       sourceRef:
         kind: HelmRepository
         name: immich
@@ -36,7 +36,7 @@ spec:
             key: password
             name: immich-secrets
     image:
-      tag: v1.112.1
+      tag: v1.113.0
     immich:
       probes:
         liveness:
