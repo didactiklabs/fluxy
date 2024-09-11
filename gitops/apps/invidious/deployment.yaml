@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invidious
+  labels:
+    app.kubernetes.io/instance: invidious
+    app.kubernetes.io/name: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: invidious
+      app.kubernetes.io/name: server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: invidious
+        app.kubernetes.io/name: server
+    spec:
+      containers:
+        - command: ['/bin/sh']
+          args:
+            - -c
+            - |
+              export INVIDIOUS_CONFIG=$(echo "$INVIDIOUS_CONFIG" | sed \
+                -e "s/__dbname/$INVIDIOUS_DB_DBNAME/" \
+                -e "s/__user/$INVIDIOUS_DB_USER/" \
+                -e "s/__password/$INVIDIOUS_DB_PASSWORD/" \
+                -e "s/__host/$INVIDIOUS_DB_HOST/" \
+                -e "s/__hmac_key/$INVIDIOUS_HMAC_KEY/")
+              exec /invidious/invidious
+          env:
+            - name: INVIDIOUS_CONFIG
+              value: |
+                db:
+                  dbname: __dbname
+                  user: __user
+                  password: __password
+                  host: __host
+                  port: 5432
+                check_tables: true
+                hmac_key: __hmac_key
+                channel_threads: 4
+                feed_threads: 4
+                pool_size: 2000
+                captcha_enabled: false
+                disable_proxy: false
+                default_user_preferences:
+                  local: true
+                  quality: dash
+                  quality_dash: auto
+            - name: INVIDIOUS_DB_PORT
+              value: '5432'
+            - name: INVIDIOUS_HMAC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: invidious-postgres
+                  key: hmac_key
+            - name: INVIDIOUS_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: invidious-postgres
+                  key: username
+            - name: INVIDIOUS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: invidious-postgres
+                  key: password
+            - name: INVIDIOUS_DB_HOST
+              value: invidious-postgres-rw
+            - name: INVIDIOUS_DB_DBNAME
+              value: invidious
+          image: quay.io/invidious/invidious:latest
+          name: invidious
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+      restartPolicy: Always

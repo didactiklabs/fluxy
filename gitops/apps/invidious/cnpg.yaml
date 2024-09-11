@@ -1,0 +1,32 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: invidious-postgres
+spec:
+  instances: 1
+  bootstrap:
+    initdb:
+      database: invidious
+      owner: invidious
+      secret:
+        name: invidious-postgres
+      postInitApplicationSQLRefs:
+        configMapRefs:
+          - name: invidious-postgresql-init
+            key: playlists.sql
+          - name: invidious-postgresql-init
+            key: annotations.sql
+          - name: invidious-postgresql-init
+            key: channel_videos.sql
+          - name: invidious-postgresql-init
+            key: channels.sql
+          - name: invidious-postgresql-init
+            key: playlist_videos.sql
+          - name: invidious-postgresql-init
+            key: session_ids.sql
+          - name: invidious-postgresql-init
+            key: users.sql
+          - name: invidious-postgresql-init
+            key: videos.sql
+  storage:
+    size: 8Gi

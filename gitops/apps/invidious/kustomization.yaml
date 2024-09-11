@@ -1,0 +1,9 @@
+namespace: invidious
+resources:
+  - deployment.yaml
+  - httproute.yaml
+  - namespace.yaml
+  - secrets.yaml
+  - service.yaml
+  - cnpg.yaml
+  - cnpg-cm.yaml
