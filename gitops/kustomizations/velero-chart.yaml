@@ -37,7 +37,7 @@ spec:
           config:
             region: minio
             s3ForcePathStyle: true
-            s3Url: http://minio.minio.svc:9000
+            s3Url: http://minio-frieren.minio.svc:9000
       volumeSnapshotLocation:
         - name: default
           provider: csi

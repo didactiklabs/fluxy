@@ -1,25 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: minio
+  name: minio-frieren
 spec:
   selector:
     matchLabels:
-      app: minio
+      app: minio-frieren
   template:
     metadata:
       labels:
-        app: minio
+        app: minio-frieren
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: gojo
-      tolerations:
-      - key: "dedicated"
-        operator: "Equal"
-        effect: "NoSchedule"
       containers:
       - name: minio
-        image: minio/minio:RELEASE.2024-06-22T05-26-45Z.fips
+        image: minio/minio:RELEASE.2024-09-22T00-33-43Z.fips
         args:
         - server
         - /storage
@@ -39,4 +33,4 @@ spec:
       volumes:
       - name: storage
         persistentVolumeClaim:
-          claimName: minio
+          claimName: minio-frieren

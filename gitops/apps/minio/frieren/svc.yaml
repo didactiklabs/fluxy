@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-frieren
+spec:
+  type: ClusterIP
+  selector:
+    app: minio-frieren
+  ports:
+  - name: api
+    port: 9000
+    targetPort: api
+  - name: console
+    port: 9001
+    targetPort: console

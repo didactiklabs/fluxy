@@ -1,22 +1,22 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: minio
+  name: minio-gojo
   annotations:
     cert-manager.io/cluster-issuer: root-didactiklabs
 spec:
   rules:
-  - host: "minio.didactik.labs"
+  - host: "minio.gojo.didactik.labs"
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: minio
+            name: minio-gojo
             port:
               number: 9001
   tls:
   - hosts:
-    - "minio.didactik.labs"
-    secretName: minio-tls
+    - "minio.gojo.didactik.labs"
+    secretName: minio-gojo-tls

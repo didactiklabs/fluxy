@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio-frieren
+  annotations:
+    cert-manager.io/cluster-issuer: root-didactiklabs
+spec:
+  rules:
+  - host: "minio.frieren.didactik.labs"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: minio-frieren
+            port:
+              number: 9001
+  tls:
+  - hosts:
+    - "minio.frieren.didactik.labs"
+    secretName: minio-frieren-tls

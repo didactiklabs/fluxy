@@ -20,5 +20,5 @@ terraform {
 }
 
 provider "vault" {
-  address = "http://localhost:8200"
+  address = "https://vault.didactik.labs"
 }
