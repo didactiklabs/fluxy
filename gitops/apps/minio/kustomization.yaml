@@ -1,6 +1,7 @@
 namespace: minio
 resources:
 - namespace.yaml
+- secret.yaml
 
 - gojo/deploy.yaml
 - gojo/ing.yaml

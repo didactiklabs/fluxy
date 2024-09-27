@@ -26,8 +26,29 @@ spec:
         - --console-address
         - ":9001"
         env:
-        - name: MINIO_API_ROOT_ACCESS
-          value: "off"
+        - name: MINIO_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              name: minio
+              key: MINIO_ROOT_USER
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: minio
+              key: MINIO_ROOT_PASSWORD
+        - name: MINIO_IDENTITY_OPENID_CONFIG_URL
+          value: "https://auth.didactiklabs.io/application/o/minio/.well-known/openid-configuration"
+        - name: MINIO_IDENTITY_OPENID_CLIENT_ID
+          value: "minio"
+        - name: MINIO_IDENTITY_OPENID_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: minio
+              key: MINIO_IDENTITY_OPENID_CLIENT_SECRET
+        - name: MINIO_IDENTITY_OPENID_REDIRECT_URI_DYNAMIC
+          value: on
+        - name: MINIO_IDENTITY_OPENID_ROLE_POLICY
+          value: consoleAdmin
         ports:
         - name: api
           containerPort: 9000
