@@ -46,9 +46,9 @@ spec:
               name: minio
               key: MINIO_IDENTITY_OPENID_CLIENT_SECRET
         - name: MINIO_IDENTITY_OPENID_REDIRECT_URI_DYNAMIC
-          value: on
+          value: "on"
         - name: MINIO_IDENTITY_OPENID_ROLE_POLICY
-          value: consoleAdmin
+          value: "consoleAdmin"
         ports:
         - name: api
           containerPort: 9000
