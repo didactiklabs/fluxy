@@ -1,0 +1,86 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: fireflyiii
+  labels:
+    app: fireflyiii
+    part-of: fireflyiii
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fireflyiii
+      part-of: fireflyiii
+  serviceName: 'fireflyiii' # Service name for network identity
+  template:
+    metadata:
+      labels:
+        app: fireflyiii
+        part-of: fireflyiii
+    spec:
+      containers:
+        - name: fireflyiii
+          image: fireflyiii/core:version-6.1.21
+          ports:
+            - name: fireflyiii
+              containerPort: 8080
+          env:
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: fireflyiii-secrets
+                  key: APP_KEY
+            - name: STATIC_CRON_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: fireflyiii-secrets
+                  key: STATIC_CRON_TOKEN
+            - name: DB_CONNECTION
+              value: 'mysql'
+            - name: DB_HOST
+              value: 'mariadb'
+            - name: DB_PORT
+              value: '3306'
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: fireflyiii-secrets
+                  key: DB_DATABASE
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: fireflyiii-secrets
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: fireflyiii-secrets
+                  key: DB_PASSWORD
+            - name: AUTHENTICATION_GUARD
+              value: 'remote_user_guard'
+            - name: AUTHENTICATION_GUARD_HEADER
+              value: 'HTTP_X_AUTHENTIK_USERNAME'
+            - name: AUTHENTICATION_GUARD_EMAIL
+              value: 'HTTP_X_AUTHENTIK_EMAIL'
+            - name: TRUSTED_PROXIES
+              value: '**'
+          volumeMounts:
+            - name: upload
+              mountPath: /var/www/html/storage/upload
+          resources:
+            limits:
+              memory: 200Mi
+            requests:
+              memory: 150Mi
+      volumes:
+        - name: upload
+          persistentVolumeClaim:
+            claimName: upload
+  volumeClaimTemplates:
+    - metadata:
+        name: upload
+      spec:
+        accessModes: ['ReadWriteOnce']
+        resources:
+          requests:
+            storage: 10Gi

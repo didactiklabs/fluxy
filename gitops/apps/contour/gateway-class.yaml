@@ -15,3 +15,4 @@ data:
       gatewayRef:
         name: contour
         namespace: projectcontour
+    enableExternalNameService: true

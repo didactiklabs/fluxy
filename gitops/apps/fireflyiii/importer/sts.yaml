@@ -1,0 +1,52 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: fireflyiii-importer
+  labels:
+    app: fireflyiii-importer
+    part-of: fireflyiii
+spec:
+  replicas: 1
+  serviceName: 'fireflyiii-importer' # Stable network identity
+  selector:
+    matchLabels:
+      app: fireflyiii-importer
+      part-of: fireflyiii
+  template:
+    metadata:
+      labels:
+        app: fireflyiii-importer
+        part-of: fireflyiii
+    spec:
+      containers:
+        - name: fireflyiii-importer
+          image: fireflyiii/data-importer:version-1.5.6
+          env:
+            - name: TRUSTED_PROXIES
+              value: '**'
+            # - name: FIREFLY_III_CLIENT_ID
+            #   value: '5'
+            - name: FIREFLY_III_URL
+              value: 'http://fireflyiii:8080'
+            - name: VANITY_URL
+              value: 'https://firefly.didactiklabs.io'
+            - name: JSON_CONFIGURATION_DIR
+              value: '/configurations'
+          ports:
+            - name: fireflyiiiimp
+              containerPort: 8080
+          volumeMounts:
+            - name: configurations
+              mountPath: /configurations
+      volumes:
+        - name: configurations
+          persistentVolumeClaim:
+            claimName: configurations
+  volumeClaimTemplates:
+    - metadata:
+        name: configurations
+      spec:
+        accessModes: ['ReadWriteOnce']
+        resources:
+          requests:
+            storage: 10Gi

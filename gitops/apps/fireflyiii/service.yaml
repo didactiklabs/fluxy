@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fireflyiii
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: fireflyiii
+  selector:
+    app: fireflyiii
+    part-of: fireflyiii
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ak-outpost-proxy01
+spec:
+  type: ExternalName
+  externalName: authentik-server.authentik.svc.cluster.local
+  ports:
+    - port: 80
+      targetPort: 80

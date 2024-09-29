@@ -1,0 +1,29 @@
+kind: CronJob
+apiVersion: batch/v1
+metadata:
+  name: fireflyiii
+  labels:
+    app: cronjob
+    part-of: fireflyiii
+spec:
+  schedule: '*/60 * * * *'
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 100
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: fireflyiii
+              image: curlimages/curl:7.81.0
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  curl "http://fireflyiii.fireflyiii:8080/api/v1/cron/$STATIC_CRON_TOKEN"
+              env:
+                - name: STATIC_CRON_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: fireflyiii-secrets
+                      key: STATIC_CRON_TOKEN

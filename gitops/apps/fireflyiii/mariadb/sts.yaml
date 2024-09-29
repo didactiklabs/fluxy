@@ -1,0 +1,74 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: mariadb
+  labels:
+    app: mariadb
+    part-of: fireflyiii
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+      part-of: fireflyiii
+  template:
+    metadata:
+      labels:
+        app: mariadb
+        part-of: fireflyiii
+    spec:
+      containers:
+        - name: mariadb
+          image: ghcr.io/linuxserver/mariadb:10.5.13-alpine
+          ports:
+            - name: mariadb
+              containerPort: 3306
+          env:
+            - name: PUID
+              value: '1000'
+            - name: PGID
+              value: '1000'
+            - name: TZ
+              value: 'Europe/Paris'
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: fireflyiii-secrets
+                  key: DB_PASSWORD
+            - name: MYSQL_LOG_CONSOLE
+              value: 'true'
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: fireflyiii-secrets
+                  key: DB_USERNAME
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: fireflyiii-secrets
+                  key: DB_DATABASE
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: fireflyiii-secrets
+                  key: DB_PASSWORD
+          volumeMounts:
+            - name: mariadb-data
+              mountPath: /config # Where the persistent storage will be mounted
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              memory: 128Mi
+      volumes:
+        - name: mariadb-data
+          persistentVolumeClaim:
+            claimName: mariadb-data
+  volumeClaimTemplates:
+    - metadata:
+        name: mariadb-data
+      spec:
+        accessModes: ['ReadWriteOnce']
+        resources:
+          requests:
+            storage: 10Gi
