@@ -5,7 +5,7 @@ metadata:
 spec:
   parentRefs:
   - name: public
-    namespace: projectcontour
+    namespace: istio-system
     sectionName: https
   hostnames:
   - auth.didactiklabs.io
