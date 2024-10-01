@@ -6,7 +6,7 @@ metadata:
     cert-manager.io/cluster-issuer: acme-cloudflare
     external-dns.alpha.kubernetes.io/target: didactiklabs.io
 spec:
-  gatewayClassName: contour
+  gatewayClassName: istio
   listeners:
     - name: http
       hostname: "*.didactiklabs.io"
