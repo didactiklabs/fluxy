@@ -21,9 +21,9 @@ spec:
             # Add desired Gateway API Route sources.
             - --source=gateway-httproute
             - --source=gateway-grpcroute
-            # - --source=gateway-tlsroute
-            # - --source=gateway-tcproute
-            # - --source=gateway-udproute
+            - --source=gateway-tlsroute
+            - --source=gateway-tcproute
+            - --source=gateway-udproute
             - --domain-filter=didactiklabs.io
             - --provider=cloudflare
             - --cloudflare-dns-records-per-page=5000
