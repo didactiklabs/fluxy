@@ -1,0 +1,7 @@
+resources:
+# to avoid https://github.com/istio/istio/issues/49277
+- probes-netpol.yaml
+
+# gateway-api
+- https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
+- public-gateway.yaml
