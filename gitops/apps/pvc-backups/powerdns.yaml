@@ -1,0 +1,15 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: powerdns-data
+  namespace: velero
+spec:
+  schedule: 0 12 * * *
+  template:
+    includedNamespaces:
+      - powerdns
+    includedResources:
+      - pvc
+      - pv
+    snapshotMoveData: true
+    ttl: 160h0m0s

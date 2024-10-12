@@ -1,0 +1,15 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: vaultwarden-data
+  namespace: velero
+spec:
+  schedule: 0 12 * * *
+  template:
+    includedNamespaces:
+      - vaultwarden
+    includedResources:
+      - pvc
+      - pv
+    snapshotMoveData: true
+    ttl: 160h0m0s
