@@ -10,6 +10,5 @@ spec:
       - authentik
     includedResources:
       - pvc
-      - pv
     snapshotMoveData: true
     ttl: 160h0m0s

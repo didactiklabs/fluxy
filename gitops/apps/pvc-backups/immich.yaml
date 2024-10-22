@@ -1,14 +1,17 @@
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
-  name: vaultwarden-data
+  name: immich-data
   namespace: velero
 spec:
-  schedule: 0 12 * * *
+  schedule: 0 12 */7 * *
   template:
     includedNamespaces:
-      - vaultwarden
+      - immich
     includedResources:
       - pvc
+    labelSelector:
+      matchLabels:
+        kustomize.toolkit.fluxcd.io/name: immich
     snapshotMoveData: true
-    ttl: 160h0m0s
+    ttl: 730h0m0s
