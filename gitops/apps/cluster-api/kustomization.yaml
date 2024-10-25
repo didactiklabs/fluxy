@@ -1,2 +1,2 @@
 resources:
-- https://github.com/kubernetes-sigs/cluster-api-operator/releases/download/v0.13.0/operator-components.yaml
+- https://github.com/kubernetes-sigs/cluster-api-operator/releases/download/v0.14.0/operator-components.yaml
