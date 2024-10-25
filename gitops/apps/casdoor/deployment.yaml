@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: casdoor
+  labels:
+    app: casdoor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: casdoor
+  template:
+    metadata:
+      labels:
+        app: casdoor
+    spec:
+      containers:
+        - name: casdoor
+          image: casbin/casdoor:v1.723.0
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            - name: RUNNING_IN_DOCKER
+              value: "true"
+            - name: appname
+              value: "casdoor"
+            - name: httport
+              value: "8000"
+            - name: runmode
+              value: "prod"
+            - name: SessionOn
+              value: "true"
+            - name: driverName
+              value: "postgres"
+            - name: dataSourceName

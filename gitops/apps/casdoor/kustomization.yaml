@@ -1,0 +1,6 @@
+namespace: casdoor
+resources:
+- ns.yaml
+- deployment.yaml
+- service.yaml
+- httproute.yaml
