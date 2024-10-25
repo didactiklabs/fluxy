@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kamaji-system
+---
+apiVersion: operator.cluster.x-k8s.io/v1alpha2
+kind: ControlPlaneProvider
+metadata:
+  name: kamaji
+  namespace: kamaji-system
+spec:
+  version: v0.12.0
+  fetchConfig:
+    url: https://github.com/clastix/cluster-api-control-plane-provider-kamaji/releases/v0.12.0/control-plane-components.yaml
