@@ -1,0 +1,12 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: kamaji
+  namespace: flux-system
+spec:
+  interval: 5m
+  path: ./gitops/apps/kamaji
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: infra

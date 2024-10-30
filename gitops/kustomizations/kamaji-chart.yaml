@@ -19,10 +19,32 @@ spec:
   chart:
     spec:
       chart: kamaji
-      version: "0.9.19"
+      version: "1.0.0"
       sourceRef:
         kind: HelmRepository
-        name: external-secrets
+        name: clastix
   interval: 1h0m0s
   values:
-    installCRDs: true
+    etcd:
+      deploy: false
+    datastore:
+      enabled: true
+      nameOverride: postgres-cnpg
+      driver: PostgreSQL
+      endpoints: ["kamaji-postgres-rw.kamaji-system.svc:5432"]
+      basicAuth:
+        usernameSecret:
+          name: kamaji-postgres-superuser
+          namespace: kamaji-system
+          keyPath: username
+        passwordSecret:
+          name: kamaji-postgres-superuser
+          namespace: kamaji-system
+          keyPath: password
+      tlsConfig:
+        enabled: false
+        certificateAuthority:
+          certificate:
+            name: kamaji-postgres-ca
+            namespace: kamaji-system
+            keyPath: ca.crt
