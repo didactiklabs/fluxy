@@ -1,0 +1,4 @@
+namespace: kamaji-system
+resources:
+  - secrets.yaml
+  - cnpg.yaml
