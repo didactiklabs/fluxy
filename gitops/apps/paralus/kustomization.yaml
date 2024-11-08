@@ -1,0 +1,4 @@
+namespace: paralus
+resources:
+  - namespace.yaml
+  - bundle.yaml

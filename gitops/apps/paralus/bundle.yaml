@@ -1,0 +1,1349 @@
+---
+# Source: ztka/charts/kratos/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: paralus-kratos
+  namespace: default
+  labels:
+    app.kubernetes.io/name: kratos
+    helm.sh/chart: kratos-0.29.0
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/version: "v0.11.1"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: ztka/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: paralus-ztka
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: rbac
+---
+# Source: ztka/templates/secret-database.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: paralus-db
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: secret
+type: Opaque
+data:
+  DB_ADDR: "cGFyYWx1cy1wb3N0Z3Jlcy1ydy5wYXJhbHVzLnN2Yzo1NDMy"
+  DB_USER: "cGFyYWx1cw=="
+  DB_PASSWORD: "cGFzc3dvcmQ="
+  DB_NAME: "cGFyYWx1cw=="
+  DSN: "cG9zdGdyZXM6Ly9wYXJhbHVzOnBhc3N3b3JkQHBhcmFsdXMtcG9zdGdyZXMtcncucGFyYWx1cy5zdmM6NTQzMi9wYXJhbHVzP3NzbG1vZGU9ZGlzYWJsZQ=="
+---
+# Source: ztka/templates/secret-kratos.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kratos
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: secret
+type: Opaque
+data:
+  dsn: "cG9zdGdyZXM6Ly9wYXJhbHVzOnBhc3N3b3JkQHBhcmFsdXMtcG9zdGdyZXMtcncucGFyYWx1cy5zdmM6NTQzMi9wYXJhbHVzP3NzbG1vZGU9ZGlzYWJsZQ=="
+  smtpConnectionURI: "c210cHM6Ly90ZXN0OnRlc3RAbXlwb3N0OjEwMjUvP3NraXBfc3NsX3ZlcmlmeT10cnVl"
+---
+# Source: ztka/charts/kratos/templates/configmap-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: paralus-kratos-config
+  namespace: default
+  labels:
+    app.kubernetes.io/name: kratos
+    helm.sh/chart: kratos-0.29.0
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/version: "v0.11.1"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+data:
+  # Render the kratos config:
+  "kratos.yaml": |
+    courier:
+      smtp: {}
+    identity:
+      default_schema_id: default
+      schemas:
+      - id: default
+        url: file:///etc/config/identity.schema.v1.json
+    selfservice:
+      flows:
+        recovery:
+          enabled: true
+        registration:
+          after:
+            oidc:
+              hooks:
+              - hook: session
+            password:
+              hooks:
+              - hook: session
+          lifespan: 10m
+        settings:
+          privileged_session_max_age: 15m
+      methods:
+        oidc:
+          enabled: true
+        password:
+          enabled: true
+    serve:
+      admin:
+        port: 4434
+      public:
+        cors:
+          allowed_headers:
+          - Authorization
+          - Cookie
+          - Content-Type
+          - X-Session-Token
+          enabled: true
+          exposed_headers:
+          - Content-Type
+          - Set-Cookie
+        port: 4433
+    version: v0.11.0
+  # Render the identity schemas to disk:
+  identity.schema.v1.json: |
+    {
+      "$id": "https://schemas.paralus.io/email-password/identity.schema.v1.json",
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Person",
+      "type": "object",
+      "properties": {
+        "traits": {
+          "type": "object",
+          "properties": {
+            "first_name": {
+              "title": "First name",
+              "type": "string",
+              "pattern": "^.*$"
+            },
+            "last_name": {
+              "title": "Last name",
+              "type": "string",
+              "pattern": "^.*$"
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "title": "E-Mail",
+              "minLength": 3,
+              "ory.sh/kratos": {
+                "credentials": {
+                  "password": {
+                    "identifier": true
+                  }
+                },
+                "verification": {
+                  "via": "email"
+                },
+                "recovery": {
+                  "via": "email"
+                }
+              }
+            },
+            "idp_groups": {
+              "type": "array",
+              "title": "IDP groups",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "email"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+---
+# Source: ztka/templates/configmap-kratos-hooks.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kratos-config-hooks
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/component: kratos
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kratos-config-hooks
+    app.kubernetes.io/instance: paralus
+data:
+    kratos-config-hooks.yaml: |
+      selfservice:
+        methods:
+          password:
+            enabled: true
+        flows:
+          login:
+            after:
+              password:
+                hooks:
+                  - hook: web_hook
+                    config:
+                      url: http://paralus:11000/auth/v3/user/auditlog
+                      body: file:///etc/kratos/body.jsonnet
+                      method: POST
+---
+# Source: ztka/templates/configmap-kratos.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kratos-config
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kratos-config
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: configuration
+data:
+  serve_public_base_url: http://console.paralus.didactik.labs
+  default_browser_return_url: http://console.paralus.didactik.labs
+  selfservice_flows_settings_ui_url: http://console.paralus.didactik.labs/ksettings
+  selfservice_flows_recovery_ui_url: http://console.paralus.didactik.labs/ksettings
+  selfservice_flows_registration_ui_url: http://console.paralus.didactik.labs/registeroidc
+  selfservice_flows_error_ui_url: http://console.paralus.didactik.labs/error-page
+---
+# Source: ztka/templates/configmap-paralus.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: paralus-config
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: paralus
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: configuration
+data:
+  DEV: "false"
+  AUDIT_LOG_FILE: "/audit-logs/audit.log"
+  AUDIT_LOG_STORAGE: "database"
+  ES_INDEX_PREFIX: "ralog-system"
+  RELAY_AUDITS_ES_INDEX_PREFIX: "ralog-relay"
+  RELAY_COMMANDS_ES_INDEX_PREFIX: "ralog-prompt"
+  ES_END_POINT: ""
+  KRATOS_ADDR: "http://paralus-kratos-admin"
+  KRATOS_PUB_ADDR: "http://paralus-kratos-public"
+  RELAY_IMAGE: paralusio/relay:v0.1.8
+  SCHEDULER_NAMESPACE: "default"
+  SENTRY_PEERING_HOST: "paralus:10001"
+  CORE_RELAY_CONNECTOR_HOST: "*.core-connector.paralus.didactik.labs:443"
+  CORE_RELAY_USER_HOST: "*.user.paralus.didactik.labs:443"
+  SENTRY_BOOTSTRAP_ADDR: "console.paralus.didactik.labs:80"
+---
+# Source: ztka/templates/configmap-prompt.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prompt-config
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: prompt
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: configuration
+data:
+  DEV: "false"
+  AUDIT_LOG_FILE: "/audit-logs/audit.log"
+  SENTRY_ADDR: paralus:10000
+  KRATOS_ADDR: "http://paralus-kratos-admin"
+  KRATOS_PUB_ADDR: "http://paralus-kratos-public"
+---
+# Source: ztka/templates/configmap-relay.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: relay-server-config
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: relay
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: configuration
+data:
+  PARALUS_RELAY_PEERSERVICE: https://paralus:10001
+  SENTRY_ADDR: paralus:10000
+  AUDIT_PATH: "/audit-logs"
+---
+# Source: ztka/charts/fluent-bit/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: paralus-fluent-bit
+  labels:
+    helm.sh/chart: fluent-bit-0.20.8
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/version: "1.9.8"
+    app.kubernetes.io/managed-by: Helm
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+---
+# Source: ztka/charts/fluent-bit/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: paralus-fluent-bit
+  labels:
+    helm.sh/chart: fluent-bit-0.20.8
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/version: "1.9.8"
+    app.kubernetes.io/managed-by: Helm
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: paralus-fluent-bit
+subjects:
+  - kind: ServiceAccount
+    name: paralus-fluent-bit
+    namespace: paralus
+---
+# Source: ztka/charts/fluent-bit/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: paralus-fluent-bit
+  labels:
+    helm.sh/chart: fluent-bit-0.20.8
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/version: "1.9.8"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 2020
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: paralus
+---
+# Source: ztka/charts/kratos/templates/service-admin.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: paralus-kratos-admin
+  namespace: default
+  labels:
+    app.kubernetes.io/component: admin
+    app.kubernetes.io/name: kratos
+    helm.sh/chart: kratos-0.29.0
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/version: "v0.11.1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http-admin
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/instance: paralus
+---
+# Source: ztka/charts/kratos/templates/service-public.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: paralus-kratos-public
+  namespace: default
+  labels:
+    app.kubernetes.io/component: public
+    app.kubernetes.io/name: kratos
+    helm.sh/chart: kratos-0.29.0
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/version: "v0.11.1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http-public
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/instance: paralus
+---
+# Source: ztka/charts/kratos/templates/statefulset-svc.yaml
+# Headless Service for StatefulSet. See https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations
+# and https://kubernetes.io/docs/concepts/services-networking/service/#headless-services for details.
+apiVersion: v1
+kind: Service
+metadata:
+  name: paralus-kratos-courier
+  namespace: default
+  labels:
+    app.kubernetes.io/component: courier
+    app.kubernetes.io/name: kratos
+    helm.sh/chart: kratos-0.29.0
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/version: "v0.11.1"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+spec:
+  clusterIP: None
+  ports:
+    - port: 80
+      targetPort: http-public
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: paralus-kratos-courier
+    app.kubernetes.io/instance: paralus
+---
+# Source: ztka/templates/service-dashboard.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: dashboard
+    app.kubernetes.io/instance: paralus
+spec:
+  type: ClusterIP
+  ports:
+    - name: nginx
+      protocol: TCP
+      port: 80
+      targetPort: nginx
+  selector:
+    app.kubernetes.io/name: dashboard
+    app.kubernetes.io/instance: paralus
+---
+# Source: ztka/templates/service-paralus.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: paralus
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: paralus
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: networking
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      port: 11000
+      targetPort: http
+    - name: rpc
+      protocol: TCP
+      port: 10000
+      targetPort: rpc
+    - name: relay-peering
+      protocol: TCP
+      port: 10001
+      targetPort: relay-peering
+  selector:
+    app.kubernetes.io/name: paralus
+    app.kubernetes.io/instance: paralus
+---
+# Source: ztka/templates/service-prompt.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: prompt
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: prompt
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: networking
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      port: 7009
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: prompt
+    app.kubernetes.io/instance: paralus
+---
+# Source: ztka/templates/service-relay.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: relay-server
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: relay
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: networking
+spec:
+  type: ClusterIP
+  ports:
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: https
+  selector:
+    app.kubernetes.io/name: relay
+    app.kubernetes.io/instance: paralus
+---
+# Source: ztka/charts/kratos/templates/deployment-kratos.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paralus-kratos
+  namespace: default
+  labels:
+    app.kubernetes.io/name: kratos
+    helm.sh/chart: kratos-0.29.0
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/version: "v0.11.1"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+spec:
+  progressDeadlineSeconds: 3600
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 30%
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kratos
+      app.kubernetes.io/instance: paralus
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kratos
+        helm.sh/chart: kratos-0.29.0
+        app.kubernetes.io/instance: paralus
+        app.kubernetes.io/version: "v0.11.1"
+        app.kubernetes.io/managed-by: Helm
+      annotations:
+        checksum/kratos-config: ecf3929f074bd6d6ae2daa23f3a288fab233832e15390a1cfd29ad4460d34eaf
+        checksum/kratos-templates: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+    spec:
+      initContainers:
+        - name: create-file
+          image: "busybox:latest"
+          command: ['sh', '-c', 'touch /etc/kratos/providers.yaml']
+          volumeMounts:
+            - name: other-configs
+              mountPath: /etc/kratos
+        - name: create-login-hook-jsonnetfile
+          image: "busybox:latest"
+          command: ['sh', '-c', 'echo "function(ctx) { user_id: ctx.identity.id }" > /etc/kratos/body.jsonnet']
+          volumeMounts:
+            - name: other-configs
+              mountPath: /etc/kratos
+
+      volumes:
+        - emptyDir: {}
+          name: other-configs
+        - configMap:
+            defaultMode: 420
+            name: kratos-config-hooks
+          name: kratos-config-hooks
+        - name: kratos-config-volume
+          configMap:
+            name: paralus-kratos-config
+      automountServiceAccountToken: true
+      serviceAccountName: paralus-kratos
+      containers:
+        - name: kratos
+          image: oryd/kratos:v0.11.1
+          imagePullPolicy: IfNotPresent
+          command:
+            - kratos
+          args:
+            - serve
+            - all
+            - --config
+            - /etc/config/kratos.yaml
+            - --config
+            - /etc/kratos/providers.yaml
+            - --config
+            - /etc/kratos/hooks/kratos-config-hooks.yaml
+          volumeMounts:
+            - mountPath: /etc/kratos
+              name: other-configs
+            - mountPath: /etc/kratos/hooks/kratos-config-hooks.yaml
+              name: kratos-config-hooks
+              subPath: kratos-config-hooks.yaml
+            - name: kratos-config-volume
+              mountPath: /etc/config
+              readOnly: true
+          env:
+            - name: DSN
+              valueFrom:
+                secretKeyRef:
+                  name: kratos
+                  key: dsn
+            - name: SECRETS_DEFAULT
+              valueFrom:
+                secretKeyRef:
+                  name: kratos
+                  key: secretsDefault
+                  optional: true
+            - name: SECRETS_COOKIE
+              valueFrom:
+                secretKeyRef:
+                  name: kratos
+                  key: secretsCookie
+                  optional: true
+            - name: SECRETS_CIPHER
+              valueFrom:
+                secretKeyRef:
+                  name: kratos
+                  key: secretsCipher
+                  optional: true
+            - name: COURIER_SMTP_CONNECTION_URI
+              valueFrom:
+                secretKeyRef:
+                  name: kratos
+                  key: smtpConnectionURI
+            - name: SERVE_PUBLIC_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: serve_public_base_url
+                  name: kratos-config
+            - name: SELFSERVICE_DEFAULT_BROWSER_RETURN_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: default_browser_return_url
+                  name: kratos-config
+            - name: SELFSERVICE_ALLOWED_RETURN_URLS
+              valueFrom:
+                configMapKeyRef:
+                  key: default_browser_return_url
+                  name: kratos-config
+            - name: SELFSERVICE_FLOWS_SETTINGS_UI_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: selfservice_flows_settings_ui_url
+                  name: kratos-config
+            - name: SELFSERVICE_FLOWS_RECOVERY_UI_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: selfservice_flows_recovery_ui_url
+                  name: kratos-config
+            - name: SELFSERVICE_FLOWS_REGISTRATION_UI_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: selfservice_flows_registration_ui_url
+                  name: kratos-config
+            - name: SELFSERVICE_FLOWS_ERROR_UI_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: selfservice_flows_error_ui_url
+                  name: kratos-config
+          ports:
+            - name: http-admin
+              containerPort: 4434
+              protocol: TCP
+            - name: http-public
+              containerPort: 4433
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /admin/health/ready
+              port: 4434
+              httpHeaders:
+                - name: Host
+                  value: '127.0.0.1'
+            failureThreshold: 5
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /admin/health/ready
+              port: 4434
+              httpHeaders:
+                - name: Host
+                  value: '127.0.0.1'
+            failureThreshold: 5
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              path: /admin/health/ready
+              port: 4434
+              httpHeaders:
+                - name: Host
+                  value: '127.0.0.1'
+            failureThreshold: 60
+            periodSeconds: 1
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 100
+        - name: synchronizer
+          image: "paralusio/kratos-synchronizer:v0.2.8"
+          volumeMounts:
+            - name: other-configs
+              mountPath: /etc/kratos
+          env:
+            - name: DSN
+              valueFrom:
+                secretKeyRef:
+                  name: paralus-db
+                  key: DSN
+            - name: KRATOS_PROVIDER_CFG
+              value: "/etc/kratos/providers.yaml"
+---
+# Source: ztka/templates/deployment-dashboard.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: dashboard
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: workload
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dashboard
+      app.kubernetes.io/instance: paralus
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: ztka-0.2.9
+        app.kubernetes.io/version: "v0.2.8"
+        app.kubernetes.io/part-of: paralus
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: dashboard
+        app.kubernetes.io/instance: paralus
+        app.kubernetes.io/component: workload
+    spec:
+      serviceAccountName: paralus-ztka
+      securityContext:
+        {}
+      containers:
+        - name: dashboard
+          securityContext:
+            {}
+          image: "paralusio/dashboard:v0.2.3"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: nginx
+              containerPort: 80
+          resources:
+            {}
+---
+# Source: ztka/templates/deployment-paralus.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paralus
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: paralus
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: workload
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: paralus
+      app.kubernetes.io/instance: paralus
+  template:
+    metadata:
+      annotations:
+        checksum/config: c8ab218008f957accbf6eec4528c32b1a9e0ec0f84b3f42ae5f492a648bbf396
+      labels:
+        helm.sh/chart: ztka-0.2.9
+        app.kubernetes.io/version: "v0.2.8"
+        app.kubernetes.io/part-of: paralus
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: paralus
+        app.kubernetes.io/instance: paralus
+        app.kubernetes.io/component: workload
+    spec:
+      serviceAccountName: paralus-ztka
+      securityContext:
+        {}
+      volumes:
+        - name: audit-logs
+          emptyDir: {}
+      initContainers:
+        - name: kratos-automigrate
+          image: "paralusio/paralus-init:v0.2.8"
+          command: ["kratos"]
+          args: ["migrate", "sql", "-e", "--yes"]
+          env:
+            - name: DSN
+              valueFrom:
+                secretKeyRef:
+                  name: paralus-db
+                  key: DSN
+          imagePullPolicy: IfNotPresent
+        - name: migrate-admindb
+          image: "paralusio/paralus-init:v0.2.8"
+          command: ["migrate"]
+          args: ["-path=/data/migrations/admindb", "-database", "$(DSN)", "up"]
+          env:
+            - name: DSN
+              valueFrom:
+                secretKeyRef:
+                  name: paralus-db
+                  key: DSN
+          imagePullPolicy: IfNotPresent
+        - name: initialize
+          image: "paralusio/paralus-init:v0.2.8"
+          command: ["paralus-init"]
+          args: [
+            "-partner", "Paralus",
+            "-partner-desc", "Default Partner",
+            "-partner-host", "paralus.didactik.labs",
+            "-org", "DidactikLabs",
+            "-org-desc", "DidactikLabs Org",
+            "-admin-email", "admin@didactik.labs",
+            "-admin-first-name", "Admin",
+            "-admin-last-name", "DidactikLabs",
+             ]
+          envFrom:
+          - configMapRef:
+              name: paralus-config
+          - secretRef:
+              name: paralus-db
+          imagePullPolicy: IfNotPresent
+      containers:
+        - name: paralus-tail
+          securityContext:
+            {}
+          image: "busybox:latest"
+          command: ['sh', '-c' ,'tail -F /audit-logs/audit.log 2>/tmp/tail-err']
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: audit-logs
+              mountPath: /audit-logs
+        - name: paralus
+          securityContext:
+            {}
+          image: "paralusio/paralus:v0.2.8"
+          command: ["./paralus"]
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: audit-logs
+              mountPath: /audit-logs
+          envFrom:
+          - configMapRef:
+              name: paralus-config
+          - secretRef:
+              name: paralus-db
+          ports:
+            - name: http
+              containerPort: 11000
+            - name: rpc
+              containerPort: 10000
+            - name: relay-peering
+              containerPort: 10001
+          resources:
+            {}
+---
+# Source: ztka/templates/deployment-prompt.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prompt
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: prompt
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: workload
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prompt
+      app.kubernetes.io/instance: paralus
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: ztka-0.2.9
+        app.kubernetes.io/version: "v0.2.8"
+        app.kubernetes.io/part-of: paralus
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: prompt
+        app.kubernetes.io/instance: paralus
+        app.kubernetes.io/component: workload
+    spec:
+      serviceAccountName: paralus-ztka
+      securityContext:
+        {}
+      volumes:
+        - name: kubectl
+          emptyDir: {}
+        - name: audit-logs
+          emptyDir: {}
+      initContainers:
+        - name: install-kubectl
+          image: busybox:latest
+          volumeMounts:
+            - name: kubectl
+              mountPath: /data
+          command: ['sh', '-c', 'wget -q "https://dl.k8s.io/release/$(wget -qO- https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" -O /data/kubectl && chmod +x /data/kubectl']
+      containers:
+        - name: prompt-tail
+          securityContext:
+            {}
+          image: "busybox:latest"
+          command: ['sh', '-c' ,'tail -F /audit-logs/audit.log 2>/tmp/tail-err']
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: audit-logs
+              mountPath: /audit-logs
+        - name: ztka
+          securityContext:
+            {}
+          image: "paralusio/prompt:v0.1.3"
+          imagePullPolicy: IfNotPresent
+          envFrom:
+          - configMapRef:
+              name: prompt-config
+          - secretRef:
+              name: paralus-db
+          ports:
+            - name: http
+              containerPort: 7009
+          volumeMounts:
+            - name: kubectl
+              subPath: kubectl
+              mountPath: /usr/local/bin/kubectl
+            - name: audit-logs
+              mountPath: /audit-logs
+          resources:
+            {}
+---
+# Source: ztka/templates/deployment-relay.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: relay-server
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: relay
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: workload
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: relay
+      app.kubernetes.io/instance: paralus
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: ztka-0.2.9
+        app.kubernetes.io/version: "v0.2.8"
+        app.kubernetes.io/part-of: paralus
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: relay
+        app.kubernetes.io/instance: paralus
+        app.kubernetes.io/component: workload
+    spec:
+      serviceAccountName: paralus-ztka
+      securityContext:
+        {}
+      volumes:
+        - name: relay-audit-logs
+          emptyDir: {}
+      containers:
+        - name: relay-tail
+          securityContext:
+            {}
+          image: "paralusio/relay:v0.1.8"
+          args: ["--mode", "tail"]
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: relay-audit-logs
+              mountPath: /audit-logs
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          envFrom:
+          - configMapRef:
+              name: relay-server-config
+        - name: relay-server
+          securityContext:
+            {}
+          image: "paralusio/relay:v0.1.8"
+          args: ["--mode", "server", "--log-level", "3"]
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: relay-audit-logs
+              mountPath: /audit-logs
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          envFrom:
+          - configMapRef:
+              name: relay-server-config
+          ports:
+            - name: https
+              containerPort: 443
+          resources:
+            {}
+---
+# Source: ztka/charts/kratos/templates/statefulset-mail.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: paralus-kratos-courier
+  namespace: default
+  labels:
+    app.kubernetes.io/name: kratos
+    helm.sh/chart: kratos-0.29.0
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/version: "v0.11.1"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: paralus-kratos-courier
+      app.kubernetes.io/instance: paralus
+  serviceName: paralus-kratos-courier
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: paralus-kratos-courier
+        app.kubernetes.io/instance: paralus
+      annotations:
+        checksum/kratos-config: ecf3929f074bd6d6ae2daa23f3a288fab233832e15390a1cfd29ad4460d34eaf
+        checksum/kratos-templates: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+    spec:
+      serviceAccountName: paralus-kratos
+      containers:
+        - name: paralus-kratos-courier
+          image: oryd/kratos:v0.11.1
+          imagePullPolicy: IfNotPresent
+          args:
+            - courier
+            - watch
+            - --config
+            - /etc/config/kratos.yaml
+          volumeMounts:
+            - name: paralus-kratos-config-volume
+              mountPath: /etc/config
+              readOnly: true
+            - mountPath: /etc/kratos
+              name: other-configs
+            - mountPath: /etc/kratos/hooks/kratos-config-hooks.yaml
+              name: kratos-config-hooks
+              subPath: kratos-config-hooks.yaml
+          env:
+            - name: LOG_FORMAT
+              value: json
+            - name: LOG_LEVEL
+              value: trace
+            - name: DSN
+              valueFrom:
+                secretKeyRef:
+                  name: kratos
+                  key: dsn
+            - name: SECRETS_DEFAULT
+              valueFrom:
+                secretKeyRef:
+                  name: kratos
+                  key: secretsDefault
+                  optional: true
+            - name: SECRETS_COOKIE
+              valueFrom:
+                secretKeyRef:
+                  name: kratos
+                  key: secretsCookie
+                  optional: true
+            - name: SECRETS_CIPHER
+              valueFrom:
+                secretKeyRef:
+                  name: kratos
+                  key: secretsCipher
+                  optional: true
+            - name: COURIER_SMTP_CONNECTION_URI
+              valueFrom:
+                secretKeyRef:
+                  name: kratos
+                  key: smtpConnectionURI
+            - name: SERVE_PUBLIC_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: serve_public_base_url
+                  name: kratos-config
+            - name: SELFSERVICE_DEFAULT_BROWSER_RETURN_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: default_browser_return_url
+                  name: kratos-config
+            - name: SELFSERVICE_ALLOWED_RETURN_URLS
+              valueFrom:
+                configMapKeyRef:
+                  key: default_browser_return_url
+                  name: kratos-config
+            - name: SELFSERVICE_FLOWS_SETTINGS_UI_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: selfservice_flows_settings_ui_url
+                  name: kratos-config
+            - name: SELFSERVICE_FLOWS_RECOVERY_UI_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: selfservice_flows_recovery_ui_url
+                  name: kratos-config
+            - name: SELFSERVICE_FLOWS_REGISTRATION_UI_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: selfservice_flows_registration_ui_url
+                  name: kratos-config
+            - name: SELFSERVICE_FLOWS_ERROR_UI_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: selfservice_flows_error_ui_url
+                  name: kratos-config
+          resources:
+            null
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 100
+        - name: synchronizer
+          image: "paralusio/kratos-synchronizer:v0.2.8"
+          volumeMounts:
+            - name: other-configs
+              mountPath: /etc/kratos
+          env:
+            - name: DSN
+              valueFrom:
+                secretKeyRef:
+                  name: paralus-db
+                  key: DSN
+            - name: KRATOS_PROVIDER_CFG
+              value: "/etc/kratos/providers.yaml"
+
+      initContainers:
+        - name: create-file
+          image: "busybox:latest"
+          command: ['sh', '-c', 'touch /etc/kratos/providers.yaml']
+          volumeMounts:
+            - name: other-configs
+              mountPath: /etc/kratos
+        - name: create-login-hook-jsonnetfile
+          image: "busybox:latest"
+          command: ['sh', '-c', 'echo "function(ctx) { user_id: ctx.identity.id }" > /etc/kratos/body.jsonnet']
+          volumeMounts:
+            - name: other-configs
+              mountPath: /etc/kratos
+
+      volumes:
+        - name: paralus-kratos-config-volume
+          configMap:
+            name: paralus-kratos-config
+        - emptyDir: {}
+          name: other-configs
+        - configMap:
+            defaultMode: 420
+            name: kratos-config-hooks
+          name: kratos-config-hooks
+---
+# Source: ztka/templates/ingress-console.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: console
+  annotations:
+    cert-manager.io/cluster-issuer: root-didactiklabs
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: networking
+spec:
+  rules:
+    - host: "console.paralus.didactik.labs"
+      http:
+        paths:
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: paralus
+                port:
+                  number: 11000
+          - path: /event
+            pathType: Prefix
+            backend:
+              service:
+                name: paralus
+                port:
+                  number: 11000
+          - path: /infra
+            pathType: Prefix
+            backend:
+              service:
+                name: paralus
+                port:
+                  number: 11000
+          - path: /v2/sentry
+            pathType: Prefix
+            backend:
+              service:
+                name: paralus
+                port:
+                  number: 11000
+          - path: /v2/debug/prompt
+            pathType: Prefix
+            backend:
+              service:
+                name: prompt
+                port:
+                  number: 7009
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
+          - path: /self-service
+            pathType: Prefix
+            backend:
+              service:
+                name: paralus-kratos-public
+                port:
+                  number: 80
+  tls:
+  - hosts:
+    - "console.paralus.didactik.labs"
+    secretName: console-paralus-tls
+---
+# Source: ztka/templates/ingress-ztka.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ztka
+  annotations:
+    cert-manager.io/cluster-issuer: root-didactiklabs
+  labels:
+    helm.sh/chart: ztka-0.2.9
+    app.kubernetes.io/version: "v0.2.8"
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: networking
+spec:
+  rules:
+    - host: "*.core-connector.paralus.didactik.labs"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: relay-server
+                port:
+                  number: 443
+    - host: "*.user.paralus.didactik.labs"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: relay-server
+                port:
+                  number: 443
+  tls:
+  - hosts:
+    - "*.core-connector.paralus.didactik.labs"
+    secretName: core-connector-paralus-tls
