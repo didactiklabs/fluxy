@@ -10,6 +10,7 @@ metadata:
   namespace: capi-system
 stringData:
   CLUSTER_TOPOLOGY: "true"
+  EXP_CLUSTER_RESOURCE_SET: "true"
   EXP_MACHINE_SET_PREFLIGHT_CHECKS: "true"
 ---
 apiVersion: operator.cluster.x-k8s.io/v1alpha2
