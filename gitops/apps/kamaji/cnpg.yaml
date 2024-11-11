@@ -7,48 +7,5 @@ spec:
   enableSuperuserAccess: true
   superuserSecret:
     name: kamaji-postgres-superuser
-  backup:
-    barmanObjectStore:
-      endpointURL: http://minio-frieren.minio.svc:9000
-      destinationPath: "s3://cnpg/kamaji"
-      s3Credentials:
-        accessKeyId:
-          name: minio-credentials
-          key: ACCESS_KEY_ID
-        secretAccessKey:
-          name: minio-credentials
-          key: ACCESS_SECRET_KEY
-    retentionPolicy: "30d"
   storage:
     size: 20Gi
----
-apiVersion: postgresql.cnpg.io/v1
-kind: ScheduledBackup
-metadata:
-  name: kamaji
-spec:
-  schedule: "0 0 12 * * *"
-  backupOwnerReference: self
-  cluster:
-    name: kamaji-postgres
----
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: minio-credentials
-spec:
-  refreshInterval: "1h"
-  secretStoreRef:
-    name: vault-backend
-    kind: ClusterSecretStore
-  target:
-    name: minio-credentials
-  data:
-    - secretKey: ACCESS_KEY_ID
-      remoteRef:
-        key: secrets/minio
-        property: AWS_ACCESS_KEY_ID
-    - secretKey: ACCESS_SECRET_KEY
-      remoteRef:
-        key: secrets/minio
-        property: AWS_SECRET_ACCESS_KEY
