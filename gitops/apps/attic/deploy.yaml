@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: attic
+  namespace: attic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: attic
+  template:
+    metadata:
+      labels:
+        app: attic
+    spec:
+      containers:
+        - name: attic-container
+          image: ghcr.io/zhaofengli/attic:b8c5ab4518f776624fee261385abb98348cd26cf
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: attic-postgres
+                  key: password
+            - name: ATTIC_SERVER_TOKEN_RS256_SECRET_BASE64
+              valueFrom:
+                secretKeyRef:
+                  name: attic-config
+                  key: ATTIC_SERVER_TOKEN_RS256_SECRET_BASE64
+          volumeMounts:
+            - name: config
+              mountPath: /var/empty/.config/attic/server.toml
+              subPath: server.toml
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: attic

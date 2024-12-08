@@ -1,0 +1,39 @@
+apiVersion: v1
+data:
+  server.toml: |
+    # Socket address to listen on
+    [database]
+    url = "postgresql://attic@attic-postgres-rw:5432/attic"
+    [storage]
+    type = "local"
+    path = "/var/empty/.local/share/attic/storage"
+    [chunking]
+    nar-size-threshold = 65536 # chunk files that are 64 KiB or larger
+    # The preferred minimum size of a chunk, in bytes
+    min-size = 16384            # 16 KiB
+    # The preferred average size of a chunk, in bytes
+    avg-size = 65536            # 64 KiB
+    # The preferred maximum size of a chunk, in bytes
+    max-size = 262144           # 256 KiB
+    # Compression
+    [compression]
+    # Compression type
+    # Can be "none", "brotli", "zstd", or "xz"
+    type = "zstd"
+    # Compression level
+    #level = 8
+    # Garbage collection
+    [garbage-collection]
+    # The frequency to run garbage collection at
+    # By default it's 12 hours. You can use natural language
+    # to specify the interval, like "1 day".
+    # If zero, automatic garbage collection is disabled, but
+    # it can still be run manually with `atticd --mode garbage-collector-once`.
+    interval = "12 hours"
+    # Default retention period
+    # Zero (default) means time-based garbage-collection is
+    # disabled by default. You can enable it on a per-cache basis.
+    #default-retention-period = "6 months"
+kind: ConfigMap
+metadata:
+  name: attic
