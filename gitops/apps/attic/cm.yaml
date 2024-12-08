@@ -3,7 +3,7 @@ data:
   server.toml: |
     # Socket address to listen on
     [database]
-    url = "postgresql://attic@attic-postgres-rw:5432/attic"
+    url = "sqlite:///var/empty/.local/share/attic/server.db"
     [storage]
     type = "local"
     path = "/var/empty/.local/share/attic/storage"

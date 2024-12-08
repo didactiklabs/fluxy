@@ -20,11 +20,6 @@ spec:
             - name: http
               containerPort: 8080
           env:
-            - name: PGPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: attic-postgres
-                  key: password
             - name: ATTIC_SERVER_TOKEN_RS256_SECRET_BASE64
               valueFrom:
                 secretKeyRef:
@@ -35,7 +30,7 @@ spec:
               mountPath: /var/empty/.config/attic/server.toml
               subPath: server.toml
               readOnly: true
-            - mountPath: "/var/empty/.local/share/attic/storage"
+            - mountPath: '/var/empty/.local/share/attic'
               name: data
       volumes:
         - name: config
