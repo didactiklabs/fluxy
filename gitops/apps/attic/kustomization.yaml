@@ -1,6 +1,5 @@
 namespace: attic
 resources:
-  - cnpg.yaml
   - secrets.yaml
   - pvc.yaml
   - deploy.yaml
