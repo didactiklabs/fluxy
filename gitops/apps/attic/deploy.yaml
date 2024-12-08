@@ -35,7 +35,12 @@ spec:
               mountPath: /var/empty/.config/attic/server.toml
               subPath: server.toml
               readOnly: true
+            - mountPath: "/var/empty/.local/share/attic/storage"
+              name: data
       volumes:
         - name: config
           configMap:
             name: attic
+        - name: data
+          persistentVolumeClaim:
+            claimName: attic-data
