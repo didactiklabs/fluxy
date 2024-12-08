@@ -1,0 +1,8 @@
+namespace: attic
+resources:
+  - cnpg.yaml
+  - secrets.yaml
+  - deploy.yaml
+  - httproute.yaml
+  - svc.yaml
+  - cm.yaml
