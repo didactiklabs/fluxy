@@ -1,14 +1,16 @@
 namespace: minio
 resources:
-- namespace.yaml
-- secret.yaml
-
-- gojo/deploy.yaml
-- gojo/ing.yaml
-- gojo/svc.yaml
-- gojo/pvc.yaml
-
-- frieren/deploy.yaml
-- frieren/ing.yaml
-- frieren/svc.yaml
-- frieren/pvc.yaml
+  - namespace.yaml
+  - secret.yaml
+  - generic/deploy.yaml
+  - generic/httproute.yaml
+  - generic/svc.yaml
+  - generic/pvc.yaml
+  - gojo/deploy.yaml
+  - gojo/ing.yaml
+  - gojo/svc.yaml
+  - gojo/pvc.yaml
+  - frieren/deploy.yaml
+  - frieren/ing.yaml
+  - frieren/svc.yaml
+  - frieren/pvc.yaml
