@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: attic-data
+  name: minio-generic
 spec:
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
+  volumeMode: Filesystem
   resources:
     requests:
-      storage: 20Gi
-  volumeMode: Filesystem
+      storage: 1200Gi
