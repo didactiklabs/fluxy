@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio-generic
+spec:
+  selector:
+    matchLabels:
+      app: minio-generic
+  template:
+    metadata:
+      labels:
+        app: minio-generic
+    spec:
+      containers:
+        - name: minio
+          image: minio/minio:RELEASE.2024-09-22T00-33-43Z.fips
+          args:
+            - server
+            - /storage
+            - --console-address
+            - ':9001'
+          env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: minio
+                  key: MINIO_ROOT_USER
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: minio
+                  key: MINIO_ROOT_PASSWORD
+            - name: MINIO_IDENTITY_OPENID_CONFIG_URL
+              value: 'https://auth.didactiklabs.io/application/o/minio/.well-known/openid-configuration'
+            - name: MINIO_IDENTITY_OPENID_CLIENT_ID
+              value: 'minio'
+            - name: MINIO_IDENTITY_OPENID_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: minio
+                  key: MINIO_IDENTITY_OPENID_CLIENT_SECRET
+            - name: MINIO_IDENTITY_OPENID_REDIRECT_URI_DYNAMIC
+              value: 'on'
+            - name: MINIO_IDENTITY_OPENID_ROLE_POLICY
+              value: 'consoleAdmin'
+          ports:
+            - name: api
+              containerPort: 9000
+            - name: console
+              containerPort: 9001
+          volumeMounts:
+            - name: storage
+              mountPath: '/storage'
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: minio-generic

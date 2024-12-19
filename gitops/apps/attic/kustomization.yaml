@@ -1,8 +1,0 @@
-namespace: attic
-resources:
-  - secrets.yaml
-  - pvc.yaml
-  - deploy.yaml
-  - httproute.yaml
-  - svc.yaml
-  - cm.yaml
