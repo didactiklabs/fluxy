@@ -25,6 +25,8 @@ spec:
         name: clastix
   interval: 1h0m0s
   values:
+    image:
+      tag: edge-24.12.1
     etcd:
       deploy: false
     datastore:
