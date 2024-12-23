@@ -26,6 +26,15 @@ spec:
         mode: Terminate
         certificateRefs:
           - name: didactiklabs-wildcard-tls
+    - name: kube
+      hostname: "*.didactiklabs.io"
+      protocol: TLS
+      port: 6443
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Passthrough
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
