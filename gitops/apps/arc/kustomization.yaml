@@ -1,0 +1,5 @@
+namespace: arc
+resources:
+  - helm.yaml
+  - namespace.yaml
+  - secrets.yaml
