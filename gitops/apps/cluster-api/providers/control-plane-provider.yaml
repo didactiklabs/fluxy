@@ -3,12 +3,22 @@ kind: Namespace
 metadata:
   name: kamaji-system
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: capi-vars
+  namespace: kamaji-system
+stringData:
+  CACPPK_SKIP_INFRA_CLUSTER_PATCH: "true"
+---
 apiVersion: operator.cluster.x-k8s.io/v1alpha2
 kind: ControlPlaneProvider
 metadata:
   name: kamaji
   namespace: kamaji-system
 spec:
-  version: v0.12.0
+  version: v0.13.0
+  configSecret:
+    name: capi-vars
   fetchConfig:
-    url: https://github.com/clastix/cluster-api-control-plane-provider-kamaji/releases/v0.12.0/control-plane-components.yaml
+    url: https://github.com/clastix/cluster-api-control-plane-provider-kamaji/releases/v0.13.0/control-plane-components.yaml
