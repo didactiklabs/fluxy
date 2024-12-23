@@ -1,0 +1,8 @@
+namespace: kamaji-system
+resources:
+  - rbacs.yaml
+  - services.yaml
+  - certificate.yaml
+  - webhook-configs.yaml
+  - datastore.yaml
+  - deployment.yaml

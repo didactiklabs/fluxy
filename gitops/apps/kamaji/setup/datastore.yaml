@@ -1,0 +1,18 @@
+apiVersion: kamaji.clastix.io/v1alpha1
+kind: DataStore
+metadata:
+  name: postgres-cnpg
+spec:
+  driver: PostgreSQL
+  endpoints: [kamaji-postgres-rw.kamaji-system.svc:5432]
+  basicAuth:
+    username:
+      secretReference:
+        keyPath: username
+        name: kamaji-postgres-superuser
+        namespace: kamaji-system
+    password:
+      secretReference:
+        keyPath: password
+        name: kamaji-postgres-superuser
+        namespace: kamaji-system
