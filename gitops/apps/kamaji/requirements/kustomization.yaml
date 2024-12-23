@@ -1,0 +1,6 @@
+namespace: kamaji-system
+resources:
+  - secrets.yaml
+  - cnpg.yaml
+  - https://raw.githubusercontent.com/clastix/kamaji/refs/tags/edge-24.12.1/charts/kamaji/crds/kamaji.clastix.io_datastores.yaml
+  - https://raw.githubusercontent.com/clastix/kamaji/refs/tags/edge-24.12.1/charts/kamaji/crds/kamaji.clastix.io_tenantcontrolplanes.yaml
