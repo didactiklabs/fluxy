@@ -44,6 +44,9 @@ spec:
         name: istio
   values:
     profile: ambient
+    pilot:
+      env:
+        PILOT_ENABLE_ALPHA_GATEWAY_API: true
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
