@@ -2,3 +2,5 @@ namespace: paralus
 resources:
   - namespace.yaml
   - bundle.yaml
+  - secrets.yaml
+  - cnpg.yaml
