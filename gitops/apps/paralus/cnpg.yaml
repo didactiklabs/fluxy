@@ -1,0 +1,15 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: paralus-postgres
+spec:
+  instances: 1
+  bootstrap:
+    initdb:
+      database: paralus
+      owner: paralus
+      secret:
+        name: paralus-postgres
+  storage:
+    size: 8Gi
+---
