@@ -8,8 +8,6 @@ kind: Secret
 metadata:
   name: capi-vars
   namespace: kamaji-system
-stringData:
-  CACPPK_SKIP_INFRA_CLUSTER_PATCH: "true"
 ---
 apiVersion: operator.cluster.x-k8s.io/v1alpha2
 kind: ControlPlaneProvider
