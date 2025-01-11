@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana
+  annotations:
+    cert-manager.io/cluster-issuer: root-didactiklabs
+spec:
+  rules:
+    - host: 'grafana.didactik.labs'
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana-service
+                port:
+                  number: 3000
+  tls:
+    - hosts:
+        - 'grafana.didactik.labs'
+      secretName: grafana-tls
