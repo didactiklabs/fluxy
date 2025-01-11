@@ -4,6 +4,7 @@ metadata:
   name: kubevirt
   namespace: kubevirt
 spec:
+  monitorNamespace: monitoring
   configuration:
     developerConfiguration:
       featureGates:

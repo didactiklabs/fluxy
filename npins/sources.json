@@ -1,0 +1,53 @@
+{
+  "pins": {
+    "grafana-operator": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "grafana",
+        "repo": "grafana-operator"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "version": "v5.15.1",
+      "revision": "6025362b1b61cd48e8473586015d4331f0e8e54c",
+      "url": "https://api.github.com/repos/grafana/grafana-operator/tarball/v5.15.1",
+      "hash": "11w7xxgdq152v5wbl0ih3541ddy2j872870ybqcx1d2kcnyahrx6"
+    },
+    "kube-prometheus": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "prometheus-operator",
+        "repo": "kube-prometheus"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "version": "v0.14.0",
+      "revision": "e02554298cb62b5533f3407c8eacc664e80bc74b",
+      "url": "https://api.github.com/repos/prometheus-operator/kube-prometheus/tarball/v0.14.0",
+      "hash": "0g1d1gn3kqx3b9rgbbdpdcdip9vycw8cvd70qpzhxjb8if5k9942"
+    },
+    "kubevirt-monitoring": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "kubevirt",
+        "repo": "monitoring"
+      },
+      "branch": "main",
+      "revision": "d53462199536c86d9dd428afff6c597a5908e0a2",
+      "url": "https://github.com/kubevirt/monitoring/archive/d53462199536c86d9dd428afff6c597a5908e0a2.tar.gz",
+      "hash": "1cxnwyzi82ahb4fmnykh15h95vvzl7ymx9sg3s1qq7aw8cqcg0l3"
+    },
+    "nixpkgs": {
+      "type": "Channel",
+      "name": "nixpkgs-unstable",
+      "url": "https://releases.nixos.org/nixpkgs/nixpkgs-25.05pre735212.4bc9c909d9ac/nixexprs.tar.xz",
+      "hash": "14fkdpczgpbyzmh43czfny14w0vsh20klxcxj99j8iv2z4jlp52m"
+    }
+  },
+  "version": 3
+}

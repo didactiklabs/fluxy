@@ -6,5 +6,8 @@ terraform.tfstate
 terraform.tfstate.backup
 .terraform.lock.hcl
 
+# nix
+result*
+
 # secrets
 .env

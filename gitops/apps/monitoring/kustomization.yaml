@@ -1,0 +1,24 @@
+resources:
+  - upstream/
+  - grafana-ing.yaml
+  - grafana-netpol.yaml
+  - grafana-dashboards.yaml
+  - secrets.yaml
+patches:
+  - path: grafana-patch.yaml
+    target:
+      kind: Grafana
+      name: grafana
+  - path: prometheus-patch.yaml
+    target:
+      kind: Prometheus
+      name: k8s
+transformers:
+  - |-
+    apiVersion: builtin
+    kind: NamespaceTransformer
+    metadata:
+      name: notImportantHere
+      namespace: monitoring
+    unsetOnly: true
+    setRoleBindingSubjects: none
