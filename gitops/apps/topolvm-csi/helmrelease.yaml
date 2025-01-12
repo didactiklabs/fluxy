@@ -1,12 +1,3 @@
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: topolvm-csi
-  namespace: flux-system
-spec:
-  interval: 1h0m0s
-  url: https://topolvm.github.io/topolvm
----
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -17,7 +8,7 @@ spec:
   chart:
     spec:
       chart: topolvm
-      version: "15.1.1"
+      version: '15.1.1'
       sourceRef:
         kind: HelmRepository
         name: topolvm-csi
@@ -26,11 +17,11 @@ spec:
     controller:
       replicaCount: 1
     lvmd:
-      args: [ "--lvm-path", "/run/current-system/sw/bin/lvm" ]
+      args: ['--lvm-path', '/run/current-system/sw/bin/lvm']
       tolerations:
-        - key: "dedicated"
-          operator: "Equal"
-          effect: "NoSchedule"
+        - key: 'dedicated'
+          operator: 'Equal'
+          effect: 'NoSchedule'
       deviceClasses:
         - name: ssd-thin
           type: thin
@@ -38,21 +29,21 @@ spec:
           default: true
           spare-gb: 10
           thin-pool:
-            name: "pool0"
+            name: 'pool0'
             overprovision-ratio: 5.0
         - name: hdd-thin
           type: thin
           volume-group: hdd
           spare-gb: 10
           thin-pool:
-            name: "pool0"
+            name: 'pool0'
             overprovision-ratio: 5.0
     node:
-      args: [ "--lvm-path", "/run/current-system/sw/bin/lvm" ]
+      args: ['--lvm-path', '/run/current-system/sw/bin/lvm']
       tolerations:
-        - key: "dedicated"
-          operator: "Equal"
-          effect: "NoSchedule"
+        - key: 'dedicated'
+          operator: 'Equal'
+          effect: 'NoSchedule'
     storageClasses:
       - name: topolvm
         storageClass:
