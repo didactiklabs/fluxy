@@ -31,13 +31,6 @@ spec:
     serviceMonitor:
       main:
         enabled: true
-    service:
-      main:
-        ports:
-          metrics-api:
-            enabled: true
-          metrics-ms:
-            enabled: true
     immich:
       metrics:
         enable: true
@@ -75,14 +68,3 @@ spec:
       enabled: true
       env:
         TRANSFORMERS_CACHE: /cache
-      service:
-        main:
-          enabled: true
-          primary: true
-          type: ClusterIP
-          ports:
-            http:
-              enabled: true
-              primary: true
-              port: 3003
-              protocol: HTTP
