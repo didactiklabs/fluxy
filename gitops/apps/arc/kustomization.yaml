@@ -1,5 +1,7 @@
 namespace: arc
 resources:
-  - helm.yaml
+  - arc-helmrepo.yaml
+  - gha-controller-helmrelease.yaml
+  - gha-helmrelease.yaml
   - namespace.yaml
   - secrets.yaml
