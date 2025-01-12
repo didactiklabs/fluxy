@@ -29,6 +29,8 @@ spec:
     image:
       tag: v1.123.0
     immich:
+      metrics:
+        enable: true
       probes:
         liveness:
           spec:
