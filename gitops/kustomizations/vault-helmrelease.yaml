@@ -1,12 +1,3 @@
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: hashicorp
-  namespace: vault
-spec:
-  interval: 1h0m0s
-  url: https://helm.releases.hashicorp.com
----
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -17,7 +8,7 @@ spec:
   chart:
     spec:
       chart: vault
-      version: "0.28.0"
+      version: '0.28.0'
       sourceRef:
         kind: HelmRepository
         name: hashicorp
@@ -29,10 +20,10 @@ spec:
       dataStorage:
         enabled: true
         size: 10Gi
-        mountPath: "/vault/data"
+        mountPath: '/vault/data'
         accessMode: ReadWriteOnce
       standalone:
-        enabled: "-"
+        enabled: '-'
         config: |
           ui = true
           listener "tcp" {
@@ -54,16 +45,16 @@ spec:
         hosts:
           - host: vault.didactik.labs
             paths:
-            - /
+              - /
         tls:
-        - secretName: vault-tls
-          hosts:
-          - vault.didactik.labs
+          - secretName: vault-tls
+            hosts:
+              - vault.didactik.labs
     ui:
       enabled: true
       publishNotReadyAddresses: true
       activeVaultPodOnly: false
-      serviceType: "ClusterIP"
+      serviceType: 'ClusterIP'
       externalPort: 443
       targetPort: 8200
     injector:
