@@ -5,7 +5,7 @@ scms:
     spec:
       email: 'updatecli@didactiklabs.io'
       owner: 'didactiklabs'
-      repository: 'nixOS-server'
+      repository: 'fluxy'
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
       branch: 'main'
 sources:
