@@ -31,14 +31,14 @@ spec:
     serviceMonitor:
       main:
         enabled: true
+    service:
+      main:
+        ports:
+          metrics-api:
+            enabled: true
+          metrics-ms:
+            enabled: true
     immich:
-      service:
-        main:
-          ports:
-            metrics-api:
-              enabled: true
-            metrics-ms:
-              enabled: true
       metrics:
         enable: true
       probes:
