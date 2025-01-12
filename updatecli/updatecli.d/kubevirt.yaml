@@ -1,4 +1,4 @@
-name: grafana-operator Update
+name: kubevirt Update
 scms:
   default:
     kind: 'github'
@@ -16,12 +16,12 @@ sources:
     kind: json
     spec:
       file: npins/sources.json
-      key: pins.grafana-operator.version
-  grafana-operator:
+      key: pins.kubevirt.version
+  kubevirt:
     kind: githubrelease
     spec:
-      owner: 'grafana'
-      repository: 'grafana-operator'
+      owner: 'kubevirt'
+      repository: 'kubevirt'
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
       username: '{{ requiredEnv "GITHUB_ACTOR" }}'
       versionfilter:
@@ -36,10 +36,10 @@ conditions:
     spec:
       environments:
         - name: PATH
-      command: test "{{ source `grafana-operator` }}" !=
+      command: test "{{ source `kubevirt` }}" !=
 targets:
   default:
-    name: grafana-operator npins update {{ source `grafana-operator` }}
+    name: kubevirt npins update {{ source `kubevirt` }}
     kind: shell
     scmid: 'default'
     disablesourceinput: true
@@ -49,14 +49,14 @@ targets:
         - name: NIX_PATH
       command: |
         set -e
-        nix run nixpkgs#npins -- add --name grafana-operator github grafana-operator grafana-operator --at {{ source `grafana-operator` }}
-        nix-shell shell.nix --run "buildKubeProm"
+        nix run nixpkgs#npins -- add --name kubevirt github kubevirt kubevirt --at {{ source `kubevirt` }}
+        nix-shell shell.nix --run "buildKubevirt '{{ source `kubevirt` }}'"
 actions:
   default:
     kind: 'github/pullrequest'
     scmid: 'default'
     spec:
       automerge: false
-      description: 'Update grafana-operator npins.'
+      description: 'Update kubevirt npins.'
       draft: false
-      title: 'UPDATECLI: Update grafana-operator'
+      title: 'UPDATECLI: Update kubevirt'

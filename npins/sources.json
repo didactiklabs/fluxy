@@ -1,5 +1,20 @@
 {
   "pins": {
+    "containerized-data-importer": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "kubevirt",
+        "repo": "containerized-data-importer"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "version": "v1.59.0",
+      "revision": "15eda77073676a682aee000303089a4ae387bf82",
+      "url": "https://api.github.com/repos/kubevirt/containerized-data-importer/tarball/v1.59.0",
+      "hash": "04z53n0smqxrzgr28zkfy9vcnvkchb26kyyn7r8r86nq4fz50xsg"
+    },
     "grafana-operator": {
       "type": "GitRelease",
       "repository": {
@@ -27,6 +42,21 @@
       "url": "https://github.com/prometheus-operator/kube-prometheus/archive/16ba4827a699f7c6f74a1bc503d518e8c89dd6a8.tar.gz",
       "hash": "05nxbcx5ipwcavy1jn1z0isi2cdis33d2q1xn968chnqy4i43s95"
     },
+    "kubevirt": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "kubevirt",
+        "repo": "kubevirt"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "version": "v1.4.0",
+      "revision": "7695db18d87e826237b2b5756aaffdd784cc6a63",
+      "url": "https://api.github.com/repos/kubevirt/kubevirt/tarball/v1.4.0",
+      "hash": "0py8zknqyg7gmll4jd0yyq1zmlq19pnb1p4wxy0m8ivmyn1sxhhl"
+    },
     "kubevirt-monitoring": {
       "type": "Git",
       "repository": {
@@ -38,6 +68,12 @@
       "revision": "d53462199536c86d9dd428afff6c597a5908e0a2",
       "url": "https://github.com/kubevirt/monitoring/archive/d53462199536c86d9dd428afff6c597a5908e0a2.tar.gz",
       "hash": "1cxnwyzi82ahb4fmnykh15h95vvzl7ymx9sg3s1qq7aw8cqcg0l3"
+    },
+    "nixpkgs": {
+      "type": "Channel",
+      "name": "nixos-24.11",
+      "url": "https://releases.nixos.org/nixos/24.11/nixos-24.11.712909.1dab772dd4a6/nixexprs.tar.xz",
+      "hash": "0315192iph30ziqlf68vx86qxh9ibcyfz65acnvdqjiarky7mcd4"
     }
   },
   "version": 3

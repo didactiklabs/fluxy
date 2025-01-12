@@ -1,4 +1,4 @@
-name: grafana-operator Update
+name: cdi Update
 scms:
   default:
     kind: 'github'
@@ -16,12 +16,12 @@ sources:
     kind: json
     spec:
       file: npins/sources.json
-      key: pins.grafana-operator.version
-  grafana-operator:
+      key: pins.containerized-data-importer.version
+  cdi:
     kind: githubrelease
     spec:
-      owner: 'grafana'
-      repository: 'grafana-operator'
+      owner: 'kubevirt'
+      repository: 'containerized-data-importer'
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
       username: '{{ requiredEnv "GITHUB_ACTOR" }}'
       versionfilter:
@@ -36,10 +36,10 @@ conditions:
     spec:
       environments:
         - name: PATH
-      command: test "{{ source `grafana-operator` }}" !=
+      command: test "{{ source `cdi` }}" !=
 targets:
   default:
-    name: grafana-operator npins update {{ source `grafana-operator` }}
+    name: cdi npins update {{ source `cdi` }}
     kind: shell
     scmid: 'default'
     disablesourceinput: true
@@ -49,14 +49,14 @@ targets:
         - name: NIX_PATH
       command: |
         set -e
-        nix run nixpkgs#npins -- add --name grafana-operator github grafana-operator grafana-operator --at {{ source `grafana-operator` }}
-        nix-shell shell.nix --run "buildKubeProm"
+        nix run nixpkgs#npins -- add --name containerized-data-importer github kubevirt containerized-data-importer --at {{ source `cdi` }}
+        nix-shell shell.nix --run "buildCdi '{{ source `cdi` }}'"
 actions:
   default:
     kind: 'github/pullrequest'
     scmid: 'default'
     spec:
       automerge: false
-      description: 'Update grafana-operator npins.'
+      description: 'Update cdi npins.'
       draft: false
-      title: 'UPDATECLI: Update grafana-operator'
+      title: 'UPDATECLI: Update cdi'

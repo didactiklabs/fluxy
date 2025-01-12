@@ -43,9 +43,7 @@ targets:
       command: |
         set -e
         nix run nixpkgs#npins -- update kubevirt-monitoring
-        rm -rf gitops/apps/monitoring/upstream
-        mkdir -p gitops/apps/monitoring/upstream
-        cp -r --no-preserve=mode $(nix-build nix/kube-prometheus.nix)/* gitops/apps/monitoring/upstream/
+        nix-shell shell.nix --run "buildKubeProm"
 # Define action configurations if one needs to be created
 actions:
   default:
