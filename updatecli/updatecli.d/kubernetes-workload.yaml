@@ -32,4 +32,4 @@ actions:
       automerge: false
       description: 'Update kubernetes workload OCIs.'
       draft: false
-      title: 'UPDATECLI: Update kubernetes workload OCIs'
+      # title: 'UPDATECLI: Update kubernetes workload OCIs'
