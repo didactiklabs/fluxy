@@ -1,0 +1,63 @@
+name: grafana-operator Update
+scms:
+  default:
+    kind: 'github'
+    spec:
+      email: 'updatecli@didactiklabs.io'
+      owner: 'didactiklabs'
+      repository: 'nixOS-server'
+      token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+      branch: 'main'
+sources:
+  default:
+    name: Get value from json
+    # scmid: 'default'
+    kind: json
+    spec:
+      file: npins/sources.json
+      key: pins.grafana-operator.version
+  grafana-operator:
+    kind: githubrelease
+    spec:
+      owner: 'grafana'
+      repository: 'grafana-operator'
+      token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+      username: '{{ requiredEnv "GITHUB_ACTOR" }}'
+      versionfilter:
+        kind: semver
+        pattern: '*'
+conditions:
+  default:
+    name: Check if version is the same
+    sourceid: 'default'
+    scmid: 'default'
+    kind: shell
+    spec:
+      environments:
+        - name: PATH
+      command: test "{{ source `grafana-operator` }}" ==
+targets:
+  default:
+    name: grafana-operator npins update {{ source `grafana-operator` }}
+    kind: shell
+    scmid: 'default'
+    disablesourceinput: true
+    spec:
+      environments:
+        - name: PATH
+        - name: NIX_PATH
+      command: |
+        set -e
+        nix run nixpkgs#npins -- add --name grafana-operator-latest github grafana-operator grafana-operator --at {{ source `grafana-operator` }}
+        rm -rf gitops/apps/monitoring/upstream
+        mkdir -p gitops/apps/monitoring/upstream
+        cp -r --no-preserve=mode $(nix-build nix/kube-prometheus.nix)/* gitops/apps/monitoring/upstream/
+actions:
+  default:
+    kind: 'github/pullrequest'
+    scmid: 'default'
+    spec:
+      automerge: true
+      description: 'Update grafana-operator npins.'
+      draft: false
+      title: 'UPDATECLI: Update grafana-operator'

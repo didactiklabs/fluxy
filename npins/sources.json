@@ -38,12 +38,6 @@
       "revision": "d53462199536c86d9dd428afff6c597a5908e0a2",
       "url": "https://github.com/kubevirt/monitoring/archive/d53462199536c86d9dd428afff6c597a5908e0a2.tar.gz",
       "hash": "1cxnwyzi82ahb4fmnykh15h95vvzl7ymx9sg3s1qq7aw8cqcg0l3"
-    },
-    "nixpkgs": {
-      "type": "Channel",
-      "name": "nixpkgs-unstable",
-      "url": "https://releases.nixos.org/nixpkgs/nixpkgs-25.05pre735212.4bc9c909d9ac/nixexprs.tar.xz",
-      "hash": "14fkdpczgpbyzmh43czfny14w0vsh20klxcxj99j8iv2z4jlp52m"
     }
   },
   "version": 3
