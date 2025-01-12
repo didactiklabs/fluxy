@@ -33,6 +33,10 @@ spec:
       main:
         enabled: true
     immich:
+      serviceMonitor:
+        selector:
+          app.kubernetes.io/instance: immich
+          app.kubernetes.io/name: server
       service:
         ports:
           metrics-api:
@@ -73,5 +77,9 @@ spec:
           enabled: false
     machine-learning:
       enabled: true
+      serviceMonitor:
+        selector:
+          app.kubernetes.io/instance: immich
+          app.kubernetes.io/name: machine-learning
       env:
         TRANSFORMERS_CACHE: /cache
