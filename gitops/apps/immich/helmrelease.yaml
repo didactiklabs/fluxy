@@ -28,6 +28,9 @@ spec:
             name: immich-secrets
     image:
       tag: v1.123.0
+    serviceMonitor:
+      main:
+        enabled: true
     immich:
       metrics:
         enable: true
