@@ -8,6 +8,7 @@ scms:
       owner: 'didactiklabs'
       repository: 'fluxy'
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+      username: '{{ requiredEnv "GITHUB_ACTOR" }}'
       branch: 'main'
 # Defines how to get "source" information such as Jenkins version
 sources:
