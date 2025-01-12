@@ -1,5 +1,6 @@
 namespace: immich
 resources:
+  - cnpg.yaml
   - helmrelease.yaml
   - helmrepo.yaml
   - httproute.yaml
