@@ -20,7 +20,7 @@ pkgs.mkShell {
       #!/bin/bash
       rm -rf gitops/apps/monitoring/upstream
       mkdir -p gitops/apps/monitoring/upstream
-      cp -r $(nix-build nix/kube-prometheus.nix)/* gitops/apps/monitoring/upstream
+      cp -r --no-preserve=mode $(nix-build nix/kube-prometheus.nix)/* gitops/apps/monitoring/upstream/
     '')
   ];
 }

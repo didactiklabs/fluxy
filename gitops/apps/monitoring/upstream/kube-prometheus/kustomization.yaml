@@ -20,6 +20,7 @@ resources:
 - grafana-dashboardDefinitions.yaml
 - grafana-networkPolicy.yaml
 - grafana-prometheusRule.yaml
+- grafana-service.yaml
 - grafana-serviceMonitor.yaml
 - kubePrometheus-prometheusRule.yaml
 - kubeStateMetrics-clusterRole.yaml

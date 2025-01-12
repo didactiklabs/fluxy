@@ -4,6 +4,7 @@ metadata:
   name: k8s
 spec:
   replicas: 1
+  retentionSize: 80GiB
   storage:
     volumeClaimTemplate:
       spec:
