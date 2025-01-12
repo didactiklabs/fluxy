@@ -11,6 +11,7 @@ scms:
       branch: 'main'
 autodiscovery:
   scmid: default
+  actionid: default
   crawlers:
     flux:
       digest: true
