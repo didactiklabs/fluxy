@@ -1,11 +1,12 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: k8s-storage-volumes-cluster
+  name: Immich
 spec:
+  folder: Apps
   instanceSelector:
     matchLabels:
       dashboards: 'grafana'
   grafanaCom:
-    id: 11454
-    revision: 14
+    id: 22555
+    revision: 1
