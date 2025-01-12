@@ -21,7 +21,6 @@ spec:
       DB_USERNAME: 'immich'
       DB_DATABASE_NAME: 'immich'
       IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
-      IMMICH_TELEMETRY_INCLUDE: 'all'
       DB_PASSWORD:
         valueFrom:
           secretKeyRef:
@@ -29,20 +28,7 @@ spec:
             name: immich-secrets
     image:
       tag: v1.123.0
-    serviceMonitor:
-      main:
-        enabled: true
     immich:
-      serviceMonitor:
-        selector:
-          app.kubernetes.io/instance: immich
-          app.kubernetes.io/name: server
-      service:
-        ports:
-          metrics-api:
-            enabled: true
-          metrics-ms:
-            enabled: true
       metrics:
         enable: true
       probes:
@@ -77,9 +63,5 @@ spec:
           enabled: false
     machine-learning:
       enabled: true
-      serviceMonitor:
-        selector:
-          app.kubernetes.io/instance: immich
-          app.kubernetes.io/name: machine-learning
       env:
         TRANSFORMERS_CACHE: /cache
