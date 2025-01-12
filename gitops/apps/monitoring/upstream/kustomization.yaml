@@ -5,6 +5,7 @@ resources:
 - grafana-operator/overlays/cluster_scoped
 - kube-prometheus
 - kubeprom-dashboards.yaml
+- kube-component-svc.yaml
 - kubeprom-datasource.yaml
 - kubeprom-grafana.yaml
 patches:
@@ -16,7 +17,7 @@ patches:
     target:
       kind: NetworkPolicy
       name: prometheus-k8s
-  - path: kubeprom-service-monitor-patch.yaml
+  - path: kubeprom-service-patch.yaml
     target:
-      kind: ServiceMonitor
+      kind: Service
       name: grafana

@@ -17,6 +17,40 @@ let
       ${pkgs.yq-go}/bin/yq eval '.metadata.namespace' ${kubePrometheusSrc}/manifests/prometheus-service.yaml | tr -d '\n' > $out
     ''
   );
+  kubeComponentSvc = ''
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: kube-controller-manager
+      namespace: kube-system
+      labels:
+        app.kubernetes.io/name: kube-controller-manager
+        app.kubernetes.io/part-of: kube-prometheus
+    spec:
+      selector:
+        component: kube-controller-manager
+      ports:
+        - name: https-metrics
+          protocol: TCP
+          port: 443
+          targetPort: 10257
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: kube-scheduler
+      namespace: kube-system
+      labels:
+        app.kubernetes.io/name: kube-scheduler
+        app.kubernetes.io/part-of: kube-prometheus
+    spec:
+      ports:
+        - name: https-metrics
+          port: 443
+          targetPort: 10259 # Typically, the kube-scheduler listens on 10259 for HTTPS metrics
+      selector:
+        component: kube-scheduler
+  '';
   generateGrafana = ''
     apiVersion: grafana.integreatly.org/v1beta1
     kind: Grafana
@@ -31,10 +65,15 @@ let
         auth:
           disable_login_form: 'false'
   '';
-  generateServiceMonitorPatch = ''
+  generateServicePatch = ''
     - op: replace
-      path: /spec/selector/matchLabels
-      value: {"app": "grafana"}
+      path: /spec/selector
+      value:
+        app: grafana
+    - op: replace
+      path: /spec/ports/0/targetPort
+      value: grafana-http
+
   '';
   generateGrafanaNetpolPatch = ''
     - op: replace
@@ -189,7 +228,7 @@ pkgs.runCommand "kustomize-kube-prometheus"
     mkdir -p kube-prometheus/crds/
     cp $src/manifests/setup/*.yaml kube-prometheus/crds/
     shopt -s extglob
-    cp $src/manifests/!(grafana-config|grafana-dashboardDatasources|grafana-dashboardSources|grafana-deployment|grafana-service|grafana-serviceAccount).yaml ./kube-prometheus
+    cp $src/manifests/!(grafana-config|grafana-dashboardDatasources|grafana-dashboardSources|grafana-deployment|grafana-serviceAccount).yaml ./kube-prometheus
     cd kube-prometheus
     kustomize init
     kustomize edit add resource *.yaml
@@ -201,6 +240,11 @@ pkgs.runCommand "kustomize-kube-prometheus"
     echo "${kubePromDashboards}" > kubeprom-dashboards.yaml
     kustomize edit add resource kubeprom-dashboards.yaml
     cp kubeprom-dashboards.yaml $out/
+
+    ### ADD KUBE COMPONENTS SERVICES (CONTROLLER and SCHEDULER)
+    echo "${kubeComponentSvc}" > kube-component-svc.yaml
+    kustomize edit add resource kube-component-svc.yaml
+    cp kube-component-svc.yaml $out/
 
     ### ADD KUBE-PROMETHEUS AS DATASOURCE FOR GRAFANA OPERATOR
     echo "${generatePrometheusDatasource}" > kubeprom-datasource.yaml
@@ -215,10 +259,10 @@ pkgs.runCommand "kustomize-kube-prometheus"
     ### GRAFANA NETPOL PATCH
     echo "${generateGrafanaNetpolPatch}" > kubeprom-grafana-netpol-patch.yaml
     echo "${generateGrafanaPromNetpolPatch}" > kubeprom-grafana-prom-netpol-patch.yaml
-    echo "${generateServiceMonitorPatch}" > kubeprom-service-monitor-patch.yaml
+    echo "${generateServicePatch}" > kubeprom-service-patch.yaml
     cp kubeprom-grafana-netpol-patch.yaml $out/
     cp kubeprom-grafana-prom-netpol-patch.yaml $out/
-    cp kubeprom-service-monitor-patch.yaml $out/
+    cp kubeprom-service-patch.yaml $out/
     cat <<EOF >> kustomization.yaml
     patches:
       - path: kubeprom-grafana-netpol-patch.yaml
@@ -229,9 +273,9 @@ pkgs.runCommand "kustomize-kube-prometheus"
         target:
           kind: NetworkPolicy
           name: prometheus-k8s
-      - path: kubeprom-service-monitor-patch.yaml
+      - path: kubeprom-service-patch.yaml
         target:
-          kind: ServiceMonitor
+          kind: Service
           name: grafana
     EOF
 
