@@ -11,27 +11,9 @@ spec:
       owner: immich
       secret:
         name: immich-secrets
-      import:
-        type: monolith
-        databases:
-          - 'immich'
-        roles:
-          - 'immich'
-        source:
-          externalCluster: legacy-pg
   postgresql:
     shared_preload_libraries:
       - 'vectors.so'
   storage:
     size: 8Gi
-  externalClusters:
-    - name: legacy-pg
-      connectionParameters:
-        # Use the correct IP or host name for the source database
-        host: immich-postgresql.immich
-        user: immich
-        dbname: immich
-      password:
-        name: immich-secrets
-        key: password
 ---
