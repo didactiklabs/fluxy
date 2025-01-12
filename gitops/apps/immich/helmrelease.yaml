@@ -21,6 +21,7 @@ spec:
       DB_USERNAME: 'immich'
       DB_DATABASE_NAME: 'immich'
       IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
+      IMMICH_TELEMETRY_INCLUDE: 'all'
       DB_PASSWORD:
         valueFrom:
           secretKeyRef:
