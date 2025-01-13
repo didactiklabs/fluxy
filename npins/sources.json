@@ -1,5 +1,20 @@
 {
   "pins": {
+    "cert-manager": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "cert-manager",
+        "repo": "cert-manager"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "version": "v1.15.0",
+      "revision": "f80dba8aa73d1ba9c1a47c5d9e45907597d32183",
+      "url": "https://api.github.com/repos/cert-manager/cert-manager/tarball/v1.15.0",
+      "hash": "05pkjhkysszjzh3gvbbmxsir35l4004h9fz4rcmw3xnr87hhf49p"
+    },
     "containerized-data-importer": {
       "type": "GitRelease",
       "repository": {

@@ -1,11 +1,10 @@
 resources:
-- https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml
-- internal-issuer.yaml
-- cloudflare-acme-issuer.yaml
-
+  - upstream/
+  - internal-issuer.yaml
+  - cloudflare-acme-issuer.yaml
 patchesJson6902:
-- target:
-    version: v1
-    kind: Deployment
-    name: cert-manager
-  path: deploy-args-patch.yaml
+  - target:
+      version: v1
+      kind: Deployment
+      name: cert-manager
+    path: deploy-args-patch.yaml

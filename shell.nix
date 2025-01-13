@@ -36,5 +36,13 @@ pkgs.mkShell {
       kubevirtcdicrhash=$(nix-prefetch-url https://github.com/kubevirt/containerized-data-importer/releases/download/$1/cdi-cr.yaml)
       cp -r --no-preserve=mode $(nix-build nix/kubevirt-cdi.nix --argstr kubevirtCdiOperatorHash "$kubevirtcdioperatorhash" --argstr kubevirtCdiCrHash "$kubevirtcdicrhash" --argstr version $1)/* gitops/apps/cdi/upstream/
     '')
+    (pkgs.writeShellScriptBin "buildCertManager" ''
+      #!/bin/bash
+      set -e
+      rm -rf gitops/apps/cert-manager/upstream
+      mkdir -p gitops/apps/cert-manager/upstream
+      certmanagerhash=$(nix-prefetch-url https://github.com/cert-manager/cert-manager/releases/download/$1/cert-manager.yaml)
+      cp -r --no-preserve=mode $(nix-build nix/cert-manager.nix --argstr certManagerHash "$certmanagerhash" --argstr version $1)/* gitops/apps/cert-manager/upstream/
+    '')
   ];
 }
