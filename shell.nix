@@ -44,5 +44,13 @@ pkgs.mkShell {
       certmanagerhash=$(nix-prefetch-url https://github.com/cert-manager/cert-manager/releases/download/$1/cert-manager.yaml)
       cp -r --no-preserve=mode $(nix-build nix/cert-manager.nix --argstr certManagerHash "$certmanagerhash" --argstr version $1)/* gitops/apps/cert-manager/upstream/
     '')
+    (pkgs.writeShellScriptBin "buildCapi" ''
+      #!/bin/bash
+      set -e
+      rm -rf gitops/apps/cluster-api/upstream
+      mkdir -p gitops/apps/cluster-api/upstream
+      capihash=$(nix-prefetch-url https://github.com/kubernetes-sigs/cluster-api-operator/releases/download/$1/operator-components.yaml)
+      cp -r --no-preserve=mode $(nix-build nix/capi.nix --argstr manifest01Hash "$capihash" --argstr version $1)/* gitops/apps/cluster-api/upstream/
+    '')
   ];
 }

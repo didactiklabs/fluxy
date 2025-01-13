@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
-  path: ./gitops/apps/cluster-api/operator
+  path: ./gitops/apps/cluster-api/upstream
   prune: true
   sourceRef:
     kind: GitRepository

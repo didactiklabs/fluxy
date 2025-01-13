@@ -15,6 +15,21 @@
       "url": "https://api.github.com/repos/cert-manager/cert-manager/tarball/v1.16.2",
       "hash": "0yljfcqrwqgc8k81lwwy9zm3pmvxiq900k6lyaqdcw5mfsl28g0d"
     },
+    "cluster-api-operator": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "kubernetes-sigs",
+        "repo": "cluster-api-operator"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "version": "v0.14.0",
+      "revision": "9d17b0d63c52744cddffe327226d7681a37a6326",
+      "url": "https://api.github.com/repos/kubernetes-sigs/cluster-api-operator/tarball/v0.14.0",
+      "hash": "1rlcwkq71j890agj17108zgpigzsjgvi3fwpwbg0wciasmgjikdi"
+    },
     "containerized-data-importer": {
       "type": "GitRelease",
       "repository": {
