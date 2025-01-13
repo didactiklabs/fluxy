@@ -15,6 +15,21 @@
       "url": "https://api.github.com/repos/cert-manager/cert-manager/tarball/v1.16.2",
       "hash": "0yljfcqrwqgc8k81lwwy9zm3pmvxiq900k6lyaqdcw5mfsl28g0d"
     },
+    "cloudnative-pg": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "cloudnative-pg",
+        "repo": "cloudnative-pg"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "version": "v1.24.0",
+      "revision": "5fe5bb6b9292c73ebfc1463680b8863abbdb3de3",
+      "url": "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/tarball/v1.24.0",
+      "hash": "09drlz0sjjma0gbfxphlwh8lwkwibxqccjdwajpa4kqd9d92n5gw"
+    },
     "cluster-api-operator": {
       "type": "GitRelease",
       "repository": {

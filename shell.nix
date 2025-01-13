@@ -52,5 +52,14 @@ pkgs.mkShell {
       capihash=$(nix-prefetch-url https://github.com/kubernetes-sigs/cluster-api-operator/releases/download/$1/operator-components.yaml)
       cp -r --no-preserve=mode $(nix-build nix/capi.nix --argstr manifest01Hash "$capihash" --argstr version $1)/* gitops/apps/cluster-api/upstream/
     '')
+    (pkgs.writeShellScriptBin "buildCnpg" ''
+      #!/bin/bash
+      set -e
+      rm -rf gitops/apps/cnpg/upstream
+      mkdir -p gitops/apps/cnpg/upstream
+      strippedVersion=$(echo "$1" | sed 's/^v//')
+      cnpghash=$(nix-prefetch-url https://github.com/cloudnative-pg/cloudnative-pg/releases/download/$1/cnpg-$strippedVersion.yaml)
+      cp -r --no-preserve=mode $(nix-build nix/cnpg.nix --argstr manifest01Hash "$cnpghash" --argstr version $1)/* gitops/apps/cnpg/upstream/
+    '')
   ];
 }
