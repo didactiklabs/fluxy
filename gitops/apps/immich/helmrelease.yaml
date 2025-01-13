@@ -45,9 +45,6 @@ spec:
       persistence:
         library:
           existingClaim: immich-data
-    # Dependencies
-    postgresql:
-      enabled: false
     redis:
       enabled: true
       architecture: replication
