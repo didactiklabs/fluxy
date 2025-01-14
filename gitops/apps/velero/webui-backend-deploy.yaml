@@ -74,11 +74,6 @@ spec:
                 secretKeyRef:
                   name: velero-ui-keys
                   key: TOKEN_KEY
-            - name: SECURITY_REFRESH_TOKEN_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: velero-ui-keys
-                  key: REFRESH_TOKEN_KEY
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
