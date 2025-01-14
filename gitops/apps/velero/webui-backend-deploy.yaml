@@ -52,7 +52,7 @@ spec:
             - name: REPORT_CRONJOB_NAME
               value: "velero-ui-report"
             - name: VELERO_CLI_VERSION
-              value: "v1.14.0"
+              value: "v1.15.1"
             - name: API_RATE_LIMITER_L1
               value: "60:120"
             - name: API_ENABLE_DOCUMENTATION
