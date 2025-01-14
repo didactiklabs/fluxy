@@ -18,6 +18,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
+  timeout: 10m
   path: ./gitops/apps/kamaji/upstream
   prune: true
   sourceRef:
