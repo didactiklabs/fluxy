@@ -76,5 +76,12 @@ pkgs.mkShell {
       hash=$(nix-prefetch-url https://github.com/kubernetes-sigs/gateway-api/releases/download/$1/experimental-install.yaml)
       cp -r --no-preserve=mode $(nix-build nix/gatewayapi.nix --argstr manifest01Hash "$hash" --argstr version $1)/* gitops/apps/istio-gateway-api/upstream/
     '')
+    (pkgs.writeShellScriptBin "buildKamaji" ''
+      #!/bin/bash
+      set -e
+      rm -rf gitops/apps/kamaji/upstream
+      mkdir -p gitops/apps/kamaji/upstream
+      cp -r --no-preserve=mode $(nix-build nix/kamaji.nix)/* gitops/apps/kamaji/upstream/
+    '')
   ];
 }

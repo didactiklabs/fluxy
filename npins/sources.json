@@ -105,6 +105,21 @@
       "url": "https://api.github.com/repos/kubernetes/ingress-nginx/tarball/controller-v1.10.1",
       "hash": "1b1dzs6ri0dp8kd9yi96sxsz2gklr08mjpng6vvbm8amvgf4lch4"
     },
+    "kamaji": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "clastix",
+        "repo": "kamaji"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "version": "edge-24.12.1",
+      "revision": "9171f46c6072a82867d7ae564150b69aec4e5768",
+      "url": "https://api.github.com/repos/clastix/kamaji/tarball/edge-24.12.1",
+      "hash": "1kidjrmcn0x4aa5fmncx71l21wjjcv6n3shg2lyik0fk859w7j0q"
+    },
     "kube-prometheus": {
       "type": "Git",
       "repository": {
