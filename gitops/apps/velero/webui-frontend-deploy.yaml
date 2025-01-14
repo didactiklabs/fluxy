@@ -27,6 +27,8 @@ spec:
               value: "https://velero.didactik.labs/api"
             - name: NEXT_PUBLIC_VELERO_API_WS
               value: "ws://velero.didactik.labs/ws"
+            - name: NEXT_PUBLIC_LOGGER_ENABLED
+              value: "true"
           ports:
             - name: http
               containerPort: 3000
