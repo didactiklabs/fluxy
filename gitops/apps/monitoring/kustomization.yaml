@@ -5,6 +5,10 @@ resources:
   - grafana-dashboards.yaml
   - secrets.yaml
 patches:
+  - path: grafana-controller-patch.yaml
+    target:
+      kind: Deployment
+      name: grafana-operator-controller-manager
   - path: grafana-patch.yaml
     target:
       kind: Grafana
