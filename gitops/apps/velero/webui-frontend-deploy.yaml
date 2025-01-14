@@ -16,19 +16,23 @@ spec:
     spec:
       containers:
         - name: webserver
-          image: docker.io/dserio83/velero-ui:0.1.19
+          image: docker.io/dserio83/velero-ui:0.1.14
           imagePullPolicy: Always
           env:
+            - name: KUBERNETES_CLUSTER_DOMAIN
+              value: "cluster.local"
             - name: NEXT_PUBLIC_REFRESH_DATATABLE_AFTER
               value: "1500"
             - name: NEXT_PUBLIC_REFRESH_RECENT
               value: "5000"
-            - name: NEXT_PUBLIC_VELERO_API_URL
+            - name: NEXT_PUBLIC_VELERO_API_NAME_1
+              value: "webui-backend"
+            - name: NEXT_PUBLIC_VELERO_API_URL_1
               value: "https://velero.didactik.labs/api"
-            - name: NEXT_PUBLIC_VELERO_API_WS
+            - name: NEXT_PUBLIC_VELERO_API_WS_1
               value: "ws://velero.didactik.labs/ws"
             - name: NEXT_PUBLIC_LOGGER_ENABLED
-              value: "true"
+              value: "false"
           ports:
             - name: http
               containerPort: 3000
