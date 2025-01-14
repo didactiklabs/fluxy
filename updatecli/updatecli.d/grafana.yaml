@@ -27,6 +27,8 @@ sources:
       versionfilter:
         kind: semver
         pattern: '*'
+    transformers:
+      - trimprefix: 'v'
 conditions:
   default:
     name: Check if version is the same
@@ -36,7 +38,7 @@ conditions:
     spec:
       environments:
         - name: PATH
-      command: test "{{ source `grafana` }}" !=
+      command: test "v{{ source `grafana` }}" !=
 targets:
   default:
     scmid: 'default'
