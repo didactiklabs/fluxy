@@ -1,0 +1,62 @@
+name: ingress-nginx Update
+scms:
+  default:
+    kind: 'github'
+    spec:
+      email: 'updatecli@didactiklabs.io'
+      owner: 'didactiklabs'
+      repository: 'fluxy'
+      token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+      username: '{{ requiredEnv "GITHUB_ACTOR" }}'
+      branch: 'main'
+sources:
+  default:
+    name: Get value from json
+    # scmid: 'default'
+    kind: json
+    spec:
+      file: npins/sources.json
+      key: pins.ingress-nginx.version
+  ingress-nginx:
+    kind: githubrelease
+    spec:
+      owner: 'kubernetes'
+      repository: 'ingress-nginx'
+      token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+      username: '{{ requiredEnv "GITHUB_ACTOR" }}'
+      versionfilter:
+        kind: regex
+        pattern: "controller-v(\\d*).(\\d*).(\\d*)$"
+conditions:
+  default:
+    name: Check if version is the same
+    sourceid: 'default'
+    scmid: 'default'
+    kind: shell
+    spec:
+      environments:
+        - name: PATH
+      command: test "{{ source `ingress-nginx` }}" !=
+targets:
+  default:
+    name: ingress-nginx npins update {{ source `ingress-nginx` }}
+    kind: shell
+    scmid: 'default'
+    disablesourceinput: true
+    spec:
+      environments:
+        - name: PATH
+        - name: NIX_PATH
+      command: |
+        set -e
+        nix run nixpkgs#npins -- add --name ingress-nginx github kubernetes ingress-nginx --at {{ source `ingress-nginx` }}
+        nix-shell shell.nix --run "buildIngressNginx"
+actions:
+  default:
+    kind: 'github/pullrequest'
+    scmid: 'default'
+    spec:
+      automerge: false
+      description: 'Update ingress-nginx npins.'
+      draft: false
+      title: 'UPDATECLI: Update ingress-nginx'

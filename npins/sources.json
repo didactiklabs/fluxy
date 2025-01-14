@@ -75,6 +75,21 @@
       "url": "https://api.github.com/repos/grafana/grafana-operator/tarball/v5.15.1",
       "hash": "11w7xxgdq152v5wbl0ih3541ddy2j872870ybqcx1d2kcnyahrx6"
     },
+    "ingress-nginx": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "kubernetes",
+        "repo": "ingress-nginx"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "version": "controller-v1.10.1",
+      "revision": "51847ac1b537c547cdb7bfb06d14e6d3d8476a73",
+      "url": "https://api.github.com/repos/kubernetes/ingress-nginx/tarball/controller-v1.10.1",
+      "hash": "1b1dzs6ri0dp8kd9yi96sxsz2gklr08mjpng6vvbm8amvgf4lch4"
+    },
     "kube-prometheus": {
       "type": "Git",
       "repository": {
