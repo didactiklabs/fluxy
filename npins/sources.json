@@ -60,6 +60,21 @@
       "url": "https://api.github.com/repos/kubevirt/containerized-data-importer/tarball/v1.61.0",
       "hash": "1ppsacmj2qyckz4lnpfswp1m9h0jc6knkrizzj4qi8d2rlcp4xb2"
     },
+    "gateway-api": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "kubernetes-sigs",
+        "repo": "gateway-api"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "version": "v1.1.0",
+      "revision": "690f754646e8326128fd686e3e46117ac479cfdf",
+      "url": "https://api.github.com/repos/kubernetes-sigs/gateway-api/tarball/v1.1.0",
+      "hash": "1llbcq78b58x84q6ym7m2kp4jbb34qbhf8yvygckj3186g193dx7"
+    },
     "grafana-operator": {
       "type": "GitRelease",
       "repository": {

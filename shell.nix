@@ -68,5 +68,13 @@ pkgs.mkShell {
       mkdir -p gitops/apps/ingress-controller/upstream
       cp -r --no-preserve=mode $(nix-build nix/ingress-nginx.nix)/* gitops/apps/ingress-controller/upstream/
     '')
+    (pkgs.writeShellScriptBin "buildGatewayApi" ''
+      #!/bin/bash
+      set -e
+      rm -rf gitops/apps/istio-gateway-api/upstream
+      mkdir -p gitops/apps/istio-gateway-api/upstream
+      hash=$(nix-prefetch-url https://github.com/kubernetes-sigs/gateway-api/releases/download/$1/experimental-install.yaml)
+      cp -r --no-preserve=mode $(nix-build nix/gatewayapi.nix --argstr manifest01Hash "$hash" --argstr version $1)/* gitops/apps/istio-gateway-api/upstream/
+    '')
   ];
 }
