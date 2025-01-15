@@ -5,5 +5,5 @@ resources:
 - db-deploy.yaml
 - db-svc.yaml
 - authentik-secrets.yaml
-- apps-protect-ing.yaml
+# - apps-protect-ing.yaml
 - httproute.yaml
