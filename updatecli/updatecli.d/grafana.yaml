@@ -12,11 +12,11 @@ scms:
 sources:
   default:
     scmid: 'default'
-    name: grafana image tag
+    name: get grafana image tag
     kind: yaml
     spec:
-      file: 'gitops/apps/grafana/helmrelease.yaml'
-      key: 'spec.values.image.tag'
+      file: 'gitops/apps/monitoring/grafana-patch.yaml'
+      key: '$.spec.version'
   grafana:
     kind: githubrelease
     spec:
@@ -38,7 +38,7 @@ conditions:
     spec:
       environments:
         - name: PATH
-      command: test "v{{ source `grafana` }}" !=
+      command: test "{{ source `grafana` }}" !=
 targets:
   default:
     scmid: 'default'
@@ -47,7 +47,7 @@ targets:
     disablesourceinput: true
     spec:
       file: 'gitops/apps/monitoring/grafana-patch.yaml'
-      key: 'spec.version'
+      key: '$.spec.version'
       value: '{{ source `grafana` }}'
 actions:
   default:

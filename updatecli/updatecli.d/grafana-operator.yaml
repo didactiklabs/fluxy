@@ -57,9 +57,10 @@ targets:
     kind: yaml
     disablesourceinput: true
     spec:
-      file: 'gitops/apps/monitoring/grafana-controller-patch.yaml'
-      key: '[0].value'
-      value: 'ghcr.io/grafana/grafana-operator:{{ source `grafana-operator` }}'
+      engine: yamlpath
+      file: 'gitops/apps/monitoring/kustomization.yaml'
+      key: '$.images[?(@.name == "ghcr.io/grafana/grafana-operator")].newTag'
+      value: '{{ source `grafana-operator` }}'
 actions:
   default:
     kind: 'github/pullrequest'

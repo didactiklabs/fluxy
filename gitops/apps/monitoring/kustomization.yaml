@@ -4,11 +4,10 @@ resources:
   - grafana-netpol.yaml
   - grafana-dashboards.yaml
   - secrets.yaml
+images:
+  - name: ghcr.io/grafana/grafana-operator
+    newTag: 'v5.15.1'
 patches:
-  - path: grafana-controller-patch.yaml
-    target:
-      kind: Deployment
-      name: grafana-operator-controller-manager
   - path: grafana-patch.yaml
     target:
       kind: Grafana
