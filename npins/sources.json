@@ -128,9 +128,9 @@
         "repo": "kube-prometheus"
       },
       "branch": "main",
-      "revision": "16ba4827a699f7c6f74a1bc503d518e8c89dd6a8",
-      "url": "https://github.com/prometheus-operator/kube-prometheus/archive/16ba4827a699f7c6f74a1bc503d518e8c89dd6a8.tar.gz",
-      "hash": "05nxbcx5ipwcavy1jn1z0isi2cdis33d2q1xn968chnqy4i43s95"
+      "revision": "8e16c980bf74e26709484677181e6f94808a45a3",
+      "url": "https://github.com/prometheus-operator/kube-prometheus/archive/8e16c980bf74e26709484677181e6f94808a45a3.tar.gz",
+      "hash": "01q8f8cixddz6j7445db7zsvkcm46ag5s8bfa42di250nzi0hcxf"
     },
     "kubevirt": {
       "type": "GitRelease",
