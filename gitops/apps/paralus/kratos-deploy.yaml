@@ -24,9 +24,6 @@ spec:
       labels:
         app.kubernetes.io/name: kratos
         app.kubernetes.io/instance: paralus
-      annotations:
-        checksum/kratos-config: ecf3929f074bd6d6ae2daa23f3a288fab233832e15390a1cfd29ad4460d34eaf
-        checksum/kratos-templates: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
     spec:
       initContainers:
         - name: create-file

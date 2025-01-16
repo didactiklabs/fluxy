@@ -73,6 +73,7 @@ metadata:
   name: ztka
   annotations:
     cert-manager.io/cluster-issuer: root-didactiklabs
+    external-dns.alpha.kubernetes.io/ingress-hostname-source: 'annotation-only'
   labels:
     app.kubernetes.io/part-of: paralus
     app.kubernetes.io/component: networking

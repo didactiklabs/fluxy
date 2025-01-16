@@ -20,6 +20,7 @@ autodiscovery:
         - path: 'gitops/apps/monitoring/upstream/*/*/*'
         - path: 'gitops/apps/monitoring/upstream/*/*'
         - path: 'gitops/apps/monitoring/upstream/*'
+        - path: 'gitops/apps/paralus/*'
       digest: false
       versionfilter:
         kind: semver

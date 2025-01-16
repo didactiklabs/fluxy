@@ -15,8 +15,6 @@ spec:
       app.kubernetes.io/instance: paralus
   template:
     metadata:
-      annotations:
-        checksum/config: c8ab218008f957accbf6eec4528c32b1a9e0ec0f84b3f42ae5f492a648bbf396
       labels:
         app.kubernetes.io/part-of: paralus
         app.kubernetes.io/name: paralus
