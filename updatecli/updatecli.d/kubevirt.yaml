@@ -12,7 +12,7 @@ scms:
 sources:
   default:
     name: Get value from json
-    # scmid: 'default'
+    scmid: 'default'
     kind: json
     spec:
       file: npins/sources.json

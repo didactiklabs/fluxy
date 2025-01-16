@@ -1,6 +1,20 @@
 namespace: paralus
 resources:
   - namespace.yaml
-  - bundle.yaml
   - secrets.yaml
   - cnpg.yaml
+  - dashboard-deploy.yaml
+  - kratos-cm-2.yaml
+  - kratos-cm.yaml
+  - kratos-courrier-sts.yaml
+  - kratos-deploy.yaml
+  - kratos-hook-cm.yaml
+  - paralus-cm.yaml
+  - paralus-deploy.yaml
+  - prompt-cm.yaml
+  - prompt-deploy.yaml
+  - relay-server-cm.yaml
+  - relay-server-deploy.yaml
+  - sa.yaml
+  - svc.yaml
+  - ingress.yaml

@@ -1,0 +1,104 @@
+# Source: ztka/templates/ingress-console.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: console
+  annotations:
+    cert-manager.io/cluster-issuer: root-didactiklabs
+  labels:
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/component: networking
+spec:
+  rules:
+    - host: 'console.paralus.didactik.labs'
+      http:
+        paths:
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: paralus
+                port:
+                  number: 11000
+          - path: /event
+            pathType: Prefix
+            backend:
+              service:
+                name: paralus
+                port:
+                  number: 11000
+          - path: /infra
+            pathType: Prefix
+            backend:
+              service:
+                name: paralus
+                port:
+                  number: 11000
+          - path: /v2/sentry
+            pathType: Prefix
+            backend:
+              service:
+                name: paralus
+                port:
+                  number: 11000
+          - path: /v2/debug/prompt
+            pathType: Prefix
+            backend:
+              service:
+                name: prompt
+                port:
+                  number: 7009
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
+          - path: /self-service
+            pathType: Prefix
+            backend:
+              service:
+                name: paralus-kratos-public
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - 'console.paralus.didactik.labs'
+      secretName: console-paralus-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ztka
+  annotations:
+    cert-manager.io/cluster-issuer: root-didactiklabs
+  labels:
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/component: networking
+spec:
+  rules:
+    - host: '*.core-connector.paralus.didactik.labs'
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: relay-server
+                port:
+                  number: 443
+    - host: '*.user.paralus.didactik.labs'
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: relay-server
+                port:
+                  number: 443
+  tls:
+    - hosts:
+        - '*.core-connector.paralus.didactik.labs'
+      secretName: core-connector-paralus-tls

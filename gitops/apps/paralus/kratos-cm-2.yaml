@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kratos-config
+  labels:
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/name: kratos-config
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: configuration
+data:
+  serve_public_base_url: http://console.paralus.didactik.labs
+  default_browser_return_url: http://console.paralus.didactik.labs
+  selfservice_flows_settings_ui_url: http://console.paralus.didactik.labs/ksettings
+  selfservice_flows_recovery_ui_url: http://console.paralus.didactik.labs/ksettings
+  selfservice_flows_registration_ui_url: http://console.paralus.didactik.labs/registeroidc
+  selfservice_flows_error_ui_url: http://console.paralus.didactik.labs/error-page

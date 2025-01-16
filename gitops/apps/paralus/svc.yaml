@@ -1,0 +1,148 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: paralus-kratos-admin
+  labels:
+    app.kubernetes.io/component: admin
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/instance: paralus
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http-admin
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/instance: paralus
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paralus-kratos-public
+  namespace: default
+  labels:
+    app.kubernetes.io/component: public
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/instance: paralus
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http-public
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/instance: paralus
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paralus-kratos-courier
+  namespace: default
+  labels:
+    app.kubernetes.io/component: courier
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/instance: paralus
+  annotations:
+spec:
+  clusterIP: None
+  ports:
+    - port: 80
+      targetPort: http-public
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: paralus-kratos-courier
+    app.kubernetes.io/instance: paralus
+---
+# Source: ztka/templates/service-dashboard.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard
+  labels:
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/name: dashboard
+    app.kubernetes.io/instance: paralus
+spec:
+  type: ClusterIP
+  ports:
+    - name: nginx
+      protocol: TCP
+      port: 80
+      targetPort: nginx
+  selector:
+    app.kubernetes.io/name: dashboard
+    app.kubernetes.io/instance: paralus
+---
+# Source: ztka/templates/service-paralus.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: paralus
+  labels:
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/name: paralus
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: networking
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      port: 11000
+      targetPort: http
+    - name: rpc
+      protocol: TCP
+      port: 10000
+      targetPort: rpc
+    - name: relay-peering
+      protocol: TCP
+      port: 10001
+      targetPort: relay-peering
+  selector:
+    app.kubernetes.io/name: paralus
+    app.kubernetes.io/instance: paralus
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prompt
+  labels:
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/name: prompt
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: networking
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      port: 7009
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: prompt
+    app.kubernetes.io/instance: paralus
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: relay-server
+  labels:
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/name: relay
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: networking
+spec:
+  type: ClusterIP
+  ports:
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: https
+  selector:
+    app.kubernetes.io/name: relay
+    app.kubernetes.io/instance: paralus

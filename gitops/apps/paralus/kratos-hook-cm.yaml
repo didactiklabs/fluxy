@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kratos-config-hooks
+  labels:
+    app.kubernetes.io/component: kratos
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/name: kratos-config-hooks
+    app.kubernetes.io/instance: paralus
+data:
+  kratos-config-hooks.yaml: |
+    selfservice:
+      methods:
+        password:
+          enabled: true
+      flows:
+        login:
+          after:
+            password:
+              hooks:
+                - hook: web_hook
+                  config:
+                    url: http://paralus:11000/auth/v3/user/auditlog
+                    body: file:///etc/kratos/body.jsonnet
+                    method: POST

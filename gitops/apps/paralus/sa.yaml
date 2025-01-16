@@ -1,0 +1,20 @@
+# Source: ztka/charts/kratos/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: paralus-kratos
+  namespace: default
+  labels:
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: ztka/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: paralus-ztka
+  labels:
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/component: rbac
+---

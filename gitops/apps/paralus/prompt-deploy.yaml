@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prompt
+  labels:
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/name: prompt
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: workload
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prompt
+      app.kubernetes.io/instance: paralus
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/part-of: paralus
+        app.kubernetes.io/name: prompt
+        app.kubernetes.io/instance: paralus
+        app.kubernetes.io/component: workload
+    spec:
+      serviceAccountName: paralus-ztka
+      securityContext: {}
+      volumes:
+        - name: kubectl
+          emptyDir: {}
+        - name: audit-logs
+          emptyDir: {}
+      initContainers:
+        - name: install-kubectl
+          image: busybox:latest
+          volumeMounts:
+            - name: kubectl
+              mountPath: /data
+          command: ['sh', '-c', 'wget -q "https://dl.k8s.io/release/$(wget -qO- https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" -O /data/kubectl && chmod +x /data/kubectl']
+      containers:
+        - name: prompt-tail
+          securityContext: {}
+          image: 'busybox:latest'
+          command: ['sh', '-c', 'tail -F /audit-logs/audit.log 2>/tmp/tail-err']
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: audit-logs
+              mountPath: /audit-logs
+        - name: ztka
+          securityContext: {}
+          image: 'paralusio/prompt:v0.1.3'
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: prompt-config
+            - secretRef:
+                name: paralus-secrets
+          ports:
+            - name: http
+              containerPort: 7009
+          volumeMounts:
+            - name: kubectl
+              subPath: kubectl
+              mountPath: /usr/local/bin/kubectl
+            - name: audit-logs
+              mountPath: /audit-logs
+          resources: {}

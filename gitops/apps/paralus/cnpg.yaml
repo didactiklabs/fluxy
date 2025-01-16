@@ -9,7 +9,7 @@ spec:
       database: paralus
       owner: paralus
       secret:
-        name: paralus-postgres
+        name: paralus-secrets
   storage:
     size: 8Gi
 ---

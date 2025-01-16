@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paralus
+  labels:
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/name: paralus
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: workload
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: paralus
+      app.kubernetes.io/instance: paralus
+  template:
+    metadata:
+      annotations:
+        checksum/config: c8ab218008f957accbf6eec4528c32b1a9e0ec0f84b3f42ae5f492a648bbf396
+      labels:
+        app.kubernetes.io/part-of: paralus
+        app.kubernetes.io/name: paralus
+        app.kubernetes.io/instance: paralus
+        app.kubernetes.io/component: workload
+    spec:
+      serviceAccountName: paralus-ztka
+      securityContext: {}
+      volumes:
+        - name: audit-logs
+          emptyDir: {}
+      initContainers:
+        - name: kratos-automigrate
+          image: 'paralusio/paralus-init:v0.2.8'
+          command: ['kratos']
+          args: ['migrate', 'sql', '-e', '--yes']
+          env:
+            - name: DSN
+              valueFrom:
+                secretKeyRef:
+                  name: paralus-secrets
+                  key: DSN
+          imagePullPolicy: IfNotPresent
+        - name: migrate-admindb
+          image: 'paralusio/paralus-init:v0.2.8'
+          command: ['migrate']
+          args: ['-path=/data/migrations/admindb', '-database', '$(DSN)', 'up']
+          env:
+            - name: DSN
+              valueFrom:
+                secretKeyRef:
+                  name: paralus-secrets
+                  key: DSN
+          imagePullPolicy: IfNotPresent
+        - name: initialize
+          image: 'paralusio/paralus-init:v0.2.8'
+          command: ['paralus-init']
+          args: ['-partner', 'Paralus', '-partner-desc', 'Default Partner', '-partner-host', 'paralus.didactik.labs', '-org', 'DidactikLabs', '-org-desc', 'DidactikLabs Org', '-admin-email', 'admin@didactik.labs', '-admin-first-name', 'Admin', '-admin-last-name', 'DidactikLabs']
+          envFrom:
+            - configMapRef:
+                name: paralus-config
+            - secretRef:
+                name: paralus-secrets
+          imagePullPolicy: IfNotPresent
+      containers:
+        - name: paralus-tail
+          securityContext: {}
+          image: 'busybox:latest'
+          command: ['sh', '-c', 'tail -F /audit-logs/audit.log 2>/tmp/tail-err']
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: audit-logs
+              mountPath: /audit-logs
+        - name: paralus
+          securityContext: {}
+          image: 'paralusio/paralus:v0.2.8'
+          command: ['./paralus']
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: audit-logs
+              mountPath: /audit-logs
+          envFrom:
+            - configMapRef:
+                name: paralus-config
+            - secretRef:
+                name: paralus-secrets
+          ports:
+            - name: http
+              containerPort: 11000
+            - name: rpc
+              containerPort: 10000
+            - name: relay-peering
+              containerPort: 10001
+          resources: {}
+---

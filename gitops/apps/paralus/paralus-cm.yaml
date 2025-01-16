@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: paralus-config
+  labels:
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/name: paralus
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: configuration
+data:
+  DEV: 'false'
+  AUDIT_LOG_FILE: '/audit-logs/audit.log'
+  AUDIT_LOG_STORAGE: 'database'
+  ES_INDEX_PREFIX: 'ralog-system'
+  RELAY_AUDITS_ES_INDEX_PREFIX: 'ralog-relay'
+  RELAY_COMMANDS_ES_INDEX_PREFIX: 'ralog-prompt'
+  ES_END_POINT: ''
+  KRATOS_ADDR: 'http://paralus-kratos-admin'
+  KRATOS_PUB_ADDR: 'http://paralus-kratos-public'
+  RELAY_IMAGE: paralusio/relay:v0.1.8
+  SCHEDULER_NAMESPACE: 'default'
+  SENTRY_PEERING_HOST: 'paralus:10001'
+  CORE_RELAY_CONNECTOR_HOST: '*.core-connector.paralus.didactik.labs:443'
+  CORE_RELAY_USER_HOST: '*.user.paralus.didactik.labs:443'
+  SENTRY_BOOTSTRAP_ADDR: 'console.paralus.didactik.labs:80'

@@ -1,0 +1,204 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paralus-kratos
+  namespace: default
+  labels:
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/instance: paralus
+  annotations:
+spec:
+  progressDeadlineSeconds: 3600
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 30%
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kratos
+      app.kubernetes.io/instance: paralus
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kratos
+        app.kubernetes.io/instance: paralus
+      annotations:
+        checksum/kratos-config: ecf3929f074bd6d6ae2daa23f3a288fab233832e15390a1cfd29ad4460d34eaf
+        checksum/kratos-templates: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+    spec:
+      initContainers:
+        - name: create-file
+          image: 'busybox:latest'
+          command: ['sh', '-c', 'touch /etc/kratos/providers.yaml']
+          volumeMounts:
+            - name: other-configs
+              mountPath: /etc/kratos
+        - name: create-login-hook-jsonnetfile
+          image: 'busybox:latest'
+          command: ['sh', '-c', 'echo "function(ctx) { user_id: ctx.identity.id }" > /etc/kratos/body.jsonnet']
+          volumeMounts:
+            - name: other-configs
+              mountPath: /etc/kratos
+      volumes:
+        - emptyDir: {}
+          name: other-configs
+        - configMap:
+            defaultMode: 420
+            name: kratos-config-hooks
+          name: kratos-config-hooks
+        - name: kratos-config-volume
+          configMap:
+            name: paralus-kratos-config
+      automountServiceAccountToken: true
+      serviceAccountName: paralus-kratos
+      containers:
+        - name: kratos
+          image: oryd/kratos:v0.11.1
+          imagePullPolicy: IfNotPresent
+          command:
+            - kratos
+          args:
+            - serve
+            - all
+            - --config
+            - /etc/config/kratos.yaml
+            - --config
+            - /etc/kratos/providers.yaml
+            - --config
+            - /etc/kratos/hooks/kratos-config-hooks.yaml
+          volumeMounts:
+            - mountPath: /etc/kratos
+              name: other-configs
+            - mountPath: /etc/kratos/hooks/kratos-config-hooks.yaml
+              name: kratos-config-hooks
+              subPath: kratos-config-hooks.yaml
+            - name: kratos-config-volume
+              mountPath: /etc/config
+              readOnly: true
+          env:
+            - name: DSN
+              valueFrom:
+                secretKeyRef:
+                  name: paralus-secrets
+                  key: DSN
+            - name: SECRETS_DEFAULT
+              valueFrom:
+                secretKeyRef:
+                  name: paralus-secrets
+                  key: secretsDefault
+                  optional: true
+            - name: SECRETS_COOKIE
+              valueFrom:
+                secretKeyRef:
+                  name: paralus-secrets
+                  key: secretsCookie
+                  optional: true
+            - name: SECRETS_CIPHER
+              valueFrom:
+                secretKeyRef:
+                  name: paralus-secrets
+                  key: secretsCipher
+                  optional: true
+            - name: COURIER_SMTP_CONNECTION_URI
+              valueFrom:
+                secretKeyRef:
+                  name: paralus-secrets
+                  key: smtpConnectionURI
+            - name: SERVE_PUBLIC_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: serve_public_base_url
+                  name: kratos-config
+            - name: SELFSERVICE_DEFAULT_BROWSER_RETURN_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: default_browser_return_url
+                  name: kratos-config
+            - name: SELFSERVICE_ALLOWED_RETURN_URLS
+              valueFrom:
+                configMapKeyRef:
+                  key: default_browser_return_url
+                  name: kratos-config
+            - name: SELFSERVICE_FLOWS_SETTINGS_UI_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: selfservice_flows_settings_ui_url
+                  name: kratos-config
+            - name: SELFSERVICE_FLOWS_RECOVERY_UI_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: selfservice_flows_recovery_ui_url
+                  name: kratos-config
+            - name: SELFSERVICE_FLOWS_REGISTRATION_UI_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: selfservice_flows_registration_ui_url
+                  name: kratos-config
+            - name: SELFSERVICE_FLOWS_ERROR_UI_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: selfservice_flows_error_ui_url
+                  name: kratos-config
+          ports:
+            - name: http-admin
+              containerPort: 4434
+              protocol: TCP
+            - name: http-public
+              containerPort: 4433
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /admin/health/ready
+              port: 4434
+              httpHeaders:
+                - name: Host
+                  value: '127.0.0.1'
+            failureThreshold: 5
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /admin/health/ready
+              port: 4434
+              httpHeaders:
+                - name: Host
+                  value: '127.0.0.1'
+            failureThreshold: 5
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              path: /admin/health/ready
+              port: 4434
+              httpHeaders:
+                - name: Host
+                  value: '127.0.0.1'
+            failureThreshold: 60
+            periodSeconds: 1
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 100
+        - name: synchronizer
+          image: 'paralusio/kratos-synchronizer:v0.2.8'
+          volumeMounts:
+            - name: other-configs
+              mountPath: /etc/kratos
+          env:
+            - name: DSN
+              valueFrom:
+                secretKeyRef:
+                  name: paralus-secrets
+                  key: DSN
+            - name: KRATOS_PROVIDER_CFG
+              value: '/etc/kratos/providers.yaml'

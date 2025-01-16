@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prompt-config
+  labels:
+    app.kubernetes.io/part-of: paralus
+    app.kubernetes.io/name: prompt
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/component: configuration
+data:
+  DEV: 'false'
+  AUDIT_LOG_FILE: '/audit-logs/audit.log'
+  SENTRY_ADDR: paralus:10000
+  KRATOS_ADDR: 'http://paralus-kratos-admin'
+  KRATOS_PUB_ADDR: 'http://paralus-kratos-public'
