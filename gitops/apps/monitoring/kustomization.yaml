@@ -1,8 +1,10 @@
 resources:
   - upstream/
+  - grafana-alerts/
+  - grafana-dashboards/
+  - grafana-folder.yaml
   - grafana-ing.yaml
   - grafana-netpol.yaml
-  - grafana-dashboards.yaml
   - secrets.yaml
 images:
   - name: ghcr.io/grafana/grafana-operator

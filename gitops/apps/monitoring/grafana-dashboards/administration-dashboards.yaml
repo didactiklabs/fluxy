@@ -3,7 +3,7 @@ kind: GrafanaDashboard
 metadata:
   name: node-exporter
 spec:
-  folder: Administration
+  folder: administration
   instanceSelector:
     matchLabels:
       dashboards: 'grafana'
@@ -16,7 +16,7 @@ kind: GrafanaDashboard
 metadata:
   name: cluster-overview
 spec:
-  folder: Administration
+  folder: administration
   instanceSelector:
     matchLabels:
       dashboards: 'grafana'
