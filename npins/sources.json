@@ -10,10 +10,10 @@
       "pre_releases": false,
       "version_upper_bound": null,
       "release_prefix": null,
-      "version": "v1.16.2",
-      "revision": "55e3aacec7b5a5831f04a9efb3eaf5745f5ce691",
-      "url": "https://api.github.com/repos/cert-manager/cert-manager/tarball/v1.16.2",
-      "hash": "0yljfcqrwqgc8k81lwwy9zm3pmvxiq900k6lyaqdcw5mfsl28g0d"
+      "version": "v1.16.3",
+      "revision": "c536a23b3ab5dc65e0fdebf02603e5f9053cc1ff",
+      "url": "https://api.github.com/repos/cert-manager/cert-manager/tarball/v1.16.3",
+      "hash": "1qyar5wskv4zqrlbjfklxgr1hywzd4vqk3hrrslxv5i9rkppm1kf"
     },
     "cloudnative-pg": {
       "type": "GitRelease",
