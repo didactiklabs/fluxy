@@ -17,6 +17,12 @@ let
       ${pkgs.yq-go}/bin/yq eval '.metadata.namespace' ${kubePrometheusSrc}/manifests/prometheus-service.yaml | tr -d '\n' > $out
     ''
   );
+  alertmanagerSvcName = builtins.readFile (
+    pkgs.runCommand "get-alertmanager-service-name" { } ''
+      ${pkgs.yq-go}/bin/yq eval '.metadata.name' ${kubePrometheusSrc}/manifests/alertmanager-service.yaml | tr -d '\n' > $out
+    ''
+  );
+
   kubeComponentSvc = ''
     apiVersion: v1
     kind: Service
@@ -141,6 +147,26 @@ let
         jsonData:
           'tlsSkipVerify': true
           'timeInterval': '5s'
+    ---
+    apiVersion: grafana.integreatly.org/v1beta1
+    kind: GrafanaDatasource
+    metadata:
+      name: alertmanager
+    spec:
+      instanceSelector:
+        matchLabels:
+          dashboards: 'grafana'
+      resyncPeriod: 1m
+      datasource:
+        name: alertmanager
+        type: alertmanager
+        access: proxy
+        url: 'http://${alertmanagerSvcName}.${prometheusNamespace}.svc:9093'
+        jsonData:
+          implementation: prometheus
+          'tlsSkipVerify': true
+          'timeInterval': '5s'
+        isDefault: true
   '';
   # The function to generate the GrafanaDashboard YAML from the configMap name
   generateGrafanaDashboard = configMapName: ''

@@ -1,3 +1,1 @@
-resources:
-  - kubernetes-alertrulegroup.yaml
-  - security-alertrulegroup.yaml
+resources: []
