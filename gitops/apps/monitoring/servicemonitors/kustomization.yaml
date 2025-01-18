@@ -4,7 +4,7 @@ resources:
   - notificationcontroller.yaml
   - sourcecontroller.yaml
   - topolvm.yaml
-  - ingress-nginx.yaml
+  # - ingress-contour.yaml
   - istio-gateway.yaml
   - cert-manager.yaml
   - servicemonitors-rbacs.yaml

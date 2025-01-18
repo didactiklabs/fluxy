@@ -61,12 +61,12 @@ pkgs.mkShell {
       cnpghash=$(nix-prefetch-url https://github.com/cloudnative-pg/cloudnative-pg/releases/download/$1/cnpg-$strippedVersion.yaml)
       cp -r --no-preserve=mode $(nix-build nix/cnpg.nix --argstr manifest01Hash "$cnpghash" --argstr version $1)/* gitops/apps/cnpg/upstream/
     '')
-    (pkgs.writeShellScriptBin "buildIngressNginx" ''
+    (pkgs.writeShellScriptBin "buildIngressContour" ''
       #!/bin/bash
       set -e
       rm -rf gitops/apps/ingress-controller/upstream
       mkdir -p gitops/apps/ingress-controller/upstream
-      cp -r --no-preserve=mode $(nix-build nix/ingress-nginx.nix)/* gitops/apps/ingress-controller/upstream/
+      cp -r --no-preserve=mode $(nix-build nix/ingress-contour.nix)/* gitops/apps/ingress-controller/upstream/
     '')
     (pkgs.writeShellScriptBin "buildGatewayApi" ''
       #!/bin/bash

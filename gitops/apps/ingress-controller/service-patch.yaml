@@ -1,8 +1,0 @@
-- op: replace
-  path: "/spec/type"
-  value: LoadBalancer
-
-- op: add
-  path: "/metadata/annotations"
-  value:
-    "io.cilium/lb-ipam-ips": "10.254.128.2"
