@@ -48,6 +48,8 @@ spec:
     redis:
       enabled: true
       architecture: replication
+      replica:
+        resourcesPreset: 'micro'
     # Immich components
     server:
       enabled: true
