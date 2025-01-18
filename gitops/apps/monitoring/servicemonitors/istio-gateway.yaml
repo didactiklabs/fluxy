@@ -1,0 +1,85 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istiod
+spec:
+  namespaceSelector:
+    matchNames:
+      - istio-system
+  selector:
+    matchLabels:
+      app: istiod
+  endpoints:
+    - port: http-monitoring
+      interval: 30s
+      path: /metrics
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istio-public
+spec:
+  namespaceSelector:
+    matchNames:
+      - istio-system
+  selector:
+    matchLabels:
+      gateway.networking.k8s.io/gateway-name: public
+  endpoints:
+    - port: http-envoy-prom
+      interval: 30s
+      path: /stats/prometheus
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    gateway.networking.k8s.io/gateway-name: public
+  name: istio-public-service
+  namespace: istio-system
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: http-envoy-prom
+      port: 15090
+      targetPort: http-envoy-prom
+  selector:
+    gateway.networking.k8s.io/gateway-name: public
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istio-ztunnel
+spec:
+  namespaceSelector:
+    matchNames:
+      - istio-system
+  selector:
+    matchLabels:
+      app: ztunnel
+  endpoints:
+    - port: ztunnel-stats
+      interval: 30s
+      path: /metrics
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ztunnel
+  name: istio-ztunnel
+  namespace: istio-system
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: ztunnel-stats
+      port: 15020
+      targetPort: ztunnel-stats
+  selector:
+    app: ztunnel

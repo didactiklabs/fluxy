@@ -5,4 +5,5 @@ resources:
   - sourcecontroller.yaml
   - topolvm.yaml
   - ingress-nginx.yaml
+  - istio-gateway.yaml
   - servicemonitors-rbacs.yaml
