@@ -47,6 +47,9 @@ spec:
   grafanaCom:
     id: 21396
     revision: 2
+  datasources:
+    - datasourceName: prometheus
+      inputName: 'DS_DEVELOPERS'
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard

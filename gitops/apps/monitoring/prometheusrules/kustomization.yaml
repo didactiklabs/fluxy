@@ -1,3 +1,4 @@
 resources:
   - fluxcd.yaml
   - cert-manager.yaml
+  - ingress-contour.yaml
