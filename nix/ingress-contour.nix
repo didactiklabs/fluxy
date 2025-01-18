@@ -4,9 +4,9 @@
 let
   # inherit (pkgs) lib;
   sources = import ../npins;
-  manifest01 = sources.ingress-nginx;
+  manifest01 = sources.contour;
 in
-pkgs.runCommand "ingress-nginx"
+pkgs.runCommand "ingress-contour"
   {
     nativeBuildInputs = [
       pkgs.kustomize
@@ -16,8 +16,8 @@ pkgs.runCommand "ingress-nginx"
     set -e
     mkdir -p $out/
     kustomize init
-    cp ${manifest01}/deploy/static/provider/baremetal/deploy.yaml ./deploy.yaml
+    cp ${manifest01}/examples/contour/*.yaml ./
     kustomize edit add resource *.yaml
-    cp ${manifest01}/deploy/static/provider/baremetal/deploy.yaml $out/deploy.yaml
+    cp ${manifest01}/examples/contour/*.yaml $out/
     cp kustomization.yaml $out/
   ''

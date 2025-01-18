@@ -1,4 +1,4 @@
-name: ingress-nginx Update
+name: ingress-contour Update
 scms:
   default:
     kind: 'github'
@@ -16,12 +16,12 @@ sources:
     kind: json
     spec:
       file: npins/sources.json
-      key: pins.ingress-nginx.version
-  ingress-nginx:
+      key: pins.ingress-contour.version
+  ingress-contour:
     kind: githubrelease
     spec:
       owner: 'kubernetes'
-      repository: 'ingress-nginx'
+      repository: 'ingress-contour'
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
       username: '{{ requiredEnv "GITHUB_ACTOR" }}'
       versionfilter:
@@ -36,10 +36,10 @@ conditions:
     spec:
       environments:
         - name: PATH
-      command: test "{{ source `ingress-nginx` }}" !=
+      command: test "{{ source `ingress-contour` }}" !=
 targets:
   default:
-    name: ingress-nginx npins update {{ source `ingress-nginx` }}
+    name: ingress-contour npins update {{ source `ingress-contour` }}
     kind: shell
     scmid: 'default'
     disablesourceinput: true
@@ -49,14 +49,14 @@ targets:
         - name: NIX_PATH
       command: |
         set -e
-        nix run nixpkgs#npins -- add --name ingress-nginx github kubernetes ingress-nginx --at {{ source `ingress-nginx` }}
-        nix-shell shell.nix --run "buildIngressNginx"
+        nix run nixpkgs#npins -- add --name ingress-contour github kubernetes ingress-contour --at {{ source `ingress-contour` }}
+        nix-shell shell.nix --run "buildIngressContour"
 actions:
   default:
     kind: 'github/pullrequest'
     scmid: 'default'
     spec:
       automerge: false
-      description: 'Update ingress-nginx npins.'
+      description: 'Update ingress-contour npins.'
       draft: false
-      title: 'UPDATECLI: Update ingress-nginx'
+      title: 'UPDATECLI: Update ingress-contour'
