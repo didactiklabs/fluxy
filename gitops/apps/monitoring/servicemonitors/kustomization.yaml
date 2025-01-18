@@ -3,4 +3,5 @@ resources:
   - kustomizecontroller.yaml
   - notificationcontroller.yaml
   - sourcecontroller.yaml
+  - topolvm.yaml
   - servicemonitors-rbacs.yaml
