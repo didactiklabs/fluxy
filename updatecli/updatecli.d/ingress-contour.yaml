@@ -17,7 +17,7 @@ sources:
     spec:
       file: npins/sources.json
       key: pins.contour.version
-  ingress-contour:
+  contour:
     kind: githubrelease
     spec:
       owner: 'projectcontour'
@@ -39,7 +39,7 @@ conditions:
       command: test "{{ source `contour` }}" !=
 targets:
   default:
-    name: ingress-contour npins update {{ source `contour` }}
+    name: contour npins update {{ source `contour` }}
     kind: shell
     scmid: 'default'
     disablesourceinput: true
