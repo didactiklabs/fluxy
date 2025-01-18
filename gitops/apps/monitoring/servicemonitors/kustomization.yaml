@@ -4,4 +4,5 @@ resources:
   - notificationcontroller.yaml
   - sourcecontroller.yaml
   - topolvm.yaml
+  - ingress-nginx.yaml
   - servicemonitors-rbacs.yaml
