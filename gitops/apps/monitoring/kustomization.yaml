@@ -2,6 +2,10 @@ resources:
   - upstream/
   - grafana-alerts/
   - grafana-dashboards/
+  - servicemonitors/
+  - prometheusrules/
+  - kubestatemetrics-cm.yaml
+  - kubestatemetrics-rbacs.yaml
   - grafana-folder.yaml
   - grafana-contactpoints.yaml
   - grafana-notificationpolicies.yaml
@@ -13,6 +17,10 @@ images:
   - name: ghcr.io/grafana/grafana-operator
     newTag: 'v5.16.0'
 patches:
+  - path: kubestatemetrics-patch.yaml
+    target:
+      kind: Deployment
+      name: kube-state-metrics
   - path: grafana-patch.yaml
     target:
       kind: Grafana

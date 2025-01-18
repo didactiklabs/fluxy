@@ -1,0 +1,6 @@
+resources:
+  - helmcontroller.yaml
+  - kustomizecontroller.yaml
+  - notificationcontroller.yaml
+  - sourcecontroller.yaml
+  - servicemonitors-rbacs.yaml
