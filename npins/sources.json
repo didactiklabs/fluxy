@@ -63,15 +63,16 @@
     "contour": {
       "type": "GitRelease",
       "repository": {
-        "type": "Git",
-        "url": "https://github.com/projectcontour/contour"
+        "type": "GitHub",
+        "owner": "projectcontour",
+        "repo": "contour"
       },
       "pre_releases": false,
       "version_upper_bound": null,
       "release_prefix": null,
       "version": "v1.30.1",
       "revision": "746010170e2770f6ceb7d37acc7bdfe26034334f",
-      "url": null,
+      "url": "https://api.github.com/repos/projectcontour/contour/tarball/v1.30.1",
       "hash": "1cwndzqv2vl8188gy886v8dmz7ryikiwz52gllvgb0y5gpj1w1pl"
     },
     "gateway-api": {
