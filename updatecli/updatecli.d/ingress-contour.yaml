@@ -16,17 +16,17 @@ sources:
     kind: json
     spec:
       file: npins/sources.json
-      key: pins.ingress-contour.version
+      key: pins.contour.version
   ingress-contour:
     kind: githubrelease
     spec:
-      owner: 'kubernetes'
-      repository: 'ingress-contour'
+      owner: 'projectcontour'
+      repository: 'contour'
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
       username: '{{ requiredEnv "GITHUB_ACTOR" }}'
       versionfilter:
-        kind: regex
-        pattern: "controller-v(\\d*).(\\d*).(\\d*)$"
+        kind: semver
+        pattern: '*'
 conditions:
   default:
     name: Check if version is the same
@@ -36,10 +36,10 @@ conditions:
     spec:
       environments:
         - name: PATH
-      command: test "{{ source `ingress-contour` }}" !=
+      command: test "{{ source `contour` }}" !=
 targets:
   default:
-    name: ingress-contour npins update {{ source `ingress-contour` }}
+    name: ingress-contour npins update {{ source `contour` }}
     kind: shell
     scmid: 'default'
     disablesourceinput: true
@@ -49,7 +49,7 @@ targets:
         - name: NIX_PATH
       command: |
         set -e
-        nix run nixpkgs#npins -- add --name ingress-contour github projectcontour contour --at {{ source `contour` }}
+        nix run nixpkgs#npins -- add --name contour github projectcontour contour --at {{ source `contour` }}
         nix-shell shell.nix --run "buildIngressContour"
 actions:
   default:
