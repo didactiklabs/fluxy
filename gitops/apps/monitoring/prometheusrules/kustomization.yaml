@@ -1,2 +1,3 @@
 resources:
   - fluxcd.yaml
+  - cert-manager.yaml

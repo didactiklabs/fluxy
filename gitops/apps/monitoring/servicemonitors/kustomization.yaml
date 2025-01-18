@@ -6,4 +6,5 @@ resources:
   - topolvm.yaml
   - ingress-nginx.yaml
   - istio-gateway.yaml
+  - cert-manager.yaml
   - servicemonitors-rbacs.yaml
