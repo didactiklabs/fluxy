@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 1m
   path: ./gitops/apps/atuin
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: infra
