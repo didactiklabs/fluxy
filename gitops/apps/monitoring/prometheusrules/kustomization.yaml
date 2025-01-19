@@ -5,3 +5,4 @@ resources:
   - coredns.yaml
   - istio-gateway.yaml
   - velero.yaml
+  - blackbox-exporter.yaml

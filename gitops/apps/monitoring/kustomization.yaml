@@ -4,6 +4,7 @@ resources:
   - grafana-dashboards/
   - servicemonitors/
   - prometheusrules/
+  - probes/
   - kubestatemetrics-cm.yaml
   - kubestatemetrics-rbacs.yaml
   - grafana-folder.yaml
@@ -33,6 +34,10 @@ patches:
     target:
       kind: Alertmanager
       name: main
+  - path: blackbox-exporter-cm-patch.yaml
+    target:
+      kind: ConfigMap
+      name: blackbox-exporter-configuration
 transformers:
   - |-
     apiVersion: builtin
