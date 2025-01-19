@@ -73,4 +73,9 @@ spec:
   instanceSelector:
     matchLabels:
       dashboards: 'grafana'
-  url: https://raw.githubusercontent.com/monitoring-mixins/website/refs/heads/master/assets/coredns/dashboards/coredns.json
+  grafanaCom:
+    id: 14981
+    revision: 2
+  datasources:
+    - datasourceName: prometheus
+      inputName: 'DS_PROMETHEUS'
