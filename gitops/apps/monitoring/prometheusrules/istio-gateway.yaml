@@ -1,0 +1,56 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: istio-alerts
+  namespace: monitoring
+spec:
+  groups:
+    - name: latency-alerts
+      rules:
+        - alert: IstioIngressHighLatency
+          expr: |
+            histogram_quantile(
+              0.99,
+              sum(
+                rate(
+                  istio_request_duration_milliseconds_bucket{
+                    reporter=~"source",
+                    connection_security_policy!="mutual_tls",
+                    destination_workload=~".*",
+                    destination_workload_namespace=~".*",
+                    source_workload=~".*",
+                    source_workload_namespace=~".*"
+                  }[5m]
+                )
+              ) by (destination_workload, destination_workload_namespace, le)
+            ) > 500
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: 'High latency detected.'
+            description: |
+              The 99th percentile latency for requests to destination workload
+              {{ $labels.destination_workload }} in namespace
+              {{ $labels.destination_workload_namespace }} has exceeded 500ms.
+    - name: error-alerts
+      rules:
+        - alert: IstioHigh5xxErrorRate
+          expr: |
+            sum(rate(istio_requests_total{
+              response_code=~"5.*",
+              reporter="source",
+              connection_security_policy!="mutual_tls",
+              destination_workload=~".*",
+              destination_workload_namespace=~".*",
+              source_workload=~".*",
+              source_workload_namespace=~".*"
+            }[5m])) by (destination_workload, destination_workload_namespace) > 2
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: 'High 5xx error rate detected'
+            description: |
+              The rate of 5xx errors for destination workload {{ $labels.destination_workload }}
+              in namespace {{ $labels.destination_workload_namespace }} has exceeded 2 errors per seconds in the last 5 minutes.

@@ -3,3 +3,4 @@ resources:
   - cert-manager.yaml
   - ingress-contour.yaml
   - coredns.yaml
+  - istio-gateway.yaml
