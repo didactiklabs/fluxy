@@ -7,4 +7,5 @@ resources:
   - ingress-contour.yaml
   - istio-gateway.yaml
   - cert-manager.yaml
+  - velero.yaml
   - servicemonitors-rbacs.yaml

@@ -4,3 +4,4 @@ resources:
   - ingress-contour.yaml
   - coredns.yaml
   - istio-gateway.yaml
+  - velero.yaml
