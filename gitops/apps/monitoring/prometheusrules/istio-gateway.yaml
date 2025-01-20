@@ -20,11 +20,11 @@ spec:
                     destination_workload_namespace=~".*",
                     source_workload=~".*",
                     source_workload_namespace=~".*"
-                  }[5m]
+                  }[10m]
                 )
               ) by (destination_workload, destination_workload_namespace, le)
             ) > 500
-          for: 10m
+          for: 5m
           labels:
             severity: warning
           annotations:
