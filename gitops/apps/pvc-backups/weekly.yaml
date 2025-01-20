@@ -1,14 +1,14 @@
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
-  name: powerdns-data
+  name: weekly
   namespace: velero
 spec:
-  schedule: 0 12 * * *
+  schedule: 0 12 */7 * *
   template:
     includedNamespaces:
-      - powerdns
+      - immich
     includedResources:
       - pvc
     snapshotMoveData: true
-    ttl: 160h0m0s
+    ttl: 730h0m0s
