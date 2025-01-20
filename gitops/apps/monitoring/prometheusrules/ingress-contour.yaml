@@ -32,10 +32,20 @@ spec:
         - alert: ContourIngressLatencyHigh
           expr: |
             histogram_quantile(0.99, sum(rate(envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name=~".*"}[5m])) by (le, envoy_cluster_name)) > 500
-          for: 5m
+          for: 10m
           labels:
             severity: warning
           annotations:
             summary: 'High latency detected for Contour ingress ({{ $labels.envoy_cluster_name }})'
             description: |
               Contour ingress is experiencing high latency (99th percentile > 500ms) over the last 5 minutes.
+        - alert: ContourIngressLatencyVeryHigh
+          expr: |
+            histogram_quantile(0.90, sum(rate(envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name=~".*"}[5m])) by (le, envoy_cluster_name)) > 500
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: 'High latency detected for Contour ingress ({{ $labels.envoy_cluster_name }})'
+            description: |
+              Contour ingress is experiencing high latency (90th percentile > 500ms) over the last 5 minutes.
