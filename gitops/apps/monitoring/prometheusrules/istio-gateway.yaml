@@ -20,7 +20,7 @@ spec:
                     destination_workload_namespace=~".*",
                     source_workload=~".*",
                     source_workload_namespace=~".*"
-                  }[10m]
+                  }[5m]
                 )
               ) by (destination_workload, destination_workload_namespace, le)
             ) > 500
