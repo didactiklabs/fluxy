@@ -1,0 +1,15 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: casdoor
+spec:
+  parentRefs:
+    - name: public
+      namespace: istio-system
+      sectionName: https
+  hostnames:
+    - door.didactiklabs.io
+  rules:
+    - backendRefs:
+        - name: casdoor
+          port: 8000

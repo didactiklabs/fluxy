@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: casdoor
+  labels:
+    app.kubernetes.io/name: casdoor
+    app.kubernetes.io/instance: casdoor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: casdoor
+      app.kubernetes.io/instance: casdoor
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: casdoor
+        app.kubernetes.io/instance: casdoor
+    spec:
+      serviceAccountName: casdoor
+      containers:
+        - name: casdoor-helm-charts
+          image: 'casbin/casdoor:v1.811.0'
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: RUNNING_IN_DOCKER
+              value: 'true'
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+            - name: config-volume
+              mountPath: /conf
+            - mountPath: /init_data.json
+              name: casdoor-init-data-volume
+              subPath: init_data.json
+      volumes:
+        - name: config-volume
+          projected:
+            defaultMode: 420
+            sources:
+              - secret:
+                  name: casdoor-secrets
+                  items:
+                    - key: app.conf
+                      path: app.conf
+        - configMap:
+            name: casdoor-init-data
+          name: casdoor-init-data-volume

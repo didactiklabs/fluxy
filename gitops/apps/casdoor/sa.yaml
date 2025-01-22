@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: casdoor
+  labels:
+    app.kubernetes.io/name: casdoor
+    app.kubernetes.io/instance: casdoor

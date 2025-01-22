@@ -1,0 +1,10 @@
+namespace: casdoor
+resources:
+  - namespace.yaml
+  - cm.yaml
+  - cnpg.yaml
+  - deploy.yaml
+  - sa.yaml
+  - svc.yaml
+  - secrets.yaml
+  - httproute.yaml

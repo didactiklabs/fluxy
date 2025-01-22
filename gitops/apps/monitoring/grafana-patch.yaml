@@ -18,19 +18,19 @@ spec:
       admin_password: admin
     auth.generic_oauth:
       enabled: 'true'
-      name: 'Authentik SSO'
+      name: 'Casdoor SSO'
       allow_sign_up: 'true'
       client_id: ${AUTH_CLIENT_ID}
       client_secret: ${AUTH_CLIENT_SECRET}
-      scopes: 'openid email profile offline_access roles'
+      scopes: 'openid email profile offline_access'
       email_attribute_path: email
       login_attribute_path: username
       name_attribute_path: full_name
       groups_attribute_path: groups
-      auth_url: 'https://auth.didactiklabs.io/application/o/authorize/'
-      token_url: 'https://auth.didactiklabs.io/application/o/token/'
-      api_url: 'https://auth.didactiklabs.io/application/o/userinfo/'
-      role_attribute_path: "contains(groups, 'authentik Admins') && 'Admin' || 'Viewer'"
+      auth_url: 'https://door.didactiklabs.io/login/oauth/authorize'
+      token_url: 'https://door.didactiklabs.io/api/login/oauth/access_token'
+      api_url: 'https://door.didactiklabs.io/api/userinfo'
+      role_attribute_path: "contains(groups, 'Admins') && 'Admin' || 'Viewer'"
   deployment:
     spec:
       template:
