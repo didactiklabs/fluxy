@@ -23,7 +23,7 @@ spec:
                   }[5m]
                 )
               ) by (destination_workload, destination_workload_namespace, le)
-            ) > 500
+            ) > 1000
           for: 10m
           labels:
             severity: warning
@@ -32,7 +32,7 @@ spec:
             description: |
               The 99th percentile latency for requests to destination workload
               {{ $labels.destination_workload }} in namespace
-              {{ $labels.destination_workload_namespace }} has exceeded 500ms.
+              {{ $labels.destination_workload_namespace }} has exceeded 1000ms.
     - name: critical-latency-alerts
       rules:
         - alert: IstioIngressVeryHighLatency
@@ -51,7 +51,7 @@ spec:
                   }[5m]
                 )
               ) by (destination_workload, destination_workload_namespace, le)
-            ) > 500
+            ) > 1000
           for: 5m
           labels:
             severity: critical
@@ -60,7 +60,7 @@ spec:
             description: |
               The 90th percentile latency for requests to destination workload
               {{ $labels.destination_workload }} in namespace
-              {{ $labels.destination_workload_namespace }} has exceeded 500ms.
+              {{ $labels.destination_workload_namespace }} has exceeded 1000ms.
     - name: error-alerts
       rules:
         - alert: IstioHigh5xxErrorRate
