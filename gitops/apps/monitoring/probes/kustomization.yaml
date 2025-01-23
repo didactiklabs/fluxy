@@ -3,3 +3,4 @@ resources:
   - gatewayapi.yaml
   - ingress.yaml
   - ingress-rbacs.yaml
+  - rootca-cm.yaml

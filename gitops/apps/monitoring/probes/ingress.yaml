@@ -15,3 +15,7 @@ spec:
       selector:
         matchLabels:
           probe: enabled
+  tlsConfig:
+    ca:
+      secret: rootca
+      keySecret: ca.crt
