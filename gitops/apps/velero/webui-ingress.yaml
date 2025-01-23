@@ -4,33 +4,35 @@ metadata:
   name: velero-ui
   annotations:
     cert-manager.io/cluster-issuer: root-didactiklabs
+  labels:
+    probe: enabled
 spec:
   rules:
-  - host: "velero.didactik.labs"
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: webui-frontend
-            port:
-              number: 80
-      - path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: webui-backend
-            port:
-              number: 80
-      - path: /ws
-        pathType: Prefix
-        backend:
-          service:
-            name: webui-backend
-            port:
-              number: 80
+    - host: 'velero.didactik.labs'
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: webui-frontend
+                port:
+                  number: 80
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: webui-backend
+                port:
+                  number: 80
+          - path: /ws
+            pathType: Prefix
+            backend:
+              service:
+                name: webui-backend
+                port:
+                  number: 80
   tls:
-  - hosts:
-    - "velero.didactik.labs"
-    secretName: velero-ui-tls
+    - hosts:
+        - 'velero.didactik.labs'
+      secretName: velero-ui-tls

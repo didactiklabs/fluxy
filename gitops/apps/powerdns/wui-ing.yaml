@@ -4,19 +4,21 @@ metadata:
   name: powerdns
   annotations:
     cert-manager.io/cluster-issuer: root-didactiklabs
+  labels:
+    probe: enabled
 spec:
   rules:
-  - host: "dns.didactik.labs"
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: powerdns-wui
-            port:
-              number: 80
+    - host: 'dns.didactik.labs'
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: powerdns-wui
+                port:
+                  number: 80
   tls:
-  - hosts:
-    - "dns.didactik.labs"
-    secretName: pdns-admin-tls
+    - hosts:
+        - 'dns.didactik.labs'
+      secretName: pdns-admin-tls

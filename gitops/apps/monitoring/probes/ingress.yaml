@@ -12,3 +12,6 @@ spec:
     ingress:
       namespaceSelector:
         any: true
+      selector:
+        matchLabels:
+          probe: enabled

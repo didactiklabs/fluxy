@@ -41,6 +41,8 @@ spec:
         enabled: true
         annotations:
           cert-manager.io/cluster-issuer: root-didactiklabs
+        labels:
+          probe: enabled
         pathType: Prefix
         hosts:
           - host: vault.didactik.labs

@@ -4,19 +4,21 @@ metadata:
   name: minio-frieren
   annotations:
     cert-manager.io/cluster-issuer: root-didactiklabs
+  labels:
+    probe: enabled
 spec:
   rules:
-  - host: "minio.frieren.didactik.labs"
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: minio-frieren
-            port:
-              number: 9001
+    - host: 'minio.frieren.didactik.labs'
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: minio-frieren
+                port:
+                  number: 9001
   tls:
-  - hosts:
-    - "minio.frieren.didactik.labs"
-    secretName: minio-frieren-tls
+    - hosts:
+        - 'minio.frieren.didactik.labs'
+      secretName: minio-frieren-tls
