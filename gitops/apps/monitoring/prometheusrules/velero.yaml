@@ -26,7 +26,7 @@ spec:
           annotations:
             message: Velero schedule {{ $labels.schedule }} has not produced a backup in the last 24 hours.
           expr: |-
-            time() - max_over_time(velero_backup_last_successful_timestamp{schedule!=""}[1d]) > 90000
+            time() - max_over_time(velero_backup_last_successful_timestamp{schedule!=""}[1d]) > 100000
             unless velero_backup_last_successful_timestamp{schedule="immich-data"}
           for: 15m
           labels:
