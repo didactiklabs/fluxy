@@ -17,5 +17,5 @@ spec:
           probe: enabled
   tlsConfig:
     ca:
-      secret: rootca
-      keySecret: ca.crt
+      name: rootca
+      key: ca.crt
