@@ -1,2 +1,4 @@
 resources:
   - kube-apiserver.yaml
+  - gatewayapi.yaml
+  - ingress.yaml
