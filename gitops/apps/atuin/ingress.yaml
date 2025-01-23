@@ -4,6 +4,8 @@ metadata:
   name: atuin
   annotations:
     cert-manager.io/cluster-issuer: root-didactiklabs
+  labels:
+    probe: enabled
 spec:
   rules:
     - host: 'atuin.didactik.labs'

@@ -4,6 +4,8 @@ metadata:
   name: grafana
   annotations:
     cert-manager.io/cluster-issuer: root-didactiklabs
+  labels:
+    probe: enabled
 spec:
   rules:
     - host: 'grafana.didactik.labs'
