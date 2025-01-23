@@ -30,7 +30,9 @@ spec:
       auth_url: 'https://door.didactiklabs.io/login/oauth/authorize'
       token_url: 'https://door.didactiklabs.io/api/login/oauth/access_token'
       api_url: 'https://door.didactiklabs.io/api/userinfo'
-      role_attribute_path: "contains(groups, 'Admins') && 'Admin' || 'Viewer'"
+      role_attribute_path: "contains(roles[*].name, 'admins') && 'Admin' || 'Viewer'"
+      role_attribute_strict: 'true'
+      allow_assign_grafana_admin: 'true'
   deployment:
     spec:
       template:
