@@ -9,10 +9,10 @@ data:
       "http_2xx_didactiklabs":
         "http":
           "preferred_ip_protocol": "ip4"
-        "prober": "http"
           "tls_config":
             "ca_file": "/didactiklabs/ca.crt"
             "insecure_skip_verify": false
+        "prober": "http"
       "http_post_2xx":
         "http":
           "method": "POST"
