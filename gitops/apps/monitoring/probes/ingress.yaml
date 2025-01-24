@@ -5,7 +5,7 @@ metadata:
   namespace: monitoring
 spec:
   interval: 60s
-  module: http_2xx
+  module: http_2xx_didactiklabs
   prober:
     url: blackbox-exporter.monitoring.svc.cluster.local:19115
   targets:
@@ -15,8 +15,3 @@ spec:
       selector:
         matchLabels:
           probe: enabled
-  tlsConfig:
-    ca:
-      secret:
-        name: rootca
-        key: ca.crt
