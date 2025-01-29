@@ -8,7 +8,7 @@ spec:
       rules:
         - alert: HelmReleaseNotReady
           expr: gotk_resource_info{customresource_kind="HelmRelease", ready!="True"} > 0
-          for: 5m
+          for: 10m
           labels:
             severity: critical
             service: fluxcd
@@ -18,7 +18,7 @@ spec:
             description: 'HelmRelease {{ $labels.name }} in namespace {{ $labels.exported_namespace }} is in an unready state for more than 5 minutes.'
         - alert: GitRepositorySyncFailed
           expr: gotk_resource_info{customresource_kind="GitRepository", ready!="True"} > 0
-          for: 5m
+          for: 10m
           labels:
             severity: critical
             service: fluxcd
@@ -28,7 +28,7 @@ spec:
             description: 'GitRepository {{ $labels.name }} in namespace {{ $labels.exported_namespace }} has not been successfully synced for more than 5 minutes.'
         - alert: KustomizationNotApplied
           expr: gotk_resource_info{customresource_kind="Kustomization", ready!="True"} > 0
-          for: 5m
+          for: 10m
           labels:
             severity: critical
             service: fluxcd
@@ -38,7 +38,7 @@ spec:
             description: 'Kustomization {{ $labels.name }} in namespace {{ $labels.exported_namespace }} is not successfully applied for more than 5 minutes.'
         - alert: ImageRepositorySyncFailed
           expr: gotk_resource_info{customresource_kind="ImageRepository", ready!="True"} > 0
-          for: 5m
+          for: 10m
           labels:
             severity: critical
             service: fluxcd
@@ -48,7 +48,7 @@ spec:
             description: 'ImageRepository {{ $labels.name }} in namespace {{ $labels.exported_namespace }} has not been successfully synced for more than 5 minutes.'
         - alert: HelmChartFailed
           expr: gotk_resource_info{customresource_kind="HelmChart", ready!="True"} > 0
-          for: 5m
+          for: 10m
           labels:
             severity: critical
             service: fluxcd
