@@ -20,8 +20,8 @@ spec:
       # https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
       secretConfig:
       # Reference the name of a secret that contains ZITADEL configuration.
-      configSecretName: zitadel-secrets
-      configSecretKey: config.yaml
+      # configSecretName: zitadel-secrets
+      # configSecretKey: config.yaml
       # ZITADEL uses the masterkey for symmetric encryption.
       # You can generate it for example with tr -dc A-Za-z0-9 </dev/urandom | head -c 32
       # Reference the name of the secret that contains the masterkey. The key should be named "masterkey".
