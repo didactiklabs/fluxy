@@ -10,7 +10,7 @@ spec:
         - alert: IstioIngressHighLatency
           expr: |
             histogram_quantile(
-              0.99,
+              0.90,
               sum(
                 rate(
                   istio_request_duration_milliseconds_bucket{
@@ -26,11 +26,11 @@ spec:
             ) > 1000
           for: 10m
           labels:
-            severity: warning
+            severity: info
           annotations:
             summary: 'High latency detected.'
             description: |
-              The 99th percentile latency for requests to destination workload
+              The 90th percentile latency for requests to destination workload
               {{ $labels.destination_workload }} in namespace
               {{ $labels.destination_workload_namespace }} has exceeded 1000ms.
     - name: critical-latency-alerts
@@ -38,7 +38,7 @@ spec:
         - alert: IstioIngressVeryHighLatency
           expr: |
             histogram_quantile(
-              0.90,
+              0.50,
               sum(
                 rate(
                   istio_request_duration_milliseconds_bucket{
@@ -58,7 +58,7 @@ spec:
           annotations:
             summary: 'Very High latency detected.'
             description: |
-              The 90th percentile latency for requests to destination workload
+              The 50th percentile latency for requests to destination workload
               {{ $labels.destination_workload }} in namespace
               {{ $labels.destination_workload_namespace }} has exceeded 1000ms.
     - name: error-alerts
