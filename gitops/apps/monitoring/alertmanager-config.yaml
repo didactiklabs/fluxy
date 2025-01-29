@@ -50,7 +50,7 @@ spec:
       - matchers:
           - matchType: '=~'
             name: 'alertname'
-            value: 'InfoInhibitor|Watchdog|KubeCPUOvercommit|KubeMemoryOvercommit|CDIDefaultStorageClassDegraded|KubeVirtNoAvailableNodesToRunVMs|LowKVMNodesCount'
+            value: 'InfoInhibitor|Watchdog|KubeCPUOvercommit|KubeMemoryOvercommit|CDIDefaultStorageClassDegraded|KubeVirtNoAvailableNodesToRunVMs|LowKVMNodesCount|KubeVirtDeprecatedAPIRequested'
         receiver: 'null'
   receivers:
     - name: 'null'
