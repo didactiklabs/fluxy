@@ -17,6 +17,13 @@ spec:
     zitadel:
       # https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
       configmapConfig:
+        ExternalSecure: true
+        Machine:
+          Identification:
+            Hostname:
+              Enabled: true
+            Webhook:
+              Enabled: false
       # https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
       secretConfig:
       # Reference the name of a secret that contains ZITADEL configuration.
