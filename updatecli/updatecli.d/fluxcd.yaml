@@ -1,0 +1,62 @@
+name: flux-operator Update
+scms:
+  default:
+    kind: 'github'
+    spec:
+      email: 'updatecli@didactiklabs.io'
+      owner: 'didactiklabs'
+      repository: 'fluxy'
+      token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+      username: '{{ requiredEnv "GITHUB_ACTOR" }}'
+      branch: 'main'
+sources:
+  default:
+    name: Get value from json
+    scmid: 'default'
+    kind: json
+    spec:
+      file: npins/sources.json
+      key: pins.flux-operator.version
+  flux-operator:
+    kind: githubrelease
+    spec:
+      owner: 'controlplaneio-fluxcd'
+      repository: 'flux-operator'
+      token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+      username: '{{ requiredEnv "GITHUB_ACTOR" }}'
+      versionfilter:
+        kind: semver
+        pattern: '*'
+conditions:
+  default:
+    name: Check if version is the same
+    sourceid: 'default'
+    scmid: 'default'
+    kind: shell
+    spec:
+      environments:
+        - name: PATH
+      command: test "{{ source `flux-operator` }}" !=
+targets:
+  default:
+    name: flux-operator npins update {{ source `flux-operator` }}
+    kind: shell
+    scmid: 'default'
+    disablesourceinput: true
+    spec:
+      environments:
+        - name: PATH
+        - name: NIX_PATH
+      command: |
+        set -e
+        nix run nixpkgs#npins -- add --name flux-operator github controlplaneio-fluxcd flux-operator --at {{ source `flux-operator` }}
+        nix-shell shell.nix --run "buildFlux '{{ source `flux-operator` }}'"
+actions:
+  default:
+    kind: 'github/pullrequest'
+    scmid: 'default'
+    spec:
+      automerge: false
+      description: 'Update flux-operator npins.'
+      draft: false
+      title: 'UPDATECLI: Update flux-operator'

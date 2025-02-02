@@ -11,6 +11,14 @@ pkgs.mkShell {
     pkgs.kustomize
   ];
   packages = [
+    (pkgs.writeShellScriptBin "buildFlux" ''
+      #!/bin/bash
+      set -e
+      rm -rf bootstrap/fluxcd/upstream
+      mkdir -p bootstrap/fluxcd/upstream
+      fluxhash=$(nix-prefetch-url https://github.com/controlplaneio-fluxcd/flux-operator/releases/download/$1/install.yaml)
+      cp -r --no-preserve=mode $(nix-build nix/fluxcd.nix --argstr manifest01Hash "$fluxhash" --argstr version $1)/* bootstrap/fluxcd/upstream/
+    '')
     (pkgs.writeShellScriptBin "buildKubeProm" ''
       #!/bin/bash
       set -e

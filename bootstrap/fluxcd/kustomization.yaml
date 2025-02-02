@@ -1,4 +1,0 @@
-resources:
-  - gotk-components.yaml
-  - gotk-sync.yaml
-  - apps-sync.yaml
