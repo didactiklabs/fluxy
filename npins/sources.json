@@ -75,6 +75,21 @@
       "url": "https://api.github.com/repos/projectcontour/contour/tarball/v1.30.2",
       "hash": "0z0s50laxckaap6kdhb7faisrjl17dzjfqbcvdybch3vffwwmmms"
     },
+    "flux-operator": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "controlplaneio-fluxcd",
+        "repo": "flux-operator"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "version": "v0.12.0",
+      "revision": "0ed710760f6b214ee90a9f7eca7dadfbbdf4e12c",
+      "url": "https://api.github.com/repos/controlplaneio-fluxcd/flux-operator/tarball/v0.12.0",
+      "hash": "1n23abnp1ifj2z3hc24yjrdf4k3sw2f5193d7caqlyaxxqfbzpk0"
+    },
     "gateway-api": {
       "type": "GitRelease",
       "repository": {
