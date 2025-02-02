@@ -26,6 +26,8 @@ kubectl taint nodes <NODE_NAME> node-role.kubernetes.io/control-plane:NoSchedule
 Deploy fluxcd and gitops resources in the cluster
 
 ```bash
+kustomize build fluxcd/upstream | kubectl apply -f -
+kustomize build fluxcd/setup | kubectl apply -f -
 kustomize build fluxcd/ | kubectl apply -f -
 ```
 
