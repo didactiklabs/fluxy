@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: zitadel
-      version: 8.11.2
+      version: 8.11.3
       sourceRef:
         kind: HelmRepository
         name: zitadel
@@ -25,7 +25,7 @@ spec:
             Webhook:
               Enabled: false
       # https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
-      secretConfig:
+      secretConfig: null
       # Reference the name of a secret that contains ZITADEL configuration.
       # configSecretName: zitadel-secrets
       # configSecretKey: config.yaml
