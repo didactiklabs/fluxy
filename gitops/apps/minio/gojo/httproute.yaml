@@ -8,7 +8,7 @@ spec:
       namespace: istio-system
       sectionName: https
   hostnames:
-    - minio.gojo.didactiklabs.io
+    - miniogojo.didactiklabs.io
   rules:
     - backendRefs:
         - name: minio-gojo
@@ -24,7 +24,7 @@ spec:
       namespace: istio-system
       sectionName: https
   hostnames:
-    - s3.didactiklabs.io
+    - s3gojo.didactiklabs.io
   rules:
     - backendRefs:
         - name: minio-gojo
