@@ -10,6 +10,7 @@ resources:
   - gojo/ing.yaml
   - gojo/svc.yaml
   - gojo/pvc.yaml
+  - gojo/httproute.yaml
   - frieren/deploy.yaml
   - frieren/ing.yaml
   - frieren/svc.yaml
