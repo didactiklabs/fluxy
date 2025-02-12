@@ -170,9 +170,9 @@
         "repo": "monitoring"
       },
       "branch": "main",
-      "revision": "24eb9af7066d2a3379fbfe033495758d1c1f6c3d",
-      "url": "https://github.com/kubevirt/monitoring/archive/24eb9af7066d2a3379fbfe033495758d1c1f6c3d.tar.gz",
-      "hash": "0bqdrg4cygrlii68vl0c7f479sw85j0yk9f3apyirwrg1ypimahp"
+      "revision": "22397717fc0f04895b994feca8ca9d19ed121e46",
+      "url": "https://github.com/kubevirt/monitoring/archive/22397717fc0f04895b994feca8ca9d19ed121e46.tar.gz",
+      "hash": "06z1hrzcqzrknpl3g2pjrynfxnfl4v25xbxmg8w1bv93cc5bvrzj"
     },
     "nixpkgs": {
       "type": "Channel",
