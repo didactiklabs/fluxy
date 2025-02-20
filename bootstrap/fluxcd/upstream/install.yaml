@@ -1236,6 +1236,45 @@ metadata:
   namespace: flux-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+  name: flux-operator-edit
+rules:
+- apiGroups:
+  - fluxcd.controlplane.io
+  resources:
+  - resourcesets
+  - resourcesetinputproviders
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - patch
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+    rbac.authorization.k8s.io/aggregate-to-view: "true"
+  name: flux-operator-view
+rules:
+- apiGroups:
+  - fluxcd.controlplane.io
+  resources:
+  - resourcesets
+  - resourcesetinputproviders
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: flux-operator-cluster-admin
@@ -1300,7 +1339,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: ghcr.io/controlplaneio-fluxcd/flux-operator:v0.14.0
+        image: ghcr.io/controlplaneio-fluxcd/flux-operator:v0.15.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
