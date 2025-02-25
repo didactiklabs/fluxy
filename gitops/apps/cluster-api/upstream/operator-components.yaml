@@ -28425,7 +28425,7 @@ spec:
         - --leader-elect
         command:
         - /manager
-        image: registry.k8s.io/capi-operator/cluster-api-operator:v0.16.0
+        image: registry.k8s.io/capi-operator/cluster-api-operator:v0.17.0
         imagePullPolicy: IfNotPresent
         name: manager
         ports:
