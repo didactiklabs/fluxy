@@ -15,7 +15,15 @@ spec:
     singular: grafanaalertrulegroup
   scope: Namespaced
   versions:
-  - name: v1beta1
+  - additionalPrinterColumns:
+    - format: date-time
+      jsonPath: .status.lastResync
+      name: Last resync
+      type: date
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1beta1
     schema:
       openAPIV3Schema:
         description: GrafanaAlertRuleGroup is the Schema for the grafanaalertrulegroups
@@ -216,12 +224,26 @@ spec:
                       required:
                       - receiver
                       type: object
+                    record:
+                      properties:
+                        from:
+                          type: string
+                        metric:
+                          type: string
+                      required:
+                      - from
+                      - metric
+                      type: object
                     title:
                       example: Always firing
                       maxLength: 190
                       minLength: 1
                       type: string
                     uid:
+                      description: UID of the alert rule. Can be any string consisting
+                        of alphanumeric characters, - and _ with a maximum length
+                        of 40
+                      maxLength: 40
                       pattern: ^[a-zA-Z0-9-_]+$
                       type: string
                   required:
@@ -316,6 +338,8 @@ spec:
                 format: date-time
                 type: string
             type: object
+        required:
+        - spec
         type: object
     served: true
     storage: true
@@ -456,6 +480,7 @@ spec:
                 - sensugo
                 - sensu
                 - slack
+                - sns
                 - teams
                 - telegram
                 - threema
@@ -468,7 +493,10 @@ spec:
                 type: string
               uid:
                 description: Manually specify the UID the Contact Point is created
-                  with
+                  with. Can be any string consisting of alphanumeric characters, -
+                  and _ with a maximum length of 40
+                maxLength: 40
+                pattern: ^[a-zA-Z0-9-_]+$
                 type: string
                 x-kubernetes-validations:
                 - message: spec.uid is immutable
@@ -617,6 +645,8 @@ spec:
                 format: date-time
                 type: string
             type: object
+        required:
+        - spec
         type: object
     served: true
     storage: true
@@ -682,7 +712,7 @@ spec:
                   outside the current namespace
                 type: boolean
               configMapRef:
-                description: dashboard from configmap
+                description: model from configmap
                 properties:
                   key:
                     description: The key to select.
@@ -705,11 +735,14 @@ spec:
                 type: object
                 x-kubernetes-map-type: atomic
               contentCacheDuration:
-                description: Cache duration for dashboards fetched from URLs
+                description: Cache duration for models fetched from URLs
                 type: string
               datasources:
                 description: maps required data sources to existing ones
                 items:
+                  description: |-
+                    GrafanaResourceDatasource is used to set the datasource name of any templated datasources in
+                    content definitions (e.g., dashboard JSON).
                   properties:
                     datasourceName:
                       type: string
@@ -858,7 +891,7 @@ spec:
                 - id
                 type: object
               gzipJson:
-                description: GzipJson the dashboard's JSON compressed with Gzip. Base64-encoded
+                description: GzipJson the model's JSON compressed with Gzip. Base64-encoded
                   when in YAML.
                 format: byte
                 type: string
@@ -912,7 +945,7 @@ spec:
                 - message: spec.instanceSelector is immutable
                   rule: self == oldSelf
               json:
-                description: dashboard json
+                description: model json
                 type: string
               jsonnet:
                 description: Jsonnet
@@ -954,17 +987,20 @@ spec:
                 pattern: ^([0-9]+(\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$
                 type: string
               uid:
-                description: Manually specify the uid for the dashboard, overwrites
-                  uids already present in the json model
+                description: |-
+                  Manually specify the uid, overwrites uids already present in the json model.
+                  Can be any string consisting of alphanumeric characters, - and _ with a maximum length of 40.
+                maxLength: 40
+                pattern: ^[a-zA-Z0-9-_]+$
                 type: string
                 x-kubernetes-validations:
                 - message: spec.uid is immutable
                   rule: self == oldSelf
               url:
-                description: dashboard url
+                description: model url
                 type: string
               urlAuthorization:
-                description: authorization options for dashboard from url
+                description: authorization options for model from url
                 properties:
                   basicAuth:
                     properties:
@@ -1119,6 +1155,8 @@ spec:
               uid:
                 type: string
             type: object
+        required:
+        - spec
         type: object
     served: true
     storage: true
@@ -1291,8 +1329,12 @@ spec:
                 pattern: ^([0-9]+(\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$
                 type: string
               uid:
-                description: The UID, for the datasource, fallback to the deprecated
-                  spec.datasource.uid and metadata.uid
+                description: |-
+                  The UID, for the datasource, fallback to the deprecated spec.datasource.uid
+                  and metadata.uid. Can be any string consisting of alphanumeric characters,
+                  - and _ with a maximum length of 40 +optional
+                maxLength: 40
+                pattern: ^[a-zA-Z0-9-_]+$
                 type: string
                 x-kubernetes-validations:
                 - message: spec.uid is immutable
@@ -1442,6 +1484,7 @@ spec:
               hash:
                 type: string
               lastMessage:
+                description: 'Deprecated: Check status.conditions or operator logs'
                 type: string
               lastResync:
                 description: Last time the resource was synchronized with Grafana
@@ -1451,6 +1494,8 @@ spec:
               uid:
                 type: string
             type: object
+        required:
+        - spec
         type: object
     served: true
     storage: true
@@ -1587,7 +1632,11 @@ spec:
                 description: Display name of the folder in Grafana
                 type: string
               uid:
-                description: Manually specify the UID the Folder is created with
+                description: Manually specify the UID the Folder is created with.
+                  Can be any string consisting of alphanumeric characters, - and _
+                  with a maximum length of 40
+                maxLength: 40
+                pattern: ^[a-zA-Z0-9-_]+$
                 type: string
                 x-kubernetes-validations:
                 - message: spec.uid is immutable
@@ -1679,6 +1728,767 @@ spec:
                 format: date-time
                 type: string
             type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.16.3
+  name: grafanalibrarypanels.grafana.integreatly.org
+spec:
+  group: grafana.integreatly.org
+  names:
+    categories:
+    - grafana-operator
+    kind: GrafanaLibraryPanel
+    listKind: GrafanaLibraryPanelList
+    plural: grafanalibrarypanels
+    singular: grafanalibrarypanel
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - format: date-time
+      jsonPath: .status.lastResync
+      name: Last resync
+      type: date
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: GrafanaLibraryPanel is the Schema for the grafanalibrarypanels
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: GrafanaLibraryPanelSpec defines the desired state of GrafanaLibraryPanel
+            properties:
+              allowCrossNamespaceImport:
+                default: false
+                description: Allow the Operator to match this resource with Grafanas
+                  outside the current namespace
+                type: boolean
+              configMapRef:
+                description: model from configmap
+                properties:
+                  key:
+                    description: The key to select.
+                    type: string
+                  name:
+                    default: ""
+                    description: |-
+                      Name of the referent.
+                      This field is effectively required, but due to backwards compatibility is
+                      allowed to be empty. Instances of this type with an empty value here are
+                      almost certainly wrong.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                    type: string
+                  optional:
+                    description: Specify whether the ConfigMap or its key must be
+                      defined
+                    type: boolean
+                required:
+                - key
+                type: object
+                x-kubernetes-map-type: atomic
+              contentCacheDuration:
+                description: Cache duration for models fetched from URLs
+                type: string
+              datasources:
+                description: maps required data sources to existing ones
+                items:
+                  description: |-
+                    GrafanaResourceDatasource is used to set the datasource name of any templated datasources in
+                    content definitions (e.g., dashboard JSON).
+                  properties:
+                    datasourceName:
+                      type: string
+                    inputName:
+                      type: string
+                  required:
+                  - datasourceName
+                  - inputName
+                  type: object
+                type: array
+              envFrom:
+                description: environments variables from secrets or config maps
+                items:
+                  properties:
+                    configMapKeyRef:
+                      description: Selects a key of a ConfigMap.
+                      properties:
+                        key:
+                          description: The key to select.
+                          type: string
+                        name:
+                          default: ""
+                          description: |-
+                            Name of the referent.
+                            This field is effectively required, but due to backwards compatibility is
+                            allowed to be empty. Instances of this type with an empty value here are
+                            almost certainly wrong.
+                            More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          type: string
+                        optional:
+                          description: Specify whether the ConfigMap or its key must
+                            be defined
+                          type: boolean
+                      required:
+                      - key
+                      type: object
+                      x-kubernetes-map-type: atomic
+                    secretKeyRef:
+                      description: Selects a key of a Secret.
+                      properties:
+                        key:
+                          description: The key of the secret to select from.  Must
+                            be a valid secret key.
+                          type: string
+                        name:
+                          default: ""
+                          description: |-
+                            Name of the referent.
+                            This field is effectively required, but due to backwards compatibility is
+                            allowed to be empty. Instances of this type with an empty value here are
+                            almost certainly wrong.
+                            More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          type: string
+                        optional:
+                          description: Specify whether the Secret or its key must
+                            be defined
+                          type: boolean
+                      required:
+                      - key
+                      type: object
+                      x-kubernetes-map-type: atomic
+                  type: object
+                type: array
+              envs:
+                description: environments variables as a map
+                items:
+                  properties:
+                    name:
+                      type: string
+                    value:
+                      description: Inline env value
+                      type: string
+                    valueFrom:
+                      description: Reference on value source, might be the reference
+                        on a secret or config map
+                      properties:
+                        configMapKeyRef:
+                          description: Selects a key of a ConfigMap.
+                          properties:
+                            key:
+                              description: The key to select.
+                              type: string
+                            name:
+                              default: ""
+                              description: |-
+                                Name of the referent.
+                                This field is effectively required, but due to backwards compatibility is
+                                allowed to be empty. Instances of this type with an empty value here are
+                                almost certainly wrong.
+                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                              type: string
+                            optional:
+                              description: Specify whether the ConfigMap or its key
+                                must be defined
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                          x-kubernetes-map-type: atomic
+                        secretKeyRef:
+                          description: Selects a key of a Secret.
+                          properties:
+                            key:
+                              description: The key of the secret to select from.  Must
+                                be a valid secret key.
+                              type: string
+                            name:
+                              default: ""
+                              description: |-
+                                Name of the referent.
+                                This field is effectively required, but due to backwards compatibility is
+                                allowed to be empty. Instances of this type with an empty value here are
+                                almost certainly wrong.
+                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                              type: string
+                            optional:
+                              description: Specify whether the Secret or its key must
+                                be defined
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      type: object
+                  required:
+                  - name
+                  type: object
+                type: array
+              folderRef:
+                description: Name of a `GrafanaFolder` resource in the same namespace
+                type: string
+              folderUID:
+                description: UID of the target folder for this dashboard
+                type: string
+              grafanaCom:
+                description: grafana.com/dashboards
+                properties:
+                  id:
+                    type: integer
+                  revision:
+                    type: integer
+                required:
+                - id
+                type: object
+              gzipJson:
+                description: GzipJson the model's JSON compressed with Gzip. Base64-encoded
+                  when in YAML.
+                format: byte
+                type: string
+              instanceSelector:
+                description: Selects Grafana instances for import
+                properties:
+                  matchExpressions:
+                    description: matchExpressions is a list of label selector requirements.
+                      The requirements are ANDed.
+                    items:
+                      description: |-
+                        A label selector requirement is a selector that contains values, a key, and an operator that
+                        relates the key and values.
+                      properties:
+                        key:
+                          description: key is the label key that the selector applies
+                            to.
+                          type: string
+                        operator:
+                          description: |-
+                            operator represents a key's relationship to a set of values.
+                            Valid operators are In, NotIn, Exists and DoesNotExist.
+                          type: string
+                        values:
+                          description: |-
+                            values is an array of string values. If the operator is In or NotIn,
+                            the values array must be non-empty. If the operator is Exists or DoesNotExist,
+                            the values array must be empty. This array is replaced during a strategic
+                            merge patch.
+                          items:
+                            type: string
+                          type: array
+                          x-kubernetes-list-type: atomic
+                      required:
+                      - key
+                      - operator
+                      type: object
+                    type: array
+                    x-kubernetes-list-type: atomic
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    description: |-
+                      matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+                      map is equivalent to an element of matchExpressions, whose key field is "key", the
+                      operator is "In", and the values array contains only "value". The requirements are ANDed.
+                    type: object
+                type: object
+                x-kubernetes-map-type: atomic
+                x-kubernetes-validations:
+                - message: spec.instanceSelector is immutable
+                  rule: self == oldSelf
+              json:
+                description: model json
+                type: string
+              jsonnet:
+                description: Jsonnet
+                type: string
+              jsonnetLib:
+                description: Jsonnet project build
+                properties:
+                  fileName:
+                    type: string
+                  gzipJsonnetProject:
+                    format: byte
+                    type: string
+                  jPath:
+                    items:
+                      type: string
+                    type: array
+                required:
+                - fileName
+                - gzipJsonnetProject
+                type: object
+              plugins:
+                description: plugins
+                items:
+                  properties:
+                    name:
+                      type: string
+                    version:
+                      type: string
+                  required:
+                  - name
+                  - version
+                  type: object
+                type: array
+              resyncPeriod:
+                default: 10m0s
+                description: How often the resource is synced, defaults to 10m0s if
+                  not set
+                format: duration
+                pattern: ^([0-9]+(\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$
+                type: string
+              uid:
+                description: |-
+                  Manually specify the uid, overwrites uids already present in the json model.
+                  Can be any string consisting of alphanumeric characters, - and _ with a maximum length of 40.
+                maxLength: 40
+                pattern: ^[a-zA-Z0-9-_]+$
+                type: string
+                x-kubernetes-validations:
+                - message: spec.uid is immutable
+                  rule: self == oldSelf
+              url:
+                description: model url
+                type: string
+              urlAuthorization:
+                description: authorization options for model from url
+                properties:
+                  basicAuth:
+                    properties:
+                      password:
+                        description: SecretKeySelector selects a key of a Secret.
+                        properties:
+                          key:
+                            description: The key of the secret to select from.  Must
+                              be a valid secret key.
+                            type: string
+                          name:
+                            default: ""
+                            description: |-
+                              Name of the referent.
+                              This field is effectively required, but due to backwards compatibility is
+                              allowed to be empty. Instances of this type with an empty value here are
+                              almost certainly wrong.
+                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            type: string
+                          optional:
+                            description: Specify whether the Secret or its key must
+                              be defined
+                            type: boolean
+                        required:
+                        - key
+                        type: object
+                        x-kubernetes-map-type: atomic
+                      username:
+                        description: SecretKeySelector selects a key of a Secret.
+                        properties:
+                          key:
+                            description: The key of the secret to select from.  Must
+                              be a valid secret key.
+                            type: string
+                          name:
+                            default: ""
+                            description: |-
+                              Name of the referent.
+                              This field is effectively required, but due to backwards compatibility is
+                              allowed to be empty. Instances of this type with an empty value here are
+                              almost certainly wrong.
+                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            type: string
+                          optional:
+                            description: Specify whether the Secret or its key must
+                              be defined
+                            type: boolean
+                        required:
+                        - key
+                        type: object
+                        x-kubernetes-map-type: atomic
+                    type: object
+                type: object
+            required:
+            - instanceSelector
+            type: object
+            x-kubernetes-validations:
+            - message: Only one of folderUID or folderRef can be declared at the same
+                time
+              rule: (has(self.folderUID) && !(has(self.folderRef))) || (has(self.folderRef)
+                && !(has(self.folderUID))) || !(has(self.folderRef) && (has(self.folderUID)))
+            - message: spec.uid is immutable
+              rule: ((!has(oldSelf.uid) && !has(self.uid)) || (has(oldSelf.uid) &&
+                has(self.uid)))
+            - message: disabling spec.allowCrossNamespaceImport requires a recreate
+                to ensure desired state
+              rule: '!oldSelf.allowCrossNamespaceImport || (oldSelf.allowCrossNamespaceImport
+                && self.allowCrossNamespaceImport)'
+          status:
+            description: GrafanaLibraryPanelStatus defines the observed state of GrafanaLibraryPanel
+            properties:
+              conditions:
+                description: Results when synchonizing resource with Grafana instances
+                items:
+                  description: Condition contains details for one aspect of the current
+                    state of this API Resource.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        lastTransitionTime is the last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        message is a human readable message indicating details about the transition.
+                        This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        observedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: |-
+                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
+                        Producers of specific condition types may define expected values and meanings for this field,
+                        and whether the values are considered a guaranteed API.
+                        The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              contentCache:
+                format: byte
+                type: string
+              contentTimestamp:
+                format: date-time
+                type: string
+              contentUrl:
+                type: string
+              hash:
+                type: string
+              lastResync:
+                description: Last time the resource was synchronized with Grafana
+                  instances
+                format: date-time
+                type: string
+              uid:
+                type: string
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.16.3
+  name: grafanamutetimings.grafana.integreatly.org
+spec:
+  group: grafana.integreatly.org
+  names:
+    categories:
+    - grafana-operator
+    kind: GrafanaMuteTiming
+    listKind: GrafanaMuteTimingList
+    plural: grafanamutetimings
+    singular: grafanamutetiming
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - format: date-time
+      jsonPath: .status.lastResync
+      name: Last resync
+      type: date
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: GrafanaMuteTiming is the Schema for the GrafanaMuteTiming API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: GrafanaMuteTimingSpec defines the desired state of GrafanaMuteTiming
+            properties:
+              allowCrossNamespaceImport:
+                default: false
+                description: Allow the Operator to match this resource with Grafanas
+                  outside the current namespace
+                type: boolean
+              editable:
+                default: true
+                description: Whether to enable or disable editing of the mute timing
+                  in Grafana UI
+                type: boolean
+                x-kubernetes-validations:
+                - message: spec.editable is immutable
+                  rule: self == oldSelf
+              instanceSelector:
+                description: Selects Grafana instances for import
+                properties:
+                  matchExpressions:
+                    description: matchExpressions is a list of label selector requirements.
+                      The requirements are ANDed.
+                    items:
+                      description: |-
+                        A label selector requirement is a selector that contains values, a key, and an operator that
+                        relates the key and values.
+                      properties:
+                        key:
+                          description: key is the label key that the selector applies
+                            to.
+                          type: string
+                        operator:
+                          description: |-
+                            operator represents a key's relationship to a set of values.
+                            Valid operators are In, NotIn, Exists and DoesNotExist.
+                          type: string
+                        values:
+                          description: |-
+                            values is an array of string values. If the operator is In or NotIn,
+                            the values array must be non-empty. If the operator is Exists or DoesNotExist,
+                            the values array must be empty. This array is replaced during a strategic
+                            merge patch.
+                          items:
+                            type: string
+                          type: array
+                          x-kubernetes-list-type: atomic
+                      required:
+                      - key
+                      - operator
+                      type: object
+                    type: array
+                    x-kubernetes-list-type: atomic
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    description: |-
+                      matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+                      map is equivalent to an element of matchExpressions, whose key field is "key", the
+                      operator is "In", and the values array contains only "value". The requirements are ANDed.
+                    type: object
+                type: object
+                x-kubernetes-map-type: atomic
+                x-kubernetes-validations:
+                - message: spec.instanceSelector is immutable
+                  rule: self == oldSelf
+              name:
+                description: A unique name for the mute timing
+                type: string
+              resyncPeriod:
+                default: 10m0s
+                description: How often the resource is synced, defaults to 10m0s if
+                  not set
+                format: duration
+                pattern: ^([0-9]+(\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$
+                type: string
+              time_intervals:
+                description: Time intervals for muting
+                items:
+                  properties:
+                    days_of_month:
+                      description: |-
+                        The date 1-31 of a month. Negative values can also be used to represent days that begin at the end of the month.
+                        For example: -1 for the last day of the month.
+                      items:
+                        type: string
+                      type: array
+                    location:
+                      description: Depending on the location, the time range is displayed
+                        in local time.
+                      type: string
+                    months:
+                      description: |-
+                        The months of the year in either numerical or the full calendar month.
+                        For example: 1, may.
+                      items:
+                        type: string
+                      type: array
+                    times:
+                      description: The time inclusive of the start and exclusive of
+                        the end time (in UTC if no location has been selected, otherwise
+                        local time).
+                      items:
+                        properties:
+                          end_time:
+                            description: end time
+                            type: string
+                          start_time:
+                            description: start time
+                            type: string
+                        required:
+                        - end_time
+                        - start_time
+                        type: object
+                      type: array
+                    weekdays:
+                      description: |-
+                        The day or range of days of the week.
+                        For example: monday, thursday
+                      items:
+                        type: string
+                      type: array
+                    years:
+                      description: |-
+                        The year or years for the interval.
+                        For example: 2021
+                      items:
+                        type: string
+                      type: array
+                  type: object
+                minItems: 1
+                type: array
+            required:
+            - instanceSelector
+            - name
+            - time_intervals
+            type: object
+            x-kubernetes-validations:
+            - message: disabling spec.allowCrossNamespaceImport requires a recreate
+                to ensure desired state
+              rule: '!oldSelf.allowCrossNamespaceImport || (oldSelf.allowCrossNamespaceImport
+                && self.allowCrossNamespaceImport)'
+          status:
+            description: The most recent observed state of a Grafana resource
+            properties:
+              conditions:
+                description: Results when synchonizing resource with Grafana instances
+                items:
+                  description: Condition contains details for one aspect of the current
+                    state of this API Resource.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        lastTransitionTime is the last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        message is a human readable message indicating details about the transition.
+                        This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        observedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: |-
+                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
+                        Producers of specific condition types may define expected values and meanings for this field,
+                        and whether the values are considered a guaranteed API.
+                        The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              lastResync:
+                description: Last time the resource was synchronized with Grafana
+                  instances
+                format: date-time
+                type: string
+            type: object
+        required:
+        - spec
         type: object
     served: true
     storage: true
@@ -1869,13 +2679,64 @@ spec:
                     type: string
                   receiver:
                     description: receiver
+                    minLength: 1
                     type: string
                   repeat_interval:
                     description: repeat interval
                     type: string
+                  routeSelector:
+                    description: |-
+                      selects GrafanaNotificationPolicyRoutes to merge in when specified
+                      mutually exclusive with Routes
+                    properties:
+                      matchExpressions:
+                        description: matchExpressions is a list of label selector
+                          requirements. The requirements are ANDed.
+                        items:
+                          description: |-
+                            A label selector requirement is a selector that contains values, a key, and an operator that
+                            relates the key and values.
+                          properties:
+                            key:
+                              description: key is the label key that the selector
+                                applies to.
+                              type: string
+                            operator:
+                              description: |-
+                                operator represents a key's relationship to a set of values.
+                                Valid operators are In, NotIn, Exists and DoesNotExist.
+                              type: string
+                            values:
+                              description: |-
+                                values is an array of string values. If the operator is In or NotIn,
+                                the values array must be non-empty. If the operator is Exists or DoesNotExist,
+                                the values array must be empty. This array is replaced during a strategic
+                                merge patch.
+                              items:
+                                type: string
+                              type: array
+                              x-kubernetes-list-type: atomic
+                          required:
+                          - key
+                          - operator
+                          type: object
+                        type: array
+                        x-kubernetes-list-type: atomic
+                      matchLabels:
+                        additionalProperties:
+                          type: string
+                        description: |-
+                          matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+                          map is equivalent to an element of matchExpressions, whose key field is "key", the
+                          operator is "In", and the values array contains only "value". The requirements are ANDed.
+                        type: object
+                    type: object
+                    x-kubernetes-map-type: atomic
                   routes:
-                    description: routes
+                    description: routes, mutually exclusive with RouteSelector
                     x-kubernetes-preserve-unknown-fields: true
+                required:
+                - receiver
                 type: object
             required:
             - instanceSelector
@@ -1889,6 +2750,249 @@ spec:
                 to ensure desired state
               rule: '!oldSelf.allowCrossNamespaceImport || (oldSelf.allowCrossNamespaceImport
                 && self.allowCrossNamespaceImport)'
+          status:
+            description: GrafanaNotificationPolicyStatus defines the observed state
+              of GrafanaNotificationPolicy
+            properties:
+              conditions:
+                description: Results when synchonizing resource with Grafana instances
+                items:
+                  description: Condition contains details for one aspect of the current
+                    state of this API Resource.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        lastTransitionTime is the last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        message is a human readable message indicating details about the transition.
+                        This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        observedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: |-
+                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
+                        Producers of specific condition types may define expected values and meanings for this field,
+                        and whether the values are considered a guaranteed API.
+                        The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              discoveredRoutes:
+                items:
+                  type: string
+                type: array
+              lastResync:
+                description: Last time the resource was synchronized with Grafana
+                  instances
+                format: date-time
+                type: string
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.16.3
+  name: grafananotificationpolicyroutes.grafana.integreatly.org
+spec:
+  group: grafana.integreatly.org
+  names:
+    categories:
+    - grafana-operator
+    kind: GrafanaNotificationPolicyRoute
+    listKind: GrafanaNotificationPolicyRouteList
+    plural: grafananotificationpolicyroutes
+    singular: grafananotificationpolicyroute
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: GrafanaNotificationPolicyRoute is the Schema for the grafananotificationpolicyroutes
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: GrafanaNotificationPolicyRouteSpec defines the desired state
+              of GrafanaNotificationPolicyRoute
+            properties:
+              continue:
+                description: continue
+                type: boolean
+              group_by:
+                description: group by
+                items:
+                  type: string
+                type: array
+              group_interval:
+                description: group interval
+                type: string
+              group_wait:
+                description: group wait
+                type: string
+              match_re:
+                additionalProperties:
+                  type: string
+                description: match re
+                type: object
+              matchers:
+                description: matchers
+                items:
+                  properties:
+                    isEqual:
+                      description: is equal
+                      type: boolean
+                    isRegex:
+                      description: is regex
+                      type: boolean
+                    name:
+                      description: name
+                      type: string
+                    value:
+                      description: value
+                      type: string
+                  required:
+                  - isRegex
+                  - value
+                  type: object
+                type: array
+              mute_time_intervals:
+                description: mute time intervals
+                items:
+                  type: string
+                type: array
+              object_matchers:
+                description: object matchers
+                items:
+                  description: |-
+                    ObjectMatcher ObjectMatcher is a matcher that can be used to filter alerts.
+
+                    swagger:model ObjectMatcher
+                  items:
+                    type: string
+                  type: array
+                type: array
+              provenance:
+                description: provenance
+                type: string
+              receiver:
+                description: receiver
+                minLength: 1
+                type: string
+              repeat_interval:
+                description: repeat interval
+                type: string
+              routeSelector:
+                description: |-
+                  selects GrafanaNotificationPolicyRoutes to merge in when specified
+                  mutually exclusive with Routes
+                properties:
+                  matchExpressions:
+                    description: matchExpressions is a list of label selector requirements.
+                      The requirements are ANDed.
+                    items:
+                      description: |-
+                        A label selector requirement is a selector that contains values, a key, and an operator that
+                        relates the key and values.
+                      properties:
+                        key:
+                          description: key is the label key that the selector applies
+                            to.
+                          type: string
+                        operator:
+                          description: |-
+                            operator represents a key's relationship to a set of values.
+                            Valid operators are In, NotIn, Exists and DoesNotExist.
+                          type: string
+                        values:
+                          description: |-
+                            values is an array of string values. If the operator is In or NotIn,
+                            the values array must be non-empty. If the operator is Exists or DoesNotExist,
+                            the values array must be empty. This array is replaced during a strategic
+                            merge patch.
+                          items:
+                            type: string
+                          type: array
+                          x-kubernetes-list-type: atomic
+                      required:
+                      - key
+                      - operator
+                      type: object
+                    type: array
+                    x-kubernetes-list-type: atomic
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    description: |-
+                      matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+                      map is equivalent to an element of matchExpressions, whose key field is "key", the
+                      operator is "In", and the values array contains only "value". The requirements are ANDed.
+                    type: object
+                type: object
+                x-kubernetes-map-type: atomic
+              routes:
+                description: routes, mutually exclusive with RouteSelector
+                x-kubernetes-preserve-unknown-fields: true
+            required:
+            - receiver
+            type: object
           status:
             description: The most recent observed state of a Grafana resource
             properties:
@@ -1955,6 +3059,8 @@ spec:
                 format: date-time
                 type: string
             type: object
+        required:
+        - spec
         type: object
     served: true
     storage: true
@@ -2165,6 +3271,8 @@ spec:
                 format: date-time
                 type: string
             type: object
+        required:
+        - spec
         type: object
     served: true
     storage: true
@@ -11047,23 +12155,30 @@ spec:
                             kind is allowed. Use 'weight' field to emphasize one over others.
                           properties:
                             kind:
+                              default: Service
                               description: The kind of target that the route is referring
                                 to. Currently, only 'Service' is allowed
+                              enum:
+                              - Service
+                              - ""
                               type: string
                             name:
                               description: name of the service/target that is being
                                 referred to. e.g. name of the service
+                              minLength: 1
                               type: string
                             weight:
+                              default: 100
                               description: |-
                                 weight as an integer between 0 and 256, default 100, that specifies the target's relative weight
                                 against other target reference objects. 0 suppresses requests to this backend.
                               format: int32
+                              maximum: 256
+                              minimum: 0
                               type: integer
                           required:
                           - kind
                           - name
-                          - weight
                           type: object
                         type: array
                       host:
@@ -11095,7 +12210,9 @@ spec:
                               certificate contents
                             type: string
                           certificate:
-                            description: certificate provides certificate contents
+                            description: |-
+                              certificate provides certificate contents. This should be a single serving certificate, not a certificate
+                              chain. Do not include a CA certificate.
                             type: string
                           destinationCACertificate:
                             description: |-
@@ -11105,47 +12222,97 @@ spec:
                               the short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically
                               verify.
                             type: string
+                          externalCertificate:
+                            description: |-
+                              externalCertificate provides certificate contents as a secret reference.
+                              This should be a single serving certificate, not a certificate
+                              chain. Do not include a CA certificate. The secret referenced should
+                              be present in the same namespace as that of the Route.
+                              Forbidden when `certificate` is set.
+                              The router service account needs to be granted with read-only access to this secret,
+                              please refer to openshift docs for additional details.
+                            properties:
+                              name:
+                                description: |-
+                                  name of the referent.
+                                  More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                type: string
+                            type: object
+                            x-kubernetes-map-type: atomic
                           insecureEdgeTerminationPolicy:
                             description: |-
                               insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While
                               each router may make its own decisions on which ports to expose, this is normally port 80.
 
-                              * Allow - traffic is sent to the server on the insecure port (default)
-                              * Disable - no traffic is allowed on the insecure port.
+                              If a route does not specify insecureEdgeTerminationPolicy, then the default behavior is "None".
+
+                              * Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only).
+
+                              * None - no traffic is allowed on the insecure port (default).
+
                               * Redirect - clients are redirected to the secure port.
+                            enum:
+                            - Allow
+                            - None
+                            - Redirect
+                            - ""
                             type: string
                           key:
                             description: key provides key file contents
                             type: string
                           termination:
-                            description: termination indicates termination type.
+                            description: |-
+                              termination indicates termination type.
+
+                              * edge - TLS termination is done by the router and http is used to communicate with the backend (default)
+                              * passthrough - Traffic is sent straight to the destination without the router providing TLS termination
+                              * reencrypt - TLS termination is done by the router and https is used to communicate with the backend
+
+                              Note: passthrough termination is incompatible with httpHeader actions
+                            enum:
+                            - edge
+                            - reencrypt
+                            - passthrough
                             type: string
                         required:
                         - termination
                         type: object
+                        x-kubernetes-validations:
+                        - message: 'cannot have both spec.tls.termination: passthrough
+                            and spec.tls.insecureEdgeTerminationPolicy: Allow'
+                          rule: 'has(self.termination) && has(self.insecureEdgeTerminationPolicy)
+                            ? !((self.termination==''passthrough'') && (self.insecureEdgeTerminationPolicy==''Allow''))
+                            : true'
                       to:
                         description: |-
                           RouteTargetReference specifies the target that resolve into endpoints. Only the 'Service'
                           kind is allowed. Use 'weight' field to emphasize one over others.
                         properties:
                           kind:
+                            default: Service
                             description: The kind of target that the route is referring
                               to. Currently, only 'Service' is allowed
+                            enum:
+                            - Service
+                            - ""
                             type: string
                           name:
                             description: name of the service/target that is being
                               referred to. e.g. name of the service
+                            minLength: 1
                             type: string
                           weight:
+                            default: 100
                             description: |-
                               weight as an integer between 0 and 256, default 100, that specifies the target's relative weight
                               against other target reference objects. 0 suppresses requests to this backend.
                             format: int32
+                            maximum: 256
+                            minimum: 0
                             type: integer
                         required:
                         - kind
                         - name
-                        - weight
                         type: object
                       wildcardPolicy:
                         description: WildcardPolicyType indicates the type of wildcard
@@ -11624,6 +12791,10 @@ spec:
                 type: array
               lastMessage:
                 type: string
+              libraryPanels:
+                items:
+                  type: string
+                type: array
               stage:
                 type: string
               stageStatus:
@@ -11631,6 +12802,8 @@ spec:
               version:
                 type: string
             type: object
+        required:
+        - spec
         type: object
     served: true
     storage: true
