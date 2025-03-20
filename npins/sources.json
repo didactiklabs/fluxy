@@ -130,10 +130,10 @@
       "pre_releases": false,
       "version_upper_bound": null,
       "release_prefix": null,
-      "version": "edge-24.12.1",
-      "revision": "9171f46c6072a82867d7ae564150b69aec4e5768",
-      "url": "https://api.github.com/repos/clastix/kamaji/tarball/edge-24.12.1",
-      "hash": "1kidjrmcn0x4aa5fmncx71l21wjjcv6n3shg2lyik0fk859w7j0q"
+      "version": "edge-25.03.1",
+      "revision": "22a40409f2b950e99f4687c60b93ffc27da33889",
+      "url": "https://api.github.com/repos/clastix/kamaji/tarball/edge-25.03.1",
+      "hash": "0hf8w26isjxd6zrlrbb2dv7ylkf6ml156gmkyvkvrjdn44f8sgkm"
     },
     "kube-prometheus": {
       "type": "Git",
