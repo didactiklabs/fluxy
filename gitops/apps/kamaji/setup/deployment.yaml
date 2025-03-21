@@ -7,4 +7,4 @@
       app.kubernetes.io/instance: kamaji
       app.kubernetes.io/component: controller-manager
     namespace: kamaji-system
-  spec: clastix/kamaji:edge-25.03.1
+  spec: clastix/kamaji:edge-25.3.2
