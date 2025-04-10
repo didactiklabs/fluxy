@@ -16,7 +16,7 @@ resources:
   - secrets.yaml
 images:
   - name: ghcr.io/grafana/grafana-operator
-    newTag: 'v5.17.0'
+    newTag: 'v5.17.1'
 patches:
   - path: blackbox-exporter-patch.yaml
     target:
