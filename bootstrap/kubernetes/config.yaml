@@ -12,6 +12,7 @@ apiServer:
     oidc-client-id: kubernetes
     oidc-ca-file: /etc/ssl/certs/ca-certs.crt
     oidc-issuer-url: 'https://auth.didactiklabs.io/application/o/kubernetes/'
+    oidc-username-claim: preferred_username
     oidc-groups-claim: groups
     oidc-groups-prefix: oidc-
 controllerManager:
