@@ -22,7 +22,7 @@ spec:
           containerPort: 80
         env:
         - name: DOMAIN
-          value: "https://vaultwarden.didactik.labs"
+          value: "https://vaultwarden.didactiklabs.io"
         - name: ADMIN_TOKEN
           valueFrom:
             secretKeyRef:
