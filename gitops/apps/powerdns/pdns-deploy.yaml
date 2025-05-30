@@ -24,9 +24,9 @@ spec:
               protocol: UDP
           env:
             - name: PDNS_gmysql_host
-              value: 'powerdns-db'
+              value: "powerdns-db"
             - name: PDNS_gmysql_port
-              value: '3306'
+              value: "3306"
             - name: PDNS_gmysql_user
               valueFrom:
                 secretKeyRef:
@@ -43,40 +43,40 @@ spec:
                   name: pdns-mariadb
                   key: password
             - name: PDNS_primary
-              value: 'yes'
+              value: "yes"
             - name: PDNS_api
-              value: 'yes'
+              value: "yes"
             - name: PDNS_api_key
               valueFrom:
                 secretKeyRef:
                   name: powerdns
                   key: api_key
             - name: PDNS_webserver
-              value: 'yes'
+              value: "yes"
             - name: PDNS_webserver_address
-              value: '0.0.0.0'
+              value: "0.0.0.0"
             - name: PDNS_webserver-allow-from
-              value: '127.0.0.1,10.254.0.0/16,10.207.0.0/16,10.0.0.0/8'
+              value: "127.0.0.1,10.254.0.0/16,10.207.0.0/16,10.0.0.0/8"
             - name: PDNS_webserver_password
               valueFrom:
                 secretKeyRef:
                   name: powerdns
                   key: webserver_password
             - name: PDNS_version_string
-              value: 'anonymous'
+              value: "anonymous"
             - name: PDNS_default_ttl
-              value: '1500'
+              value: "1500"
             - name: PDNS_allow_notify_from
-              value: '0.0.0.0'
+              value: "0.0.0.0"
             - name: PDNS_allow_axfr_ips
-              value: '127.0.0.1'
+              value: "127.0.0.1"
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: powerdns
 spec:
-  refreshInterval: '1h'
+  refreshInterval: "1h"
   secretStoreRef:
     name: vault-backend
     kind: ClusterSecretStore

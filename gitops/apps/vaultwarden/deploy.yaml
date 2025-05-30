@@ -15,85 +15,85 @@ spec:
         app: vaultwarden
     spec:
       containers:
-      - name: vaultwarden
-        image: timshel/vaultwarden:1.33.2-1
-        ports:
-        - name: web
-          containerPort: 80
-        env:
-        - name: DOMAIN
-          value: "https://vaultwarden.didactiklabs.io"
-        - name: ADMIN_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: vaultwarden
-              key: admin_token
-        - name: SIGNUPS_ALLOWED
-          value: "false"
-        - name: INVITATIONS_ALLOWED
-          value: "false"
-        - name: SHOW_PASSWORD_HINT
-          value: "false"
-        - name: WEBSOCKET_ENABLED
-          value: "true"
-        - name: LOG_LEVEL
-          value: "info"
-        - name: SSO_ENABLED
-          value: "true"
-        - name: SSO_ONLY
-          value: "true"
-        - name: SSO_ORGANIZATIONS_INVIT
-          value: "true"
-        - name: SSO_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name: vaultwarden
-              key: client_id
-        - name: SSO_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: vaultwarden
-              key: client_secret
-        - name: SSO_AUTHORITY
-          value: "https://auth.didactiklabs.io/application/o/vaultwarden/"
-        readinessProbe:
-          httpGet:
-            path: /
-            port: web
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /
-            port: web
-          initialDelaySeconds: 15
-          periodSeconds: 20
-        resources:
-          limits:
-            memory: 200Mi
-          requests:
-            memory: 64Mi
-        volumeMounts:
-        - name: startup
-          mountPath: /etc/bitwarden_rs.d/
-        - name: cacert
-          mountPath: /usr/local/share/ca-certificates/ca.crt
-          subPath: ca.crt
-        - name: data
-          mountPath: /data
+        - name: vaultwarden
+          image: timshel/vaultwarden:1.33.2-1
+          ports:
+            - name: web
+              containerPort: 80
+          env:
+            - name: DOMAIN
+              value: "https://vaultwarden.didactiklabs.io"
+            - name: ADMIN_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: vaultwarden
+                  key: admin_token
+            - name: SIGNUPS_ALLOWED
+              value: "false"
+            - name: INVITATIONS_ALLOWED
+              value: "false"
+            - name: SHOW_PASSWORD_HINT
+              value: "false"
+            - name: WEBSOCKET_ENABLED
+              value: "true"
+            - name: LOG_LEVEL
+              value: "info"
+            - name: SSO_ENABLED
+              value: "true"
+            - name: SSO_ONLY
+              value: "true"
+            - name: SSO_ORGANIZATIONS_INVIT
+              value: "true"
+            - name: SSO_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: vaultwarden
+                  key: client_id
+            - name: SSO_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: vaultwarden
+                  key: client_secret
+            - name: SSO_AUTHORITY
+              value: "https://auth.didactiklabs.io/application/o/vaultwarden/"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: web
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: web
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            limits:
+              memory: 200Mi
+            requests:
+              memory: 64Mi
+          volumeMounts:
+            - name: startup
+              mountPath: /etc/bitwarden_rs.d/
+            - name: cacert
+              mountPath: /usr/local/share/ca-certificates/ca.crt
+              subPath: ca.crt
+            - name: data
+              mountPath: /data
       volumes:
-      - name: startup
-        configMap:
-          name: startup
-      - name: cacert
-        secret:
-          secretName: vaultwarden-tls
-          items:
-          - key: ca.crt
-            path: ca.crt
-      - name: data
-        persistentVolumeClaim:
-          claimName: vaultwarden-data
+        - name: startup
+          configMap:
+            name: startup
+        - name: cacert
+          secret:
+            secretName: vaultwarden-tls
+            items:
+              - key: ca.crt
+                path: ca.crt
+        - name: data
+          persistentVolumeClaim:
+            claimName: vaultwarden-data
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -106,7 +106,7 @@ data:
     echo "update-ca-certificates"
     update-ca-certificates
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: vaultwarden
@@ -118,15 +118,15 @@ spec:
   target:
     name: vaultwarden
   data:
-  - secretKey: admin_token
-    remoteRef:
-      key: secrets/vaultwarden/server
-      property: admin_token
-  - secretKey: client_id
-    remoteRef:
-      key: secrets/vaultwarden/server
-      property: client_id
-  - secretKey: client_secret
-    remoteRef:
-      key: secrets/vaultwarden/server
-      property: client_secret
+    - secretKey: admin_token
+      remoteRef:
+        key: secrets/vaultwarden/server
+        property: admin_token
+    - secretKey: client_id
+      remoteRef:
+        key: secrets/vaultwarden/server
+        property: client_id
+    - secretKey: client_secret
+      remoteRef:
+        key: secrets/vaultwarden/server
+        property: client_secret

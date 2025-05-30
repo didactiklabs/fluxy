@@ -14,32 +14,32 @@ spec:
         app: authentik-postgres
     spec:
       containers:
-      - image: postgres:17.5
-        name: postgres
-        ports:
-        - name: postgres
-          containerPort: 5432
-        env:
-        - name: POSTGRES_USER
-          value: authentik
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: authentik-postgres
-              key: password
-        - name: POSTGRES_DB
-          value: authentik
-        - name: PGDATA
-          value: "/var/lib/postgresql/data/pgdata"
-        volumeMounts:
-        - mountPath: "/var/lib/postgresql/data"
-          name: data
+        - image: postgres:17.5
+          name: postgres
+          ports:
+            - name: postgres
+              containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: authentik
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-postgres
+                  key: password
+            - name: POSTGRES_DB
+              value: authentik
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data"
+              name: data
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: authentik-db
+        - name: data
+          persistentVolumeClaim:
+            claimName: authentik-db
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: authentik-postgres
@@ -51,7 +51,7 @@ spec:
   target:
     name: authentik-postgres
   data:
-  - secretKey: password
-    remoteRef:
-      key: secrets/authentik/postgres
-      property: password
+    - secretKey: password
+      remoteRef:
+        key: secrets/authentik/postgres
+        property: password
