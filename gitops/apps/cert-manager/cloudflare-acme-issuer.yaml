@@ -9,14 +9,14 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-cloudflare-account-key
     solvers:
-    - dns01:
-        cloudflare:
-          email: alanamoyel06@gmail.com
-          apiKeySecretRef:
-            name: cloudflare-api-key-secret
-            key: api-key
+      - dns01:
+          cloudflare:
+            email: alanamoyel06@gmail.com
+            apiKeySecretRef:
+              name: cloudflare-api-key-secret
+              key: api-key
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: cloudflare-api-key-secret
