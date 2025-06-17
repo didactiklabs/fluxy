@@ -28,6 +28,9 @@ sources:
         kind: semver
         pattern: '*'
     transformers:
+      - replacer:
+          from: "+"
+          to: "-"
       - trimprefix: 'v'
 conditions:
   default:
