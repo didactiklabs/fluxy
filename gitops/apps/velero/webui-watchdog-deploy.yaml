@@ -17,7 +17,7 @@ spec:
       serviceAccountName: velero-ro
       containers:
         - name: watchdog
-          image: dserio83/velero-watchdog:0.1.6
+          image: dserio83/velero-watchdog:0.1.8
           imagePullPolicy: Always
           env:
             - name: API_ENDPOINT_URL
