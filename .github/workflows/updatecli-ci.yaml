@@ -2,13 +2,13 @@ name: Updatecli
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */2 * * *' # every 6 hours
+    - cron: "0 */2 * * *" # every 6 hours
 permissions:
-  contents: 'write'
-  pull-requests: 'write'
+  contents: "write"
+  pull-requests: "write"
 jobs:
   updatecli:
-    runs-on: 'didactiklabs-runners'
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -32,7 +32,7 @@ jobs:
             trusted-public-keys = didactiklabs-nixcache:PxLKN0+ZkP07M8g8/B6xbP6A4MYpqQg6LH7V3muiy/0= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
             substituters = https://s3.didactiklabs.io/nix-cache https://cache.nixos.org/
       - name: Run Updatecli in apply mode
-        run: 'updatecli apply --config ./updatecli/updatecli.d --values updatecli/values.yaml'
+        run: "updatecli apply --config ./updatecli/updatecli.d --values updatecli/values.yaml"
         env:
-          UPDATECLI_GITHUB_TOKEN: '${{ steps.app-token.outputs.token }}'
-          GITHUB_TOKEN: '${{ steps.app-token.outputs.token }}'
+          UPDATECLI_GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
+          GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
