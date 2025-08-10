@@ -10,6 +10,7 @@
       "pre_releases": false,
       "version_upper_bound": null,
       "release_prefix": null,
+      "submodules": false,
       "version": "v1.17.1",
       "revision": "79c8eae15bf2e22c69f97bc32ff365a75d49f221",
       "url": "https://api.github.com/repos/cert-manager/cert-manager/tarball/v1.17.1",
@@ -25,6 +26,7 @@
       "pre_releases": false,
       "version_upper_bound": null,
       "release_prefix": null,
+      "submodules": false,
       "version": "v1.25.1",
       "revision": "c56e00d462c3899ab305540953ec541dfe0f762a",
       "url": "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/tarball/v1.25.1",
@@ -40,6 +42,7 @@
       "pre_releases": false,
       "version_upper_bound": null,
       "release_prefix": null,
+      "submodules": false,
       "version": "v0.17.1",
       "revision": "d207649cca852336589dac3aa70cf6636086631d",
       "url": "https://api.github.com/repos/kubernetes-sigs/cluster-api-operator/tarball/v0.17.1",
@@ -55,6 +58,7 @@
       "pre_releases": false,
       "version_upper_bound": null,
       "release_prefix": null,
+      "submodules": false,
       "version": "v1.61.2",
       "revision": "253becebbf3049469c0d2b07d5dcce5f5a704b84",
       "url": "https://api.github.com/repos/kubevirt/containerized-data-importer/tarball/v1.61.2",
@@ -70,6 +74,7 @@
       "pre_releases": false,
       "version_upper_bound": null,
       "release_prefix": null,
+      "submodules": false,
       "version": "v1.30.2",
       "revision": "4ae34186f5230dbd27f6fc3df44dbfe09298c11e",
       "url": "https://api.github.com/repos/projectcontour/contour/tarball/v1.30.2",
@@ -85,6 +90,7 @@
       "pre_releases": false,
       "version_upper_bound": null,
       "release_prefix": null,
+      "submodules": false,
       "version": "v0.18.0",
       "revision": "d8c21885920897f3f4addeaabbbcd414df528101",
       "url": "https://api.github.com/repos/controlplaneio-fluxcd/flux-operator/tarball/v0.18.0",
@@ -100,6 +106,7 @@
       "pre_releases": false,
       "version_upper_bound": null,
       "release_prefix": null,
+      "submodules": false,
       "version": "v1.2.1",
       "revision": "a8fe5c8732a37ef471d86afaf570ff8ad0ef0221",
       "url": "https://api.github.com/repos/kubernetes-sigs/gateway-api/tarball/v1.2.1",
@@ -115,6 +122,7 @@
       "pre_releases": false,
       "version_upper_bound": null,
       "release_prefix": null,
+      "submodules": false,
       "version": "v5.17.0",
       "revision": "fb7788e014676176eb67b7d903acc7d0c584830e",
       "url": "https://api.github.com/repos/grafana-operator/grafana-operator/tarball/v5.17.0",
@@ -130,6 +138,7 @@
       "pre_releases": false,
       "version_upper_bound": null,
       "release_prefix": null,
+      "submodules": false,
       "version": "edge-24.12.1",
       "revision": "9171f46c6072a82867d7ae564150b69aec4e5768",
       "url": "https://api.github.com/repos/clastix/kamaji/tarball/edge-24.12.1",
@@ -143,6 +152,7 @@
         "repo": "kube-prometheus"
       },
       "branch": "main",
+      "submodules": false,
       "revision": "baf3c7a71ec9f889644231f677f8708791d38293",
       "url": "https://github.com/prometheus-operator/kube-prometheus/archive/baf3c7a71ec9f889644231f677f8708791d38293.tar.gz",
       "hash": "0l7c0ifmywcmvxm1dmkb5jrj0j93llh83n80nxnr2x2a10cm7bss"
@@ -157,6 +167,7 @@
       "pre_releases": false,
       "version_upper_bound": null,
       "release_prefix": null,
+      "submodules": false,
       "version": "v1.5.0",
       "revision": "92c61c8eb5f0d6df7c0e20700e3cf1553a88964b",
       "url": "https://api.github.com/repos/kubevirt/kubevirt/tarball/v1.5.0",
@@ -170,6 +181,7 @@
         "repo": "monitoring"
       },
       "branch": "main",
+      "submodules": false,
       "revision": "234f65f076465b7f96edd23a028fd943000a3493",
       "url": "https://github.com/kubevirt/monitoring/archive/234f65f076465b7f96edd23a028fd943000a3493.tar.gz",
       "hash": "02gjb8a0lwv6kwa95wvg05038vw26hfmzngv8d06nsq73ldh1cf7"
@@ -181,5 +193,5 @@
       "hash": "0315192iph30ziqlf68vx86qxh9ibcyfz65acnvdqjiarky7mcd4"
     }
   },
-  "version": 3
+  "version": 5
 }
