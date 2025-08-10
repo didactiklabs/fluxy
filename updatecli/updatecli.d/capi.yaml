@@ -46,7 +46,6 @@ targets:
     spec:
       environments:
         - name: PATH
-        - name: NIX_PATH
       command: |
         set -e
         nix run nixpkgs#npins -- add --name cluster-api-operator github kubernetes-sigs cluster-api-operator --at {{ source `cluster-api-operator` }}
