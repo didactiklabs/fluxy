@@ -36,3 +36,4 @@ jobs:
         env:
           UPDATECLI_GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
           GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
+          NIX_PATH: "nixpkgs=${{ env.url }}"
