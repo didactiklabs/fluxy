@@ -1,5 +1,0 @@
-namespace: default
-resources:
-- endpoint.yaml
-- service.yaml
-- httproute.yaml
