@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: plex
+  name: jellyfin
 spec:
   ports:
     - port: 8096
