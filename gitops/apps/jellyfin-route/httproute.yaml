@@ -1,0 +1,19 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: jellyfin
+spec:
+  hostnames:
+  - jellyfin.didactiklabs.io
+  parentRefs:
+  - name: public
+    namespace: istio-system
+    sectionName: https
+  rules:
+  - backendRefs:
+    - name: plex
+      port: 8096
+    matches:
+    - path:
+        type: PathPrefix
+        value: /
