@@ -11,7 +11,7 @@ spec:
     sectionName: https
   rules:
   - backendRefs:
-    - name: plex
+    - name: jellyfin
       port: 8096
     matches:
     - path:
