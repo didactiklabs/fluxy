@@ -9,7 +9,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.18.0
   name: fluxinstances.fluxcd.controlplane.io
 spec:
   group: fluxcd.controlplane.io
@@ -68,7 +68,9 @@ spec:
                       Defaults to 'cluster.local'.
                     type: string
                   multitenant:
-                    description: Multitenant enables the multitenancy lockdown.
+                    default: false
+                    description: Multitenant enables the multitenancy lockdown. Defaults
+                      to false.
                     type: boolean
                   networkPolicy:
                     default: true
@@ -76,6 +78,22 @@ spec:
                       NetworkPolicy restricts network access to the current namespace.
                       Defaults to true.
                     type: boolean
+                  objectLevelWorkloadIdentity:
+                    description: |-
+                      ObjectLevelWorkloadIdentity enables the feature gate
+                      required for object-level workload identity.
+                      This feature is only available in Flux v2.6.0 and later.
+                    type: boolean
+                  size:
+                    description: |-
+                      Size defines the vertical scaling profile of the Flux controllers.
+                      The size is used to determine the concurrency and CPU/Memory limits for the Flux controllers.
+                      Accepted values are: 'small', 'medium' and 'large'.
+                    enum:
+                    - small
+                    - medium
+                    - large
+                    type: string
                   tenantDefaultServiceAccount:
                     description: |-
                       TenantDefaultServiceAccount is the name of the service account
@@ -94,9 +112,6 @@ spec:
                     - azure
                     - gcp
                     type: string
-                required:
-                - domain
-                - networkPolicy
                 type: object
               commonMetadata:
                 description: |-
@@ -118,7 +133,7 @@ spec:
               components:
                 description: |-
                   Components is the list of controllers to install.
-                  Defaults to all controllers.
+                  Defaults to a commonly used subset.
                 items:
                   description: Component is the name of a controller to install.
                   enum:
@@ -249,6 +264,16 @@ spec:
                       type: string
                     minItems: 1
                     type: array
+                  storage:
+                    description: |-
+                      Storage defines if the source-controller shards
+                      should use an emptyDir or a persistent volume claim for storage.
+                      Accepted values are 'ephemeral' or 'persistent', defaults to 'ephemeral'.
+                      For 'persistent' to take effect, the '.spec.storage' field must be set.
+                    enum:
+                    - ephemeral
+                    - persistent
+                    type: string
                 required:
                 - shards
                 type: object
@@ -483,6 +508,9 @@ spec:
                 type: string
             type: object
         type: object
+        x-kubernetes-validations:
+        - message: the only accepted name for a FluxInstance is 'flux'
+          rule: self.metadata.name == 'flux'
     served: true
     storage: true
     subresources:
@@ -492,7 +520,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.18.0
   name: fluxreports.fluxcd.controlplane.io
 spec:
   group: fluxcd.controlplane.io
@@ -545,6 +573,25 @@ spec:
           spec:
             description: FluxReportSpec defines the observed state of a Flux installation.
             properties:
+              cluster:
+                description: Cluster is the version information of the Kubernetes
+                  cluster.
+                properties:
+                  nodes:
+                    description: Nodes is the number of nodes in the Kubernetes cluster.
+                    type: integer
+                  platform:
+                    description: Platform is the os/arch of the Kubernetes control
+                      plane.
+                    type: string
+                  serverVersion:
+                    description: ServerVersion is the version of the Kubernetes API
+                      server.
+                    type: string
+                required:
+                - platform
+                - serverVersion
+                type: object
               components:
                 description: ComponentsStatus is the status of the Flux controller
                   deployments.
@@ -594,6 +641,23 @@ spec:
                 required:
                 - entitlement
                 - status
+                type: object
+              operator:
+                description: Operator is the version information of the Flux Operator.
+                properties:
+                  apiVersion:
+                    description: APIVersion is the API version of the Flux Operator.
+                    type: string
+                  platform:
+                    description: Platform is the os/arch of Flux Operator.
+                    type: string
+                  version:
+                    description: Version is the version number of Flux Operator.
+                    type: string
+                required:
+                - apiVersion
+                - platform
+                - version
                 type: object
               reconcilers:
                 description: |-
@@ -740,6 +804,9 @@ spec:
                 type: string
             type: object
         type: object
+        x-kubernetes-validations:
+        - message: the only accepted name for a FluxReport is 'flux'
+          rule: self.metadata.name == 'flux'
     served: true
     storage: true
     subresources:
@@ -749,7 +816,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.18.0
   name: resourcesetinputproviders.fluxcd.controlplane.io
 spec:
   group: fluxcd.controlplane.io
@@ -806,8 +873,10 @@ spec:
                   - a PEM-encoded CA certificate (`ca.crt`)
                   - a PEM-encoded client certificate (`tls.crt`) and private key (`tls.key`)
 
-                  When connecting to a Git provider that uses self-signed certificates, the CA certificate
+                  When connecting to a Git or OCI provider that uses self-signed certificates, the CA certificate
                   must be set in the Secret under the 'ca.crt' key to establish the trust relationship.
+                  When connecting to an OCI provider that supports client certificates (mTLS), the client certificate
+                  and private key must be set in the Secret under the 'tls.crt' and 'tls.key' keys, respectively.
                 properties:
                   name:
                     description: Name of the referent.
@@ -832,9 +901,19 @@ spec:
                       ExcludeBranch specifies the regular expression to filter the branches
                       that the input provider should exclude.
                     type: string
+                  excludeTag:
+                    description: |-
+                      ExcludeTag specifies the regular expression to filter the tags
+                      that the input provider should exclude.
+                    type: string
                   includeBranch:
                     description: |-
                       IncludeBranch specifies the regular expression to filter the branches
+                      that the input provider should include.
+                    type: string
+                  includeTag:
+                    description: |-
+                      IncludeTag specifies the regular expression to filter the tags
                       that the input provider should include.
                     type: string
                   labels:
@@ -844,18 +923,53 @@ spec:
                       type: string
                     type: array
                   limit:
+                    default: 100
                     description: |-
                       Limit specifies the maximum number of input sets to return.
                       When not set, the default limit is 100.
                     type: integer
+                  semver:
+                    description: |-
+                      Semver specifies a semantic version range to filter and sort the tags.
+                      If this field is not specified, the tags will be sorted in reverse
+                      alphabetical order.
+                      Supported only for tags at the moment.
+                    type: string
                 type: object
+              schedule:
+                description: Schedule defines the schedules for the input provider
+                  to run.
+                items:
+                  description: Schedule defines a schedule for something to run.
+                  properties:
+                    cron:
+                      description: Cron specifies the cron expression for the schedule.
+                      type: string
+                    timeZone:
+                      default: UTC
+                      description: TimeZone specifies the time zone for the cron schedule.
+                        Defaults to UTC.
+                      type: string
+                    window:
+                      default: 0s
+                      description: |-
+                        Window defines the time window during which the execution is allowed.
+                        Defaults to 0s, meaning no window is applied.
+                      pattern: ^([0-9]+(\.[0-9]+)?(ms|s|m|h))+$
+                      type: string
+                  required:
+                  - cron
+                  type: object
+                type: array
               secretRef:
                 description: |-
                   SecretRef specifies the Kubernetes Secret containing the basic-auth credentials
-                  to access the input provider. The secret must contain the keys
-                  'username' and 'password'.
-                  When connecting to a Git provider, the password should be a personal access token
+                  to access the input provider.
+                  When connecting to a Git provider, the secret must contain the keys
+                  'username' and 'password', and the password should be a personal access token
                   that grants read-only access to the repository.
+                  When connecting to an OCI provider, the secret must contain a Kubernetes
+                  Image Pull Secret, as if created by `kubectl create secret docker-registry`.
                 properties:
                   name:
                     description: Name of the referent.
@@ -863,24 +977,80 @@ spec:
                 required:
                 - name
                 type: object
+              serviceAccountName:
+                description: |-
+                  ServiceAccountName specifies the name of the Kubernetes ServiceAccount
+                  used for authentication with AWS, Azure or GCP services through
+                  workload identity federation features. If not specified, the
+                  authentication for these cloud providers will use the ServiceAccount
+                  of the operator (or any other environment authentication configuration).
+                type: string
+              skip:
+                description: Skip defines whether we need to skip input provider response
+                  updates.
+                properties:
+                  labels:
+                    description: |-
+                      Labels specifies list of labels to skip input provider response when any of the label conditions matched.
+                      When prefixed with !, input provider response will be skipped if it does not have this label.
+                    items:
+                      type: string
+                    type: array
+                type: object
               type:
                 description: Type specifies the type of the input provider.
                 enum:
+                - Static
                 - GitHubBranch
+                - GitHubTag
                 - GitHubPullRequest
                 - GitLabBranch
+                - GitLabTag
                 - GitLabMergeRequest
+                - AzureDevOpsBranch
+                - AzureDevOpsTag
+                - AzureDevOpsPullRequest
+                - OCIArtifactTag
+                - ACRArtifactTag
+                - ECRArtifactTag
+                - GARArtifactTag
                 type: string
               url:
                 description: |-
-                  URL specifies the HTTP/S address of the input provider API.
+                  URL specifies the HTTP/S or OCI address of the input provider API.
                   When connecting to a Git provider, the URL should point to the repository address.
-                pattern: ^(http|https)://.*$
+                  When connecting to an OCI provider, the URL should point to the OCI repository address.
+                pattern: ^((http|https|oci)://.*){0,1}$
                 type: string
             required:
             - type
-            - url
             type: object
+            x-kubernetes-validations:
+            - message: spec.url must be empty when spec.type is 'Static'
+              rule: self.type != 'Static' || !has(self.url)
+            - message: spec.url must not be empty when spec.type is not 'Static'
+              rule: self.type == 'Static' || has(self.url)
+            - message: spec.url must start with 'http://' or 'https://' when spec.type
+                is a Git provider
+              rule: '!self.type.startsWith(''Git'') || self.url.startsWith(''http'')'
+            - message: spec.url must start with 'http://' or 'https://' when spec.type
+                is a Git provider
+              rule: '!self.type.startsWith(''AzureDevOps'') || self.url.startsWith(''http'')'
+            - message: spec.url must start with 'oci://' when spec.type is an OCI
+                provider
+              rule: '!self.type.endsWith(''ArtifactTag'') || self.url.startsWith(''oci'')'
+            - message: cannot specify spec.serviceAccountName when spec.type is not
+                one of AzureDevOps* or *ArtifactTag
+              rule: '!has(self.serviceAccountName) || self.type.startsWith(''AzureDevOps'')
+                || self.type.endsWith(''ArtifactTag'')'
+            - message: cannot specify spec.certSecretRef when spec.type is one of
+                Static, AzureDevOps*, ACRArtifactTag, ECRArtifactTag or GARArtifactTag
+              rule: '!has(self.certSecretRef) || !(self.url == ''Static'' || self.type.startsWith(''AzureDevOps'')
+                || (self.type.endsWith(''ArtifactTag'') && self.type != ''OCIArtifactTag''))'
+            - message: cannot specify spec.secretRef when spec.type is one of Static,
+                ACRArtifactTag, ECRArtifactTag or GARArtifactTag
+              rule: '!has(self.secretRef) || !(self.url == ''Static'' || (self.type.endsWith(''ArtifactTag'')
+                && self.type != ''OCIArtifactTag''))'
           status:
             description: ResourceSetInputProviderStatus defines the observed state
               of ResourceSetInputProvider.
@@ -957,12 +1127,45 @@ spec:
                   LastExportedRevision is the digest of the
                   inputs that were last reconcile.
                 type: string
+              lastHandledForceAt:
+                description: |-
+                  LastHandledForceAt holds the value of the most recent
+                  force request value, so a change of the annotation value
+                  can be detected.
+                type: string
               lastHandledReconcileAt:
                 description: |-
                   LastHandledReconcileAt holds the value of the most recent
                   reconcile request value, so a change of the annotation value
                   can be detected.
                 type: string
+              nextSchedule:
+                description: NextSchedule is the next schedule when the input provider
+                  will run.
+                properties:
+                  cron:
+                    description: Cron specifies the cron expression for the schedule.
+                    type: string
+                  timeZone:
+                    default: UTC
+                    description: TimeZone specifies the time zone for the cron schedule.
+                      Defaults to UTC.
+                    type: string
+                  when:
+                    description: When is the next time the schedule will run.
+                    format: date-time
+                    type: string
+                  window:
+                    default: 0s
+                    description: |-
+                      Window defines the time window during which the execution is allowed.
+                      Defaults to 0s, meaning no window is applied.
+                    pattern: ^([0-9]+(\.[0-9]+)?(ms|s|m|h))+$
+                    type: string
+                required:
+                - cron
+                - when
+                type: object
             type: object
         type: object
     served: true
@@ -974,7 +1177,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.18.0
   name: resourcesets.fluxcd.controlplane.io
 spec:
   group: fluxcd.controlplane.io
@@ -1090,6 +1293,9 @@ spec:
                   When set, the inputs are fetched from the providers and concatenated
                   with the in-line inputs defined in the ResourceSet.
                 items:
+                  description: |-
+                    InputProviderReference defines a reference to an input provider resource
+                    in the same namespace as the ResourceSet.
                   properties:
                     apiVersion:
                       description: |-
@@ -1102,12 +1308,68 @@ spec:
                       - ResourceSetInputProvider
                       type: string
                     name:
-                      description: Name of the input provider resource.
+                      description: |-
+                        Name of the input provider resource. Cannot be set
+                        when the Selector field is set.
                       type: string
+                    selector:
+                      description: |-
+                        Selector is a label selector to filter the input provider resources
+                        as an alternative to the Name field.
+                      properties:
+                        matchExpressions:
+                          description: matchExpressions is a list of label selector
+                            requirements. The requirements are ANDed.
+                          items:
+                            description: |-
+                              A label selector requirement is a selector that contains values, a key, and an operator that
+                              relates the key and values.
+                            properties:
+                              key:
+                                description: key is the label key that the selector
+                                  applies to.
+                                type: string
+                              operator:
+                                description: |-
+                                  operator represents a key's relationship to a set of values.
+                                  Valid operators are In, NotIn, Exists and DoesNotExist.
+                                type: string
+                              values:
+                                description: |-
+                                  values is an array of string values. If the operator is In or NotIn,
+                                  the values array must be non-empty. If the operator is Exists or DoesNotExist,
+                                  the values array must be empty. This array is replaced during a strategic
+                                  merge patch.
+                                items:
+                                  type: string
+                                type: array
+                                x-kubernetes-list-type: atomic
+                            required:
+                            - key
+                            - operator
+                            type: object
+                          type: array
+                          x-kubernetes-list-type: atomic
+                        matchLabels:
+                          additionalProperties:
+                            type: string
+                          description: |-
+                            matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+                            map is equivalent to an element of matchExpressions, whose key field is "key", the
+                            operator is "In", and the values array contains only "value". The requirements are ANDed.
+                          type: object
+                      type: object
+                      x-kubernetes-map-type: atomic
                   required:
                   - kind
-                  - name
                   type: object
+                  x-kubernetes-validations:
+                  - message: at least one of name or selector must be set for input
+                      provider references
+                    rule: has(self.name) || has(self.selector)
+                  - message: cannot set both name and selector for input provider
+                      references
+                    rule: '!has(self.name) || !has(self.selector)'
                 type: array
               resources:
                 description: Resources contains the list of Kubernetes resources to
@@ -1352,7 +1614,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: ghcr.io/controlplaneio-fluxcd/flux-operator:v0.18.0
+        image: ghcr.io/controlplaneio-fluxcd/flux-operator:v0.27.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -1376,7 +1638,7 @@ spec:
           periodSeconds: 10
         resources:
           limits:
-            cpu: 1000m
+            cpu: 2000m
             memory: 1Gi
           requests:
             cpu: 10m
