@@ -59,10 +59,10 @@
       "version_upper_bound": null,
       "release_prefix": null,
       "submodules": false,
-      "version": "v1.62.0",
-      "revision": "7e8166644943606c8081c6eb6803107fe0e32d25",
-      "url": "https://api.github.com/repos/kubevirt/containerized-data-importer/tarball/v1.62.0",
-      "hash": "08g13939mx7frid4l9y0bdbbi1p4rv09nc74fssv6fflbxy107r7"
+      "version": "v1.63.0",
+      "revision": "d2f67fa8045c2fe8f1847966db2f056e61535403",
+      "url": "https://api.github.com/repos/kubevirt/containerized-data-importer/tarball/v1.63.0",
+      "hash": "0g39d692kh3pjw0fdzmc041gv9d3vflbhqax15frpc2lmlha3jwn"
     },
     "contour": {
       "type": "GitRelease",
