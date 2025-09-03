@@ -17,7 +17,7 @@ spec:
       serviceAccountName: webui-backend
       containers:
         - name: api
-          image: docker.io/dserio83/velero-api:0.1.16
+          image: docker.io/dserio83/velero-api:0.3.1
           imagePullPolicy: Always
           ports:
             - containerPort: 8001
