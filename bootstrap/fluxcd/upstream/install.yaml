@@ -173,6 +173,7 @@ spec:
                   - notification-controller
                   - image-reflector-controller
                   - image-automation-controller
+                  - source-watcher
                   type: string
                 type: array
               distribution:
@@ -1774,7 +1775,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: ghcr.io/controlplaneio-fluxcd/flux-operator:v0.29.0
+        image: ghcr.io/controlplaneio-fluxcd/flux-operator:v0.30.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
