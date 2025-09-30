@@ -1,9 +1,6 @@
 namespace: authentik
 resources:
 - ns.yaml
-- db-pvc.yaml
-- db-deploy.yaml
-- db-svc.yaml
+- cnpg.yaml
 - authentik-secrets.yaml
-# - apps-protect-ing.yaml
 - httproute.yaml
