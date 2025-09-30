@@ -48,7 +48,7 @@ spec:
       outposts:
         container_image_base: ghcr.io/goauthentik/%(type)s:%(version)s
       postgresql:
-        host: '{{ .Release.Name }}-postgres'
+        host: authentik-postgres-rw
         name: postgres
         port: 5432
         user: authentik
