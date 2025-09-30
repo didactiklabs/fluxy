@@ -51,7 +51,7 @@ spec:
         host: authentik-postgres-rw
         name: postgres
         port: 5432
-        user: authentik
+        user: postgres
       redis:
         host: '{{ .Release.Name }}-redis-master'
     postgresql:
