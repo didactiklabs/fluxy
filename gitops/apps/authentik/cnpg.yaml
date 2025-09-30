@@ -4,11 +4,8 @@ metadata:
   name: authentik-postgres
 spec:
   instances: 1
-  bootstrap:
-    initdb:
-      database: authentik
-      owner: authentik
-      secret:
-        name: authentik-postgres
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: authentik-postgres
   storage:
     size: 8Gi
