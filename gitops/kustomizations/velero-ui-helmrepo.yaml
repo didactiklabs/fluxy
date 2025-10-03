@@ -6,7 +6,3 @@ metadata:
 spec:
   interval: 1h0m0s
   url: https://helm.otwld.com
-  dependsOn:
-    - name: velero
-      kind: Kustomization
-      apiVersion: kustomize.toolkit.fluxcd.io/v1
