@@ -16,7 +16,7 @@ spec:
       interval: 12h
   values:
     env:
-      REDIS_HOSTNAME: '{{ printf "%s-redis-master" .Release.Name }}'
+      REDIS_HOSTNAME: '{{ printf "%s-valkey" .Release.Name }}'
       DB_HOSTNAME: 'immich-postgres-rw'
       DB_USERNAME: 'immich'
       DB_DATABASE_NAME: 'immich'
@@ -45,12 +45,11 @@ spec:
       persistence:
         library:
           existingClaim: immich-data
-    redis:
+    valkey:
       enabled: true
-      architecture: replication
-      replica:
-        resourcesPreset: 'micro'
-    # Immich components
+      persistence:
+        data:
+          enabled: false
     server:
       enabled: true
       serviceAccount:
