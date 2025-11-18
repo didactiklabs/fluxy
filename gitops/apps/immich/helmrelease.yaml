@@ -15,19 +15,23 @@ spec:
         namespace: immich
       interval: 12h
   values:
-    env:
-      REDIS_HOSTNAME: '{{ printf "%s-valkey" .Release.Name }}'
-      DB_HOSTNAME: 'immich-postgres-rw'
-      DB_USERNAME: 'immich'
-      DB_DATABASE_NAME: 'immich'
-      IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
-      DB_PASSWORD:
-        valueFrom:
-          secretKeyRef:
-            key: password
-            name: immich-secrets
-    image:
-      tag: v2.2.3
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              tag: v2.2.3
+            env:
+              REDIS_HOSTNAME: '{{ printf "%s-valkey" .Release.Name }}'
+              DB_HOSTNAME: 'immich-postgres-rw'
+              DB_USERNAME: 'immich'
+              DB_DATABASE_NAME: 'immich'
+              IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
+              DB_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    key: password
+                    name: immich-secrets
     immich:
       metrics:
         enable: true
