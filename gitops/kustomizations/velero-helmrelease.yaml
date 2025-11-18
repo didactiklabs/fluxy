@@ -43,5 +43,5 @@ spec:
       existingSecret: minio-credentials
     kubectl:
       image:
-        repository: alpine/kubectl
-        tag: 1.34.0
+        repository: public.ecr.aws/bitnami/kubectl
+        tag: latest
