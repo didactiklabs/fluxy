@@ -41,3 +41,7 @@ spec:
     credentials:
       useSecret: true
       existingSecret: minio-credentials
+    kubectl:
+      image:
+        repository: alpine/kubectl
+        tag: 1.34.0
