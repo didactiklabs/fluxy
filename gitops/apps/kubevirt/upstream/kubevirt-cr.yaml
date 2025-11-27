@@ -9,6 +9,7 @@ spec:
   configuration:
     developerConfiguration:
       featureGates: []
+    imagePullPolicy: IfNotPresent
   customizeComponents: {}
   imagePullPolicy: IfNotPresent
   workloadUpdateStrategy: {}
