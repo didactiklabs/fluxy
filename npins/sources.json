@@ -91,10 +91,10 @@
       "version_upper_bound": null,
       "release_prefix": null,
       "submodules": false,
-      "version": "v0.35.0",
-      "revision": "1a0b3d769f20901d514d8cedeccc3ad435740dda",
-      "url": "https://api.github.com/repos/controlplaneio-fluxcd/flux-operator/tarball/v0.35.0",
-      "hash": "15xr4j2qlabay8bdy5ws0ccb3011vmzh45lysl4p6fa4wxwz3sqb"
+      "version": "v0.36.0",
+      "revision": "81d349a29d23af068ea63b40995b432fb405efe3",
+      "url": "https://api.github.com/repos/controlplaneio-fluxcd/flux-operator/tarball/v0.36.0",
+      "hash": "0zzrvpq0d7588ym3xzh3im6g3abzg8a6pzm511scvbppz9s6lbk8"
     },
     "gateway-api": {
       "type": "GitRelease",
