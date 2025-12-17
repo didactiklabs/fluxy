@@ -999,6 +999,11 @@ spec:
                       ExcludeBranch specifies the regular expression to filter the branches
                       that the input provider should exclude.
                     type: string
+                  excludeEnvironment:
+                    description: |-
+                      ExcludeEnvironment specifies the regular expression to filter the environments
+                      that the input provider should exclude.
+                    type: string
                   excludeTag:
                     description: |-
                       ExcludeTag specifies the regular expression to filter the tags
@@ -1007,6 +1012,11 @@ spec:
                   includeBranch:
                     description: |-
                       IncludeBranch specifies the regular expression to filter the branches
+                      that the input provider should include.
+                    type: string
+                  includeEnvironment:
+                    description: |-
+                      IncludeEnvironment specifies the regular expression to filter the environments
                       that the input provider should include.
                     type: string
                   includeTag:
@@ -1105,6 +1115,7 @@ spec:
                 - GitLabBranch
                 - GitLabTag
                 - GitLabMergeRequest
+                - GitLabEnvironment
                 - AzureDevOpsBranch
                 - AzureDevOpsTag
                 - AzureDevOpsPullRequest
@@ -1748,6 +1759,10 @@ metadata:
   namespace: flux-system
 spec:
   ports:
+  - name: http-web
+    port: 9080
+    protocol: TCP
+    targetPort: 9080
   - name: http
     port: 8080
     protocol: TCP
@@ -1791,7 +1806,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: ghcr.io/controlplaneio-fluxcd/flux-operator:v0.36.0
+        image: ghcr.io/controlplaneio-fluxcd/flux-operator:v0.37.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -1801,6 +1816,9 @@ spec:
           periodSeconds: 20
         name: manager
         ports:
+        - containerPort: 9080
+          name: http-web
+          protocol: TCP
         - containerPort: 8080
           name: http-metrics
           protocol: TCP
