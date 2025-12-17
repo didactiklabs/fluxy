@@ -5,7 +5,7 @@ metadata:
   labels:
     dashboards: 'grafana'
 spec:
-  version: 12.3.0
+  version: 12.3.1
   config:
     server:
       root_url: https://grafana.didactik.labs
