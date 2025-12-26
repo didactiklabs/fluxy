@@ -14,7 +14,7 @@
       "version": "v1.19.2",
       "revision": "74deaf6232b9d40edf0f615eb0d7c713d121ea87",
       "url": "https://api.github.com/repos/cert-manager/cert-manager/tarball/v1.19.2",
-      "hash": "0h0r1ax71b5i676bffs90bi366shhc34ir3l0pz8w2f4r8kkwvyj"
+      "hash": "sha256-0m8+J8rECY7+BXTkSAaDUBsz4gJJO7fMMbGscLoKGUA="
     },
     "cloudnative-pg": {
       "type": "GitRelease",
@@ -30,7 +30,7 @@
       "version": "v1.28.0",
       "revision": "a9696201f760013182c6cdba7c4ed3c236a6423b",
       "url": "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/tarball/v1.28.0",
-      "hash": "11javdvpnwp5hzcm5w3mjdd82fmswmdisnlzydr9kslz6kik50mq"
+      "hash": "sha256-uIIy4zSf6ply859aHVvlujqBWpN18FLZh+Vye3fbSoY="
     },
     "cluster-api-operator": {
       "type": "GitRelease",
@@ -46,7 +46,7 @@
       "version": "v0.17.1",
       "revision": "d207649cca852336589dac3aa70cf6636086631d",
       "url": "https://api.github.com/repos/kubernetes-sigs/cluster-api-operator/tarball/v0.17.1",
-      "hash": "0g6rnlzgfh82xx6bibgib8vfwv7p9agxhyvv1vbaf307k1sghjwh"
+      "hash": "sha256-kEv4dJgHDKfWDnt72J9K92zuNlrxrbhM7wJB9z612Tw="
     },
     "containerized-data-importer": {
       "type": "GitRelease",
@@ -62,7 +62,7 @@
       "version": "v1.64.0",
       "revision": "f9c08a5bae4a22134080e72b078f478ea9a096f0",
       "url": "https://api.github.com/repos/kubevirt/containerized-data-importer/tarball/v1.64.0",
-      "hash": "0hprdc05wlfrpq8z17qhw0w9z89l4qsk2hyij4jh1x4ax4xsx2s4"
+      "hash": "sha256-RIuuO+mK9AAlkdFDMTUmNKGfOOAQn/ARvtlRXgBr+UI="
     },
     "contour": {
       "type": "GitRelease",
@@ -78,7 +78,7 @@
       "version": "v1.33.1",
       "revision": "4830ec8fe3bad39c90228c9ab1ffec95dc5ea41f",
       "url": "https://api.github.com/repos/projectcontour/contour/tarball/v1.33.1",
-      "hash": "0jmfivzl8c4kc0vb8pyvqz7lw3rw0i2msj3m1b19dlffxjbdkz0v"
+      "hash": "sha256-G/zZluzO0ZbCCnVIXUUEPA9Oz8fbX7Q2YJMwRP+Orko="
     },
     "flux-operator": {
       "type": "GitRelease",
@@ -94,7 +94,7 @@
       "version": "v0.38.1",
       "revision": "16beb5f4c6acffb4d6a08bc652fd7f42a1325b3c",
       "url": "https://api.github.com/repos/controlplaneio-fluxcd/flux-operator/tarball/v0.38.1",
-      "hash": "0ammdg923bczpr20dzxj1ha3pqj6fa6yd7ifd29c6ychfd5r855n"
+      "hash": "sha256-thSUS3OQecOSaC6e5o1yRuI7FAyy/wZEvp+tIdJrtSo="
     },
     "gateway-api": {
       "type": "GitRelease",
@@ -110,7 +110,7 @@
       "version": "v1.4.1",
       "revision": "062b039bc61f68334198240553a4ac9053074a7d",
       "url": "https://api.github.com/repos/kubernetes-sigs/gateway-api/tarball/v1.4.1",
-      "hash": "1kq6i9814ig9ag6vmc2jg8989x66py7abpa96y1h3n828y5g4qgw"
+      "hash": "sha256-/GHyikcC2QGDN0ndpY6/xvSEEnpSsLrNU+lFElCKBs8="
     },
     "grafana-operator": {
       "type": "GitRelease",
@@ -126,7 +126,7 @@
       "version": "v5.21.3",
       "revision": "1f8038505df3fdb8bbd71640c4cef84b632a23da",
       "url": "https://api.github.com/repos/grafana-operator/grafana-operator/tarball/v5.21.3",
-      "hash": "0i30i8lw1y70ii1cjb4s9knprrwj927ds99isq8a1b34fsdsm5qz"
+      "hash": "sha256-H5eqm3ZkrKAQ1jEl3Y5Ikud87UyaLMlCjOD4wCmKYEQ="
     },
     "kamaji": {
       "type": "GitRelease",
@@ -142,7 +142,7 @@
       "version": "edge-24.12.1",
       "revision": "9171f46c6072a82867d7ae564150b69aec4e5768",
       "url": "https://api.github.com/repos/clastix/kamaji/tarball/edge-24.12.1",
-      "hash": "1kidjrmcn0x4aa5fmncx71l21wjjcv6n3shg2lyik0fk859w7j0q"
+      "hash": "sha256-GMjDU0HTgRk9FQ/qYc1mUvIgaDid2eqKUqQDy2qWLc4="
     },
     "kube-prometheus": {
       "type": "Git",
@@ -155,7 +155,7 @@
       "submodules": false,
       "revision": "baf3c7a71ec9f889644231f677f8708791d38293",
       "url": "https://github.com/prometheus-operator/kube-prometheus/archive/baf3c7a71ec9f889644231f677f8708791d38293.tar.gz",
-      "hash": "0l7c0ifmywcmvxm1dmkb5jrj0j93llh83n80nxnr2x2a10cm7bss"
+      "hash": "sha256-Wq9TGQhKdJFttwDZgSClI0kgsyxr1hZq35VxX10E7FA="
     },
     "kubevirt": {
       "type": "GitRelease",
@@ -171,7 +171,7 @@
       "version": "v1.7.0",
       "revision": "5736e02e3408d084b6e78531e4021d57b5b51da6",
       "url": "https://api.github.com/repos/kubevirt/kubevirt/tarball/v1.7.0",
-      "hash": "0ygl70f9fw0m8yz4fmmax20ssgsbzi2dsl2w9hyqaj052xpdkmyi"
+      "hash": "sha256-0dfZbhcFSIU9TFxQ3UT8Sz+tgeiqVke+RxVwlxw49Hk="
     },
     "kubevirt-monitoring": {
       "type": "Git",
@@ -184,7 +184,7 @@
       "submodules": false,
       "revision": "234f65f076465b7f96edd23a028fd943000a3493",
       "url": "https://github.com/kubevirt/monitoring/archive/234f65f076465b7f96edd23a028fd943000a3493.tar.gz",
-      "hash": "02gjb8a0lwv6kwa95wvg05038vw26hfmzngv8d06nsq73ldh1cf7"
+      "hash": "sha256-x7EAGx0Ha2tAQ/vZXx00gm80QAFv85IUn2ZzChRa8gk="
     },
     "nixpkgs": {
       "type": "Git",
@@ -197,8 +197,8 @@
       "submodules": false,
       "revision": "d9bc5c7dceb30d8d6fafa10aeb6aa8a48c218454",
       "url": "https://github.com/NixOS/nixpkgs/archive/d9bc5c7dceb30d8d6fafa10aeb6aa8a48c218454.tar.gz",
-      "hash": "1fmgk95zsz29nb5c2928yfbd619j4742qjpm7y0g49z3bwm4zd6b"
+      "hash": "sha256-y7RPKl/jJ/KAP/VKLMghMgXTlvNIJMHKskl8/Uuar7o="
     }
   },
-  "version": 5
+  "version": 7
 }
