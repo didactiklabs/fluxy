@@ -14,7 +14,7 @@ spec:
         app: powerdns
     spec:
       containers:
-        - image: pschiffe/pdns-mysql:4.9
+        - image: pschiffe/pdns-mysql:5.0
           name: powerdns
           ports:
             - name: api
