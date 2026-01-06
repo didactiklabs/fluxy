@@ -5199,6 +5199,5 @@ data:
     }
 kind: ConfigMap
 metadata:
-  creationTimestamp: null
   name: grafana-dashboard-kubevirt-control-plane
   namespace: monitoring
