@@ -1,0 +1,48 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "kubernetes": {
+    "fileMatch": [
+      "\\.yaml$",
+      "\\.yml$"
+    ]
+  },
+  "docker": {
+    "enabled": true,
+    "pinDigests": true,
+    "major": {
+      "enabled": true
+    },
+    "minor": {
+      "enabled": true
+    },
+    "patch": {
+      "enabled": true
+    }
+  },
+  "regexManagers": [
+    {
+      "fileMatch": [
+        "(^|/)deploy\\.yaml$"
+      ],
+      "matchStrings": [
+        "image:\\s+(?<depName>.*?):(?<currentValue>.*?)\\s"
+      ],
+      "datasourceTemplate": "docker"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Disable automerge for patch updates",
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "automerge": false
+    }
+  ],
+  "prConcurrentLimit": 10,
+  "prHourlyLimit": 5,
+  "rebaseWhen": "auto"
+}
