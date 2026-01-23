@@ -52,7 +52,7 @@ spec:
       serviceAccountName: paralus-kratos
       containers:
         - name: kratos
-          image: oryd/kratos:v0.11.1
+          image: oryd/kratos:v0.13.0
           imagePullPolicy: IfNotPresent
           command:
             - kratos
