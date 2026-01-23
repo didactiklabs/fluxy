@@ -187,7 +187,7 @@ spec:
             runAsNonRoot: true
             runAsUser: 100
         - name: synchronizer
-          image: 'paralusio/kratos-synchronizer:v0.2.8'
+          image: 'paralusio/kratos-synchronizer:v0.3.0'
           volumeMounts:
             - name: other-configs
               mountPath: /etc/kratos
