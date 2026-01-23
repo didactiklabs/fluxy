@@ -1,0 +1,11 @@
+apiVersion: platform.didactiklabs.io/v1alpha1
+kind: Unseal
+metadata:
+  name: internal-vault
+spec:
+  vaultNodes:
+    - http://vault.vault.svc:8200
+  unsealKeysSecretRef:
+    name: internal-unseal-keys
+    namespace: vault
+  retryCount: 3
