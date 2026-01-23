@@ -3,6 +3,19 @@
   "extends": [
     "config:recommended"
   ],
+  "enabledManagers": [
+    "dockerfile",
+    "docker-compose",
+    "kubernetes",
+    "regex",
+    "flux"
+  ],
+  "flux": {
+    "fileMatch": [
+      "\\.yaml$",
+      "\\.yml$"
+    ]
+  },
   "kubernetes": {
     "fileMatch": [
       "\\.yaml$",
