@@ -26,7 +26,7 @@ spec:
       serviceAccountName: paralus-kratos
       containers:
         - name: paralus-kratos-courier
-          image: oryd/kratos:v0.11.1
+          image: oryd/kratos:v0.13.0
           imagePullPolicy: IfNotPresent
           args:
             - courier
@@ -121,7 +121,7 @@ spec:
             runAsNonRoot: true
             runAsUser: 100
         - name: synchronizer
-          image: 'paralusio/kratos-synchronizer:v0.2.8'
+          image: 'paralusio/kratos-synchronizer:v0.3.0'
           volumeMounts:
             - name: other-configs
               mountPath: /etc/kratos

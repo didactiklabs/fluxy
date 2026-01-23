@@ -26,7 +26,7 @@ spec:
       containers:
         - name: dashboard
           securityContext: {}
-          image: 'paralusio/dashboard:v0.2.3'
+          image: 'paralusio/dashboard:v0.2.5'
           imagePullPolicy: IfNotPresent
           ports:
             - name: nginx
