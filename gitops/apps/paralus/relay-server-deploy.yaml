@@ -29,7 +29,7 @@ spec:
       containers:
         - name: relay-tail
           securityContext: {}
-          image: 'paralusio/relay:v0.1.8'
+          image: 'paralusio/relay:v0.1.9'
           args: ['--mode', 'tail']
           imagePullPolicy: IfNotPresent
           volumeMounts:
@@ -49,7 +49,7 @@ spec:
                 name: relay-server-config
         - name: relay-server
           securityContext: {}
-          image: 'paralusio/relay:v0.1.8'
+          image: 'paralusio/relay:v0.1.9'
           args: ['--mode', 'server', '--log-level', '3']
           imagePullPolicy: IfNotPresent
           volumeMounts:
