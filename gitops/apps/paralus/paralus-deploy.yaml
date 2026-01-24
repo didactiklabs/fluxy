@@ -70,7 +70,7 @@ spec:
               mountPath: /audit-logs
         - name: paralus
           securityContext: {}
-          image: 'paralusio/paralus:v0.2.8'
+          image: 'paralusio/paralus:v0.3.0'
           command: ['./paralus']
           imagePullPolicy: IfNotPresent
           volumeMounts:
