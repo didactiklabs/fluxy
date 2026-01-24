@@ -28,7 +28,7 @@ spec:
           emptyDir: {}
       initContainers:
         - name: kratos-automigrate
-          image: 'paralusio/paralus-init:v0.2.8'
+          image: 'paralusio/paralus-init:v0.3.0'
           command: ['kratos']
           args: ['migrate', 'sql', '-e', '--yes']
           env:
@@ -39,7 +39,7 @@ spec:
                   key: DSN
           imagePullPolicy: IfNotPresent
         - name: migrate-admindb
-          image: 'paralusio/paralus-init:v0.2.8'
+          image: 'paralusio/paralus-init:v0.3.0'
           command: ['migrate']
           args: ['-path=/data/migrations/admindb', '-database', '$(DSN)', 'up']
           env:
@@ -50,7 +50,7 @@ spec:
                   key: DSN
           imagePullPolicy: IfNotPresent
         - name: initialize
-          image: 'paralusio/paralus-init:v0.2.8'
+          image: 'paralusio/paralus-init:v0.3.0'
           command: ['paralus-init']
           args: ['-partner', 'Paralus', '-partner-desc', 'Default Partner', '-partner-host', 'paralus.didactik.labs', '-org', 'DidactikLabs', '-org-desc', 'DidactikLabs Org', '-admin-email', 'admin@didactik.labs', '-admin-first-name', 'Admin', '-admin-last-name', 'DidactikLabs']
           envFrom:
