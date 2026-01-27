@@ -1,37 +1,40 @@
-name: 'Kubernetes Workload OCI Update'
+name: "Kubernetes Workload OCI Update"
 scms:
   default:
-    kind: 'github'
+    kind: "github"
     spec:
-      email: 'updatecli@didactiklabs.io'
-      owner: 'didactiklabs'
-      repository: 'fluxy'
+      email: "updatecli@didactiklabs.io"
+      owner: "didactiklabs"
+      repository: "fluxy"
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
       username: '{{ requiredEnv "GITHUB_ACTOR" }}'
-      branch: 'main'
+      branch: "main"
 autodiscovery:
   groupby: individual
   scmid: default
   actionid: default
   crawlers:
     kubernetes:
-      rootdir: 'gitops/apps/'
+      rootdir: "gitops/apps/"
       ignore:
-        - path: 'gitops/apps/monitoring/upstream/*/*/*'
-        - path: 'gitops/apps/monitoring/upstream/*/*'
-        - path: 'gitops/apps/monitoring/upstream/*'
-        - path: 'gitops/apps/paralus/*'
-        - path: 'gitops/apps/ingress-controller/upstream/*'
+        - path: "gitops/apps/monitoring/upstream/*/*/*"
+        - path: "gitops/apps/monitoring/upstream/*/*"
+        - path: "gitops/apps/monitoring/upstream/*"
+        - path: "gitops/apps/paralus/*"
+        - path: "gitops/apps/ingress-controller/upstream/*"
+        - path: "gitops/apps/external-dns/*"
+        - path: "gitops/apps/powerdns/*"
+        - path: "gitops/apps/vaultwarden/*"
       digest: false
       versionfilter:
         kind: semver
-        pattern: '*'
+        pattern: "*"
 actions:
   default:
-    kind: 'github/pullrequest'
-    scmid: 'default'
+    kind: "github/pullrequest"
+    scmid: "default"
     spec:
       automerge: false
-      description: 'Update kubernetes workload OCIs.'
+      description: "Update kubernetes workload OCIs."
       draft: false
       # title: 'UPDATECLI: Update kubernetes workload OCIs'

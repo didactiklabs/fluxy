@@ -1,18 +1,18 @@
 name: ingress-contour Update
 scms:
   default:
-    kind: 'github'
+    kind: "github"
     spec:
-      email: 'updatecli@didactiklabs.io'
-      owner: 'didactiklabs'
-      repository: 'fluxy'
+      email: "updatecli@didactiklabs.io"
+      owner: "didactiklabs"
+      repository: "fluxy"
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
       username: '{{ requiredEnv "GITHUB_ACTOR" }}'
-      branch: 'main'
+      branch: "main"
 sources:
   default:
     name: Get value from json
-    scmid: 'default'
+    scmid: "default"
     kind: json
     spec:
       file: npins/sources.json
@@ -20,28 +20,28 @@ sources:
   contour:
     kind: githubrelease
     spec:
-      owner: 'projectcontour'
-      repository: 'contour'
+      owner: "projectcontour"
+      repository: "contour"
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
       username: '{{ requiredEnv "GITHUB_ACTOR" }}'
       versionfilter:
         kind: semver
-        pattern: '*'
+        pattern: "*"
 conditions:
   default:
     name: Check if version is the same
-    sourceid: 'default'
-    scmid: 'default'
+    sourceid: "default"
+    scmid: "default"
     kind: shell
     spec:
       environments:
         - name: PATH
-      command: test "{{ source `contour` }}" !=
+      command: test "{{ source `contour` }}" != "{{ source `default` }}"
 targets:
   default:
     name: contour npins update {{ source `contour` }}
     kind: shell
-    scmid: 'default'
+    scmid: "default"
     disablesourceinput: true
     spec:
       environments:
@@ -53,10 +53,10 @@ targets:
         nix-shell shell.nix --run "buildIngressContour"
 actions:
   default:
-    kind: 'github/pullrequest'
-    scmid: 'default'
+    kind: "github/pullrequest"
+    scmid: "default"
     spec:
       automerge: false
-      description: 'Update ingress-contour npins.'
+      description: "Update ingress-contour npins."
       draft: false
-      title: 'UPDATECLI: Update ingress-contour'
+      title: "UPDATECLI: Update ingress-contour"
