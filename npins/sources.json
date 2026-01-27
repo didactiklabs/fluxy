@@ -29,7 +29,7 @@
       "submodules": false,
       "version": "v1.28.0",
       "revision": "a9696201f760013182c6cdba7c4ed3c236a6423b",
-      "url": "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/tarball/v1.28.0",
+      "url": "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/tarball/refs/tags/v1.28.0",
       "hash": "sha256-uIIy4zSf6ply859aHVvlujqBWpN18FLZh+Vye3fbSoY="
     },
     "cluster-api-operator": {
