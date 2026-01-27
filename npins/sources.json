@@ -170,7 +170,7 @@
       "submodules": false,
       "version": "v1.7.0",
       "revision": "5736e02e3408d084b6e78531e4021d57b5b51da6",
-      "url": "https://api.github.com/repos/kubevirt/kubevirt/tarball/v1.7.0",
+      "url": "https://api.github.com/repos/kubevirt/kubevirt/tarball/refs/tags/v1.7.0",
       "hash": "sha256-0dfZbhcFSIU9TFxQ3UT8Sz+tgeiqVke+RxVwlxw49Hk="
     },
     "kubevirt-monitoring": {
