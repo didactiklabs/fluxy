@@ -2,19 +2,19 @@
 name: kubevirt-monitoring Update
 scms:
   default:
-    kind: 'github'
+    kind: "github"
     spec:
-      email: 'updatecli@didactiklabs.io'
-      owner: 'didactiklabs'
-      repository: 'fluxy'
+      email: "updatecli@didactiklabs.io"
+      owner: "didactiklabs"
+      repository: "fluxy"
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
       username: '{{ requiredEnv "GITHUB_ACTOR" }}'
-      branch: 'main'
+      branch: "main"
 # Defines how to get "source" information such as Jenkins version
 sources:
   default:
     name: Get value from json
-    scmid: 'default'
+    scmid: "default"
     kind: json
     spec:
       file: npins/sources.json
@@ -23,18 +23,18 @@ sources:
 conditions:
   default:
     name: Check if revision is the same
-    scmid: 'default'
+    scmid: "default"
     kind: shell
     spec:
       environments:
         - name: PATH
-      command: test $(git ls-remote https://github.com/kubevirt/monitoring main | head -n 1 | awk '{print $1}') !=
+      command: '! test "$(git ls-remote https://github.com/kubevirt/monitoring main | head -n 1 | awk "{print \$1}")" = "{{ source `default` }}"'
 # Defines "targets" which need to be updated if different than "source" information.
 targets:
   default:
     name: npins kubevirt-monitoring update
     kind: shell
-    scmid: 'default'
+    scmid: "default"
     disablesourceinput: true
     spec:
       environments:
@@ -47,10 +47,10 @@ targets:
 # Define action configurations if one needs to be created
 actions:
   default:
-    kind: 'github/pullrequest'
-    scmid: 'default'
+    kind: "github/pullrequest"
+    scmid: "default"
     spec:
       automerge: false
-      description: 'Update kubevirt-monitoring npins.'
+      description: "Update kubevirt-monitoring npins."
       draft: false
-      title: 'UPDATECLI: Update kubevirt-monitoring'
+      title: "UPDATECLI: Update kubevirt-monitoring"
