@@ -26,7 +26,7 @@ spec:
       serviceAccountName: paralus-kratos
       containers:
         - name: paralus-kratos-courier
-          image: oryd/kratos:v0.13.0
+          image: oryd/kratos:v25.4.0
           imagePullPolicy: IfNotPresent
           args:
             - courier
