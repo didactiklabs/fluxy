@@ -61,7 +61,7 @@
       "submodules": false,
       "version": "v1.64.0",
       "revision": "f9c08a5bae4a22134080e72b078f478ea9a096f0",
-      "url": "https://api.github.com/repos/kubevirt/containerized-data-importer/tarball/v1.64.0",
+      "url": "https://api.github.com/repos/kubevirt/containerized-data-importer/tarball/refs/tags/v1.64.0",
       "hash": "sha256-RIuuO+mK9AAlkdFDMTUmNKGfOOAQn/ARvtlRXgBr+UI="
     },
     "contour": {
