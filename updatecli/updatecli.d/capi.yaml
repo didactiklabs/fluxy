@@ -1,18 +1,18 @@
 name: cluster-api-operator Update
 scms:
   default:
-    kind: 'github'
+    kind: "github"
     spec:
-      email: 'updatecli@didactiklabs.io'
-      owner: 'didactiklabs'
-      repository: 'fluxy'
+      email: "updatecli@didactiklabs.io"
+      owner: "didactiklabs"
+      repository: "fluxy"
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
       username: '{{ requiredEnv "GITHUB_ACTOR" }}'
-      branch: 'main'
+      branch: "main"
 sources:
   default:
     name: Get value from json
-    scmid: 'default'
+    scmid: "default"
     kind: json
     spec:
       file: npins/sources.json
@@ -20,42 +20,43 @@ sources:
   cluster-api-operator:
     kind: githubrelease
     spec:
-      owner: 'kubernetes-sigs'
-      repository: 'cluster-api-operator'
+      owner: "kubernetes-sigs"
+      repository: "cluster-api-operator"
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
       username: '{{ requiredEnv "GITHUB_ACTOR" }}'
       versionfilter:
         kind: semver
-        pattern: '*'
+        pattern: "*"
 conditions:
   default:
     name: Check if version is the same
-    sourceid: 'default'
-    scmid: 'default'
+    sourceid: "default"
+    scmid: "default"
     kind: shell
     spec:
       environments:
         - name: PATH
-      command: test "{{ source `cluster-api-operator` }}" != "{{ source `default` }}"
+      command: '! test "{{ source `cluster-api-operator` }}" = "{{ source `default` }}"'
 targets:
   default:
     name: cluster-api-operator npins update {{ source `cluster-api-operator` }}
     kind: shell
-    scmid: 'default'
+    scmid: "default"
     disablesourceinput: true
     spec:
       environments:
         - name: PATH
+        - name: NIX_PATH
       command: |
         set -e
         nix run nixpkgs#npins -- add --name cluster-api-operator github kubernetes-sigs cluster-api-operator --at {{ source `cluster-api-operator` }}
         nix-shell shell.nix --run "buildCapi '{{ source `cluster-api-operator` }}'"
 actions:
   default:
-    kind: 'github/pullrequest'
-    scmid: 'default'
+    kind: "github/pullrequest"
+    scmid: "default"
     spec:
       automerge: false
-      description: 'Update cluster-api-operator npins.'
+      description: "Update cluster-api-operator npins."
       draft: false
-      title: 'UPDATECLI: Update cluster-api-operator'
+      title: "UPDATECLI: Update cluster-api-operator"
