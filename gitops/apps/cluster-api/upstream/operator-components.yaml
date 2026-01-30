@@ -655,8 +655,8 @@ spec:
                                     most preferred is the one with the greatest sum of weights, i.e.
                                     for each node that meets all of the scheduling requirements (resource
                                     request, requiredDuringScheduling anti-affinity expressions, etc.),
-                                    compute a sum by iterating through the elements of this field and adding
-                                    "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                                    compute a sum by iterating through the elements of this field and subtracting
+                                    "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
                                     node(s) with the highest sum are the most preferred.
                                   items:
                                     description: The weights of all of the matched
@@ -1036,8 +1036,9 @@ spec:
                                     present in a Container.
                                   properties:
                                     name:
-                                      description: Name of the environment variable.
-                                        Must be a C_IDENTIFIER.
+                                      description: |-
+                                        Name of the environment variable.
+                                        May consist of any printable ASCII characters except '='.
                                       type: string
                                     value:
                                       description: |-
@@ -1094,6 +1095,43 @@ spec:
                                               type: string
                                           required:
                                           - fieldPath
+                                          type: object
+                                          x-kubernetes-map-type: atomic
+                                        fileKeyRef:
+                                          description: |-
+                                            FileKeyRef selects a key of the env file.
+                                            Requires the EnvFiles feature gate to be enabled.
+                                          properties:
+                                            key:
+                                              description: |-
+                                                The key within the env file. An invalid key will prevent the pod from starting.
+                                                The keys defined within a source may consist of any printable ASCII characters except '='.
+                                                During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+                                              type: string
+                                            optional:
+                                              default: false
+                                              description: |-
+                                                Specify whether the file or its key must be defined. If the file or key
+                                                does not exist, then the env var is not published.
+                                                If optional is set to true and the specified key does not exist,
+                                                the environment variable will not be set in the Pod's containers.
+
+                                                If optional is set to false and the specified key does not exist,
+                                                an error will be returned during Pod creation.
+                                              type: boolean
+                                            path:
+                                              description: |-
+                                                The path within the volume from which to select the file.
+                                                Must be relative and may not contain the '..' path or start with '..'.
+                                              type: string
+                                            volumeName:
+                                              description: The name of the volume
+                                                mount containing the env file.
+                                              type: string
+                                          required:
+                                          - key
+                                          - path
+                                          - volumeName
                                           type: object
                                           x-kubernetes-map-type: atomic
                                         resourceFieldRef:
@@ -1167,7 +1205,7 @@ spec:
                                       Claims lists the names of resources, defined in spec.resourceClaims,
                                       that are used by this container.
 
-                                      This is an alpha field and requires enabling the
+                                      This field depends on the
                                       DynamicResourceAllocation feature gate.
 
                                       This field is immutable. It can only be set for containers.
@@ -2129,8 +2167,8 @@ spec:
                               most preferred is the one with the greatest sum of weights, i.e.
                               for each node that meets all of the scheduling requirements (resource
                               request, requiredDuringScheduling anti-affinity expressions, etc.),
-                              compute a sum by iterating through the elements of this field and adding
-                              "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                              compute a sum by iterating through the elements of this field and subtracting
+                              "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
                               node(s) with the highest sum are the most preferred.
                             items:
                               description: The weights of all of the matched WeightedPodAffinityTerm
@@ -2508,8 +2546,9 @@ spec:
                               present in a Container.
                             properties:
                               name:
-                                description: Name of the environment variable. Must
-                                  be a C_IDENTIFIER.
+                                description: |-
+                                  Name of the environment variable.
+                                  May consist of any printable ASCII characters except '='.
                                 type: string
                               value:
                                 description: |-
@@ -2565,6 +2604,43 @@ spec:
                                         type: string
                                     required:
                                     - fieldPath
+                                    type: object
+                                    x-kubernetes-map-type: atomic
+                                  fileKeyRef:
+                                    description: |-
+                                      FileKeyRef selects a key of the env file.
+                                      Requires the EnvFiles feature gate to be enabled.
+                                    properties:
+                                      key:
+                                        description: |-
+                                          The key within the env file. An invalid key will prevent the pod from starting.
+                                          The keys defined within a source may consist of any printable ASCII characters except '='.
+                                          During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+                                        type: string
+                                      optional:
+                                        default: false
+                                        description: |-
+                                          Specify whether the file or its key must be defined. If the file or key
+                                          does not exist, then the env var is not published.
+                                          If optional is set to true and the specified key does not exist,
+                                          the environment variable will not be set in the Pod's containers.
+
+                                          If optional is set to false and the specified key does not exist,
+                                          an error will be returned during Pod creation.
+                                        type: boolean
+                                      path:
+                                        description: |-
+                                          The path within the volume from which to select the file.
+                                          Must be relative and may not contain the '..' path or start with '..'.
+                                        type: string
+                                      volumeName:
+                                        description: The name of the volume mount
+                                          containing the env file.
+                                        type: string
+                                    required:
+                                    - key
+                                    - path
+                                    - volumeName
                                     type: object
                                     x-kubernetes-map-type: atomic
                                   resourceFieldRef:
@@ -2635,7 +2711,7 @@ spec:
                                 Claims lists the names of resources, defined in spec.resourceClaims,
                                 that are used by this container.
 
-                                This is an alpha field and requires enabling the
+                                This field depends on the
                                 DynamicResourceAllocation feature gate.
 
                                 This field is immutable. It can only be set for containers.
@@ -3058,14 +3134,58 @@ spec:
                   provider manifests. Patches are applied in the order they are specified.
                   The `kind` field must match the target object, and
                   if `apiVersion` is specified it will only be applied to matching objects.
-                  This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396
+                  This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396.
+                  This will be deprecated in future releases in favor of `patches`.
                 items:
                   type: string
+                type: array
+              patches:
+                description: |-
+                  Patches are applied to the rendered provider manifests to customize the
+                  provider manifests. Patches support both strategic merge patch and RFC6902 JSON patches.
+                  Both `patches` and `manifestPatches` cannot be set at the same time.
+                items:
+                  description: Patch defines a generic patch to be applied to provider
+                    manifests.
+                  properties:
+                    patch:
+                      description: Patch is content of the patch to be applied. It
+                        should be an inline yaml blob-string.
+                      type: string
+                    target:
+                      description: Target defines the target object to which the patch
+                        should be applied.
+                      properties:
+                        group:
+                          description: Group is the API Group of the target object.
+                          type: string
+                        kind:
+                          description: Kind is the kind of the target object.
+                          type: string
+                        labelSelector:
+                          description: |-
+                            LabelSelector is a string that follows the label selection expression
+                            https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
+                          type: string
+                        name:
+                          description: Name is the name of the target object.
+                          type: string
+                        namespace:
+                          description: Namespace is the namespace of the target object.
+                          type: string
+                        version:
+                          description: Version is the API version of the target object.
+                          type: string
+                      type: object
+                  type: object
                 type: array
               version:
                 description: Version indicates the provider version.
                 type: string
             type: object
+            x-kubernetes-validations:
+            - message: Cannot set both 'patches' and 'manifestPatches'
+              rule: '!(has(self.manifestPatches) && has(self.patches))'
           status:
             description: AddonProviderStatus defines the observed state of AddonProvider.
             properties:
@@ -3796,8 +3916,8 @@ spec:
                                     most preferred is the one with the greatest sum of weights, i.e.
                                     for each node that meets all of the scheduling requirements (resource
                                     request, requiredDuringScheduling anti-affinity expressions, etc.),
-                                    compute a sum by iterating through the elements of this field and adding
-                                    "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                                    compute a sum by iterating through the elements of this field and subtracting
+                                    "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
                                     node(s) with the highest sum are the most preferred.
                                   items:
                                     description: The weights of all of the matched
@@ -4177,8 +4297,9 @@ spec:
                                     present in a Container.
                                   properties:
                                     name:
-                                      description: Name of the environment variable.
-                                        Must be a C_IDENTIFIER.
+                                      description: |-
+                                        Name of the environment variable.
+                                        May consist of any printable ASCII characters except '='.
                                       type: string
                                     value:
                                       description: |-
@@ -4235,6 +4356,43 @@ spec:
                                               type: string
                                           required:
                                           - fieldPath
+                                          type: object
+                                          x-kubernetes-map-type: atomic
+                                        fileKeyRef:
+                                          description: |-
+                                            FileKeyRef selects a key of the env file.
+                                            Requires the EnvFiles feature gate to be enabled.
+                                          properties:
+                                            key:
+                                              description: |-
+                                                The key within the env file. An invalid key will prevent the pod from starting.
+                                                The keys defined within a source may consist of any printable ASCII characters except '='.
+                                                During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+                                              type: string
+                                            optional:
+                                              default: false
+                                              description: |-
+                                                Specify whether the file or its key must be defined. If the file or key
+                                                does not exist, then the env var is not published.
+                                                If optional is set to true and the specified key does not exist,
+                                                the environment variable will not be set in the Pod's containers.
+
+                                                If optional is set to false and the specified key does not exist,
+                                                an error will be returned during Pod creation.
+                                              type: boolean
+                                            path:
+                                              description: |-
+                                                The path within the volume from which to select the file.
+                                                Must be relative and may not contain the '..' path or start with '..'.
+                                              type: string
+                                            volumeName:
+                                              description: The name of the volume
+                                                mount containing the env file.
+                                              type: string
+                                          required:
+                                          - key
+                                          - path
+                                          - volumeName
                                           type: object
                                           x-kubernetes-map-type: atomic
                                         resourceFieldRef:
@@ -4308,7 +4466,7 @@ spec:
                                       Claims lists the names of resources, defined in spec.resourceClaims,
                                       that are used by this container.
 
-                                      This is an alpha field and requires enabling the
+                                      This field depends on the
                                       DynamicResourceAllocation feature gate.
 
                                       This field is immutable. It can only be set for containers.
@@ -5270,8 +5428,8 @@ spec:
                               most preferred is the one with the greatest sum of weights, i.e.
                               for each node that meets all of the scheduling requirements (resource
                               request, requiredDuringScheduling anti-affinity expressions, etc.),
-                              compute a sum by iterating through the elements of this field and adding
-                              "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                              compute a sum by iterating through the elements of this field and subtracting
+                              "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
                               node(s) with the highest sum are the most preferred.
                             items:
                               description: The weights of all of the matched WeightedPodAffinityTerm
@@ -5649,8 +5807,9 @@ spec:
                               present in a Container.
                             properties:
                               name:
-                                description: Name of the environment variable. Must
-                                  be a C_IDENTIFIER.
+                                description: |-
+                                  Name of the environment variable.
+                                  May consist of any printable ASCII characters except '='.
                                 type: string
                               value:
                                 description: |-
@@ -5706,6 +5865,43 @@ spec:
                                         type: string
                                     required:
                                     - fieldPath
+                                    type: object
+                                    x-kubernetes-map-type: atomic
+                                  fileKeyRef:
+                                    description: |-
+                                      FileKeyRef selects a key of the env file.
+                                      Requires the EnvFiles feature gate to be enabled.
+                                    properties:
+                                      key:
+                                        description: |-
+                                          The key within the env file. An invalid key will prevent the pod from starting.
+                                          The keys defined within a source may consist of any printable ASCII characters except '='.
+                                          During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+                                        type: string
+                                      optional:
+                                        default: false
+                                        description: |-
+                                          Specify whether the file or its key must be defined. If the file or key
+                                          does not exist, then the env var is not published.
+                                          If optional is set to true and the specified key does not exist,
+                                          the environment variable will not be set in the Pod's containers.
+
+                                          If optional is set to false and the specified key does not exist,
+                                          an error will be returned during Pod creation.
+                                        type: boolean
+                                      path:
+                                        description: |-
+                                          The path within the volume from which to select the file.
+                                          Must be relative and may not contain the '..' path or start with '..'.
+                                        type: string
+                                      volumeName:
+                                        description: The name of the volume mount
+                                          containing the env file.
+                                        type: string
+                                    required:
+                                    - key
+                                    - path
+                                    - volumeName
                                     type: object
                                     x-kubernetes-map-type: atomic
                                   resourceFieldRef:
@@ -5776,7 +5972,7 @@ spec:
                                 Claims lists the names of resources, defined in spec.resourceClaims,
                                 that are used by this container.
 
-                                This is an alpha field and requires enabling the
+                                This field depends on the
                                 DynamicResourceAllocation feature gate.
 
                                 This field is immutable. It can only be set for containers.
@@ -6199,14 +6395,58 @@ spec:
                   provider manifests. Patches are applied in the order they are specified.
                   The `kind` field must match the target object, and
                   if `apiVersion` is specified it will only be applied to matching objects.
-                  This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396
+                  This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396.
+                  This will be deprecated in future releases in favor of `patches`.
                 items:
                   type: string
+                type: array
+              patches:
+                description: |-
+                  Patches are applied to the rendered provider manifests to customize the
+                  provider manifests. Patches support both strategic merge patch and RFC6902 JSON patches.
+                  Both `patches` and `manifestPatches` cannot be set at the same time.
+                items:
+                  description: Patch defines a generic patch to be applied to provider
+                    manifests.
+                  properties:
+                    patch:
+                      description: Patch is content of the patch to be applied. It
+                        should be an inline yaml blob-string.
+                      type: string
+                    target:
+                      description: Target defines the target object to which the patch
+                        should be applied.
+                      properties:
+                        group:
+                          description: Group is the API Group of the target object.
+                          type: string
+                        kind:
+                          description: Kind is the kind of the target object.
+                          type: string
+                        labelSelector:
+                          description: |-
+                            LabelSelector is a string that follows the label selection expression
+                            https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
+                          type: string
+                        name:
+                          description: Name is the name of the target object.
+                          type: string
+                        namespace:
+                          description: Namespace is the namespace of the target object.
+                          type: string
+                        version:
+                          description: Version is the API version of the target object.
+                          type: string
+                      type: object
+                  type: object
                 type: array
               version:
                 description: Version indicates the provider version.
                 type: string
             type: object
+            x-kubernetes-validations:
+            - message: Cannot set both 'patches' and 'manifestPatches'
+              rule: '!(has(self.manifestPatches) && has(self.patches))'
           status:
             description: BootstrapProviderStatus defines the observed state of BootstrapProvider.
             properties:
@@ -6938,8 +7178,8 @@ spec:
                                     most preferred is the one with the greatest sum of weights, i.e.
                                     for each node that meets all of the scheduling requirements (resource
                                     request, requiredDuringScheduling anti-affinity expressions, etc.),
-                                    compute a sum by iterating through the elements of this field and adding
-                                    "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                                    compute a sum by iterating through the elements of this field and subtracting
+                                    "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
                                     node(s) with the highest sum are the most preferred.
                                   items:
                                     description: The weights of all of the matched
@@ -7319,8 +7559,9 @@ spec:
                                     present in a Container.
                                   properties:
                                     name:
-                                      description: Name of the environment variable.
-                                        Must be a C_IDENTIFIER.
+                                      description: |-
+                                        Name of the environment variable.
+                                        May consist of any printable ASCII characters except '='.
                                       type: string
                                     value:
                                       description: |-
@@ -7377,6 +7618,43 @@ spec:
                                               type: string
                                           required:
                                           - fieldPath
+                                          type: object
+                                          x-kubernetes-map-type: atomic
+                                        fileKeyRef:
+                                          description: |-
+                                            FileKeyRef selects a key of the env file.
+                                            Requires the EnvFiles feature gate to be enabled.
+                                          properties:
+                                            key:
+                                              description: |-
+                                                The key within the env file. An invalid key will prevent the pod from starting.
+                                                The keys defined within a source may consist of any printable ASCII characters except '='.
+                                                During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+                                              type: string
+                                            optional:
+                                              default: false
+                                              description: |-
+                                                Specify whether the file or its key must be defined. If the file or key
+                                                does not exist, then the env var is not published.
+                                                If optional is set to true and the specified key does not exist,
+                                                the environment variable will not be set in the Pod's containers.
+
+                                                If optional is set to false and the specified key does not exist,
+                                                an error will be returned during Pod creation.
+                                              type: boolean
+                                            path:
+                                              description: |-
+                                                The path within the volume from which to select the file.
+                                                Must be relative and may not contain the '..' path or start with '..'.
+                                              type: string
+                                            volumeName:
+                                              description: The name of the volume
+                                                mount containing the env file.
+                                              type: string
+                                          required:
+                                          - key
+                                          - path
+                                          - volumeName
                                           type: object
                                           x-kubernetes-map-type: atomic
                                         resourceFieldRef:
@@ -7450,7 +7728,7 @@ spec:
                                       Claims lists the names of resources, defined in spec.resourceClaims,
                                       that are used by this container.
 
-                                      This is an alpha field and requires enabling the
+                                      This field depends on the
                                       DynamicResourceAllocation feature gate.
 
                                       This field is immutable. It can only be set for containers.
@@ -8412,8 +8690,8 @@ spec:
                               most preferred is the one with the greatest sum of weights, i.e.
                               for each node that meets all of the scheduling requirements (resource
                               request, requiredDuringScheduling anti-affinity expressions, etc.),
-                              compute a sum by iterating through the elements of this field and adding
-                              "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                              compute a sum by iterating through the elements of this field and subtracting
+                              "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
                               node(s) with the highest sum are the most preferred.
                             items:
                               description: The weights of all of the matched WeightedPodAffinityTerm
@@ -8791,8 +9069,9 @@ spec:
                               present in a Container.
                             properties:
                               name:
-                                description: Name of the environment variable. Must
-                                  be a C_IDENTIFIER.
+                                description: |-
+                                  Name of the environment variable.
+                                  May consist of any printable ASCII characters except '='.
                                 type: string
                               value:
                                 description: |-
@@ -8848,6 +9127,43 @@ spec:
                                         type: string
                                     required:
                                     - fieldPath
+                                    type: object
+                                    x-kubernetes-map-type: atomic
+                                  fileKeyRef:
+                                    description: |-
+                                      FileKeyRef selects a key of the env file.
+                                      Requires the EnvFiles feature gate to be enabled.
+                                    properties:
+                                      key:
+                                        description: |-
+                                          The key within the env file. An invalid key will prevent the pod from starting.
+                                          The keys defined within a source may consist of any printable ASCII characters except '='.
+                                          During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+                                        type: string
+                                      optional:
+                                        default: false
+                                        description: |-
+                                          Specify whether the file or its key must be defined. If the file or key
+                                          does not exist, then the env var is not published.
+                                          If optional is set to true and the specified key does not exist,
+                                          the environment variable will not be set in the Pod's containers.
+
+                                          If optional is set to false and the specified key does not exist,
+                                          an error will be returned during Pod creation.
+                                        type: boolean
+                                      path:
+                                        description: |-
+                                          The path within the volume from which to select the file.
+                                          Must be relative and may not contain the '..' path or start with '..'.
+                                        type: string
+                                      volumeName:
+                                        description: The name of the volume mount
+                                          containing the env file.
+                                        type: string
+                                    required:
+                                    - key
+                                    - path
+                                    - volumeName
                                     type: object
                                     x-kubernetes-map-type: atomic
                                   resourceFieldRef:
@@ -8918,7 +9234,7 @@ spec:
                                 Claims lists the names of resources, defined in spec.resourceClaims,
                                 that are used by this container.
 
-                                This is an alpha field and requires enabling the
+                                This field depends on the
                                 DynamicResourceAllocation feature gate.
 
                                 This field is immutable. It can only be set for containers.
@@ -9341,14 +9657,58 @@ spec:
                   provider manifests. Patches are applied in the order they are specified.
                   The `kind` field must match the target object, and
                   if `apiVersion` is specified it will only be applied to matching objects.
-                  This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396
+                  This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396.
+                  This will be deprecated in future releases in favor of `patches`.
                 items:
                   type: string
+                type: array
+              patches:
+                description: |-
+                  Patches are applied to the rendered provider manifests to customize the
+                  provider manifests. Patches support both strategic merge patch and RFC6902 JSON patches.
+                  Both `patches` and `manifestPatches` cannot be set at the same time.
+                items:
+                  description: Patch defines a generic patch to be applied to provider
+                    manifests.
+                  properties:
+                    patch:
+                      description: Patch is content of the patch to be applied. It
+                        should be an inline yaml blob-string.
+                      type: string
+                    target:
+                      description: Target defines the target object to which the patch
+                        should be applied.
+                      properties:
+                        group:
+                          description: Group is the API Group of the target object.
+                          type: string
+                        kind:
+                          description: Kind is the kind of the target object.
+                          type: string
+                        labelSelector:
+                          description: |-
+                            LabelSelector is a string that follows the label selection expression
+                            https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
+                          type: string
+                        name:
+                          description: Name is the name of the target object.
+                          type: string
+                        namespace:
+                          description: Namespace is the namespace of the target object.
+                          type: string
+                        version:
+                          description: Version is the API version of the target object.
+                          type: string
+                      type: object
+                  type: object
                 type: array
               version:
                 description: Version indicates the provider version.
                 type: string
             type: object
+            x-kubernetes-validations:
+            - message: Cannot set both 'patches' and 'manifestPatches'
+              rule: '!(has(self.manifestPatches) && has(self.patches))'
           status:
             description: ControlPlaneProviderStatus defines the observed state of
               ControlPlaneProvider.
@@ -10080,8 +10440,8 @@ spec:
                                     most preferred is the one with the greatest sum of weights, i.e.
                                     for each node that meets all of the scheduling requirements (resource
                                     request, requiredDuringScheduling anti-affinity expressions, etc.),
-                                    compute a sum by iterating through the elements of this field and adding
-                                    "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                                    compute a sum by iterating through the elements of this field and subtracting
+                                    "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
                                     node(s) with the highest sum are the most preferred.
                                   items:
                                     description: The weights of all of the matched
@@ -10461,8 +10821,9 @@ spec:
                                     present in a Container.
                                   properties:
                                     name:
-                                      description: Name of the environment variable.
-                                        Must be a C_IDENTIFIER.
+                                      description: |-
+                                        Name of the environment variable.
+                                        May consist of any printable ASCII characters except '='.
                                       type: string
                                     value:
                                       description: |-
@@ -10519,6 +10880,43 @@ spec:
                                               type: string
                                           required:
                                           - fieldPath
+                                          type: object
+                                          x-kubernetes-map-type: atomic
+                                        fileKeyRef:
+                                          description: |-
+                                            FileKeyRef selects a key of the env file.
+                                            Requires the EnvFiles feature gate to be enabled.
+                                          properties:
+                                            key:
+                                              description: |-
+                                                The key within the env file. An invalid key will prevent the pod from starting.
+                                                The keys defined within a source may consist of any printable ASCII characters except '='.
+                                                During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+                                              type: string
+                                            optional:
+                                              default: false
+                                              description: |-
+                                                Specify whether the file or its key must be defined. If the file or key
+                                                does not exist, then the env var is not published.
+                                                If optional is set to true and the specified key does not exist,
+                                                the environment variable will not be set in the Pod's containers.
+
+                                                If optional is set to false and the specified key does not exist,
+                                                an error will be returned during Pod creation.
+                                              type: boolean
+                                            path:
+                                              description: |-
+                                                The path within the volume from which to select the file.
+                                                Must be relative and may not contain the '..' path or start with '..'.
+                                              type: string
+                                            volumeName:
+                                              description: The name of the volume
+                                                mount containing the env file.
+                                              type: string
+                                          required:
+                                          - key
+                                          - path
+                                          - volumeName
                                           type: object
                                           x-kubernetes-map-type: atomic
                                         resourceFieldRef:
@@ -10592,7 +10990,7 @@ spec:
                                       Claims lists the names of resources, defined in spec.resourceClaims,
                                       that are used by this container.
 
-                                      This is an alpha field and requires enabling the
+                                      This field depends on the
                                       DynamicResourceAllocation feature gate.
 
                                       This field is immutable. It can only be set for containers.
@@ -11554,8 +11952,8 @@ spec:
                               most preferred is the one with the greatest sum of weights, i.e.
                               for each node that meets all of the scheduling requirements (resource
                               request, requiredDuringScheduling anti-affinity expressions, etc.),
-                              compute a sum by iterating through the elements of this field and adding
-                              "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                              compute a sum by iterating through the elements of this field and subtracting
+                              "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
                               node(s) with the highest sum are the most preferred.
                             items:
                               description: The weights of all of the matched WeightedPodAffinityTerm
@@ -11933,8 +12331,9 @@ spec:
                               present in a Container.
                             properties:
                               name:
-                                description: Name of the environment variable. Must
-                                  be a C_IDENTIFIER.
+                                description: |-
+                                  Name of the environment variable.
+                                  May consist of any printable ASCII characters except '='.
                                 type: string
                               value:
                                 description: |-
@@ -11990,6 +12389,43 @@ spec:
                                         type: string
                                     required:
                                     - fieldPath
+                                    type: object
+                                    x-kubernetes-map-type: atomic
+                                  fileKeyRef:
+                                    description: |-
+                                      FileKeyRef selects a key of the env file.
+                                      Requires the EnvFiles feature gate to be enabled.
+                                    properties:
+                                      key:
+                                        description: |-
+                                          The key within the env file. An invalid key will prevent the pod from starting.
+                                          The keys defined within a source may consist of any printable ASCII characters except '='.
+                                          During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+                                        type: string
+                                      optional:
+                                        default: false
+                                        description: |-
+                                          Specify whether the file or its key must be defined. If the file or key
+                                          does not exist, then the env var is not published.
+                                          If optional is set to true and the specified key does not exist,
+                                          the environment variable will not be set in the Pod's containers.
+
+                                          If optional is set to false and the specified key does not exist,
+                                          an error will be returned during Pod creation.
+                                        type: boolean
+                                      path:
+                                        description: |-
+                                          The path within the volume from which to select the file.
+                                          Must be relative and may not contain the '..' path or start with '..'.
+                                        type: string
+                                      volumeName:
+                                        description: The name of the volume mount
+                                          containing the env file.
+                                        type: string
+                                    required:
+                                    - key
+                                    - path
+                                    - volumeName
                                     type: object
                                     x-kubernetes-map-type: atomic
                                   resourceFieldRef:
@@ -12060,7 +12496,7 @@ spec:
                                 Claims lists the names of resources, defined in spec.resourceClaims,
                                 that are used by this container.
 
-                                This is an alpha field and requires enabling the
+                                This field depends on the
                                 DynamicResourceAllocation feature gate.
 
                                 This field is immutable. It can only be set for containers.
@@ -12483,14 +12919,58 @@ spec:
                   provider manifests. Patches are applied in the order they are specified.
                   The `kind` field must match the target object, and
                   if `apiVersion` is specified it will only be applied to matching objects.
-                  This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396
+                  This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396.
+                  This will be deprecated in future releases in favor of `patches`.
                 items:
                   type: string
+                type: array
+              patches:
+                description: |-
+                  Patches are applied to the rendered provider manifests to customize the
+                  provider manifests. Patches support both strategic merge patch and RFC6902 JSON patches.
+                  Both `patches` and `manifestPatches` cannot be set at the same time.
+                items:
+                  description: Patch defines a generic patch to be applied to provider
+                    manifests.
+                  properties:
+                    patch:
+                      description: Patch is content of the patch to be applied. It
+                        should be an inline yaml blob-string.
+                      type: string
+                    target:
+                      description: Target defines the target object to which the patch
+                        should be applied.
+                      properties:
+                        group:
+                          description: Group is the API Group of the target object.
+                          type: string
+                        kind:
+                          description: Kind is the kind of the target object.
+                          type: string
+                        labelSelector:
+                          description: |-
+                            LabelSelector is a string that follows the label selection expression
+                            https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
+                          type: string
+                        name:
+                          description: Name is the name of the target object.
+                          type: string
+                        namespace:
+                          description: Namespace is the namespace of the target object.
+                          type: string
+                        version:
+                          description: Version is the API version of the target object.
+                          type: string
+                      type: object
+                  type: object
                 type: array
               version:
                 description: Version indicates the provider version.
                 type: string
             type: object
+            x-kubernetes-validations:
+            - message: Cannot set both 'patches' and 'manifestPatches'
+              rule: '!(has(self.manifestPatches) && has(self.patches))'
           status:
             description: CoreProviderStatus defines the observed state of CoreProvider.
             properties:
@@ -13222,8 +13702,8 @@ spec:
                                     most preferred is the one with the greatest sum of weights, i.e.
                                     for each node that meets all of the scheduling requirements (resource
                                     request, requiredDuringScheduling anti-affinity expressions, etc.),
-                                    compute a sum by iterating through the elements of this field and adding
-                                    "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                                    compute a sum by iterating through the elements of this field and subtracting
+                                    "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
                                     node(s) with the highest sum are the most preferred.
                                   items:
                                     description: The weights of all of the matched
@@ -13603,8 +14083,9 @@ spec:
                                     present in a Container.
                                   properties:
                                     name:
-                                      description: Name of the environment variable.
-                                        Must be a C_IDENTIFIER.
+                                      description: |-
+                                        Name of the environment variable.
+                                        May consist of any printable ASCII characters except '='.
                                       type: string
                                     value:
                                       description: |-
@@ -13661,6 +14142,43 @@ spec:
                                               type: string
                                           required:
                                           - fieldPath
+                                          type: object
+                                          x-kubernetes-map-type: atomic
+                                        fileKeyRef:
+                                          description: |-
+                                            FileKeyRef selects a key of the env file.
+                                            Requires the EnvFiles feature gate to be enabled.
+                                          properties:
+                                            key:
+                                              description: |-
+                                                The key within the env file. An invalid key will prevent the pod from starting.
+                                                The keys defined within a source may consist of any printable ASCII characters except '='.
+                                                During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+                                              type: string
+                                            optional:
+                                              default: false
+                                              description: |-
+                                                Specify whether the file or its key must be defined. If the file or key
+                                                does not exist, then the env var is not published.
+                                                If optional is set to true and the specified key does not exist,
+                                                the environment variable will not be set in the Pod's containers.
+
+                                                If optional is set to false and the specified key does not exist,
+                                                an error will be returned during Pod creation.
+                                              type: boolean
+                                            path:
+                                              description: |-
+                                                The path within the volume from which to select the file.
+                                                Must be relative and may not contain the '..' path or start with '..'.
+                                              type: string
+                                            volumeName:
+                                              description: The name of the volume
+                                                mount containing the env file.
+                                              type: string
+                                          required:
+                                          - key
+                                          - path
+                                          - volumeName
                                           type: object
                                           x-kubernetes-map-type: atomic
                                         resourceFieldRef:
@@ -13734,7 +14252,7 @@ spec:
                                       Claims lists the names of resources, defined in spec.resourceClaims,
                                       that are used by this container.
 
-                                      This is an alpha field and requires enabling the
+                                      This field depends on the
                                       DynamicResourceAllocation feature gate.
 
                                       This field is immutable. It can only be set for containers.
@@ -14696,8 +15214,8 @@ spec:
                               most preferred is the one with the greatest sum of weights, i.e.
                               for each node that meets all of the scheduling requirements (resource
                               request, requiredDuringScheduling anti-affinity expressions, etc.),
-                              compute a sum by iterating through the elements of this field and adding
-                              "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                              compute a sum by iterating through the elements of this field and subtracting
+                              "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
                               node(s) with the highest sum are the most preferred.
                             items:
                               description: The weights of all of the matched WeightedPodAffinityTerm
@@ -15075,8 +15593,9 @@ spec:
                               present in a Container.
                             properties:
                               name:
-                                description: Name of the environment variable. Must
-                                  be a C_IDENTIFIER.
+                                description: |-
+                                  Name of the environment variable.
+                                  May consist of any printable ASCII characters except '='.
                                 type: string
                               value:
                                 description: |-
@@ -15132,6 +15651,43 @@ spec:
                                         type: string
                                     required:
                                     - fieldPath
+                                    type: object
+                                    x-kubernetes-map-type: atomic
+                                  fileKeyRef:
+                                    description: |-
+                                      FileKeyRef selects a key of the env file.
+                                      Requires the EnvFiles feature gate to be enabled.
+                                    properties:
+                                      key:
+                                        description: |-
+                                          The key within the env file. An invalid key will prevent the pod from starting.
+                                          The keys defined within a source may consist of any printable ASCII characters except '='.
+                                          During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+                                        type: string
+                                      optional:
+                                        default: false
+                                        description: |-
+                                          Specify whether the file or its key must be defined. If the file or key
+                                          does not exist, then the env var is not published.
+                                          If optional is set to true and the specified key does not exist,
+                                          the environment variable will not be set in the Pod's containers.
+
+                                          If optional is set to false and the specified key does not exist,
+                                          an error will be returned during Pod creation.
+                                        type: boolean
+                                      path:
+                                        description: |-
+                                          The path within the volume from which to select the file.
+                                          Must be relative and may not contain the '..' path or start with '..'.
+                                        type: string
+                                      volumeName:
+                                        description: The name of the volume mount
+                                          containing the env file.
+                                        type: string
+                                    required:
+                                    - key
+                                    - path
+                                    - volumeName
                                     type: object
                                     x-kubernetes-map-type: atomic
                                   resourceFieldRef:
@@ -15202,7 +15758,7 @@ spec:
                                 Claims lists the names of resources, defined in spec.resourceClaims,
                                 that are used by this container.
 
-                                This is an alpha field and requires enabling the
+                                This field depends on the
                                 DynamicResourceAllocation feature gate.
 
                                 This field is immutable. It can only be set for containers.
@@ -15625,14 +16181,58 @@ spec:
                   provider manifests. Patches are applied in the order they are specified.
                   The `kind` field must match the target object, and
                   if `apiVersion` is specified it will only be applied to matching objects.
-                  This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396
+                  This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396.
+                  This will be deprecated in future releases in favor of `patches`.
                 items:
                   type: string
+                type: array
+              patches:
+                description: |-
+                  Patches are applied to the rendered provider manifests to customize the
+                  provider manifests. Patches support both strategic merge patch and RFC6902 JSON patches.
+                  Both `patches` and `manifestPatches` cannot be set at the same time.
+                items:
+                  description: Patch defines a generic patch to be applied to provider
+                    manifests.
+                  properties:
+                    patch:
+                      description: Patch is content of the patch to be applied. It
+                        should be an inline yaml blob-string.
+                      type: string
+                    target:
+                      description: Target defines the target object to which the patch
+                        should be applied.
+                      properties:
+                        group:
+                          description: Group is the API Group of the target object.
+                          type: string
+                        kind:
+                          description: Kind is the kind of the target object.
+                          type: string
+                        labelSelector:
+                          description: |-
+                            LabelSelector is a string that follows the label selection expression
+                            https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
+                          type: string
+                        name:
+                          description: Name is the name of the target object.
+                          type: string
+                        namespace:
+                          description: Namespace is the namespace of the target object.
+                          type: string
+                        version:
+                          description: Version is the API version of the target object.
+                          type: string
+                      type: object
+                  type: object
                 type: array
               version:
                 description: Version indicates the provider version.
                 type: string
             type: object
+            x-kubernetes-validations:
+            - message: Cannot set both 'patches' and 'manifestPatches'
+              rule: '!(has(self.manifestPatches) && has(self.patches))'
           status:
             description: InfrastructureProviderStatus defines the observed state of
               InfrastructureProvider.
@@ -16364,8 +16964,8 @@ spec:
                                     most preferred is the one with the greatest sum of weights, i.e.
                                     for each node that meets all of the scheduling requirements (resource
                                     request, requiredDuringScheduling anti-affinity expressions, etc.),
-                                    compute a sum by iterating through the elements of this field and adding
-                                    "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                                    compute a sum by iterating through the elements of this field and subtracting
+                                    "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
                                     node(s) with the highest sum are the most preferred.
                                   items:
                                     description: The weights of all of the matched
@@ -16745,8 +17345,9 @@ spec:
                                     present in a Container.
                                   properties:
                                     name:
-                                      description: Name of the environment variable.
-                                        Must be a C_IDENTIFIER.
+                                      description: |-
+                                        Name of the environment variable.
+                                        May consist of any printable ASCII characters except '='.
                                       type: string
                                     value:
                                       description: |-
@@ -16803,6 +17404,43 @@ spec:
                                               type: string
                                           required:
                                           - fieldPath
+                                          type: object
+                                          x-kubernetes-map-type: atomic
+                                        fileKeyRef:
+                                          description: |-
+                                            FileKeyRef selects a key of the env file.
+                                            Requires the EnvFiles feature gate to be enabled.
+                                          properties:
+                                            key:
+                                              description: |-
+                                                The key within the env file. An invalid key will prevent the pod from starting.
+                                                The keys defined within a source may consist of any printable ASCII characters except '='.
+                                                During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+                                              type: string
+                                            optional:
+                                              default: false
+                                              description: |-
+                                                Specify whether the file or its key must be defined. If the file or key
+                                                does not exist, then the env var is not published.
+                                                If optional is set to true and the specified key does not exist,
+                                                the environment variable will not be set in the Pod's containers.
+
+                                                If optional is set to false and the specified key does not exist,
+                                                an error will be returned during Pod creation.
+                                              type: boolean
+                                            path:
+                                              description: |-
+                                                The path within the volume from which to select the file.
+                                                Must be relative and may not contain the '..' path or start with '..'.
+                                              type: string
+                                            volumeName:
+                                              description: The name of the volume
+                                                mount containing the env file.
+                                              type: string
+                                          required:
+                                          - key
+                                          - path
+                                          - volumeName
                                           type: object
                                           x-kubernetes-map-type: atomic
                                         resourceFieldRef:
@@ -16876,7 +17514,7 @@ spec:
                                       Claims lists the names of resources, defined in spec.resourceClaims,
                                       that are used by this container.
 
-                                      This is an alpha field and requires enabling the
+                                      This field depends on the
                                       DynamicResourceAllocation feature gate.
 
                                       This field is immutable. It can only be set for containers.
@@ -17838,8 +18476,8 @@ spec:
                               most preferred is the one with the greatest sum of weights, i.e.
                               for each node that meets all of the scheduling requirements (resource
                               request, requiredDuringScheduling anti-affinity expressions, etc.),
-                              compute a sum by iterating through the elements of this field and adding
-                              "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                              compute a sum by iterating through the elements of this field and subtracting
+                              "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
                               node(s) with the highest sum are the most preferred.
                             items:
                               description: The weights of all of the matched WeightedPodAffinityTerm
@@ -18217,8 +18855,9 @@ spec:
                               present in a Container.
                             properties:
                               name:
-                                description: Name of the environment variable. Must
-                                  be a C_IDENTIFIER.
+                                description: |-
+                                  Name of the environment variable.
+                                  May consist of any printable ASCII characters except '='.
                                 type: string
                               value:
                                 description: |-
@@ -18274,6 +18913,43 @@ spec:
                                         type: string
                                     required:
                                     - fieldPath
+                                    type: object
+                                    x-kubernetes-map-type: atomic
+                                  fileKeyRef:
+                                    description: |-
+                                      FileKeyRef selects a key of the env file.
+                                      Requires the EnvFiles feature gate to be enabled.
+                                    properties:
+                                      key:
+                                        description: |-
+                                          The key within the env file. An invalid key will prevent the pod from starting.
+                                          The keys defined within a source may consist of any printable ASCII characters except '='.
+                                          During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+                                        type: string
+                                      optional:
+                                        default: false
+                                        description: |-
+                                          Specify whether the file or its key must be defined. If the file or key
+                                          does not exist, then the env var is not published.
+                                          If optional is set to true and the specified key does not exist,
+                                          the environment variable will not be set in the Pod's containers.
+
+                                          If optional is set to false and the specified key does not exist,
+                                          an error will be returned during Pod creation.
+                                        type: boolean
+                                      path:
+                                        description: |-
+                                          The path within the volume from which to select the file.
+                                          Must be relative and may not contain the '..' path or start with '..'.
+                                        type: string
+                                      volumeName:
+                                        description: The name of the volume mount
+                                          containing the env file.
+                                        type: string
+                                    required:
+                                    - key
+                                    - path
+                                    - volumeName
                                     type: object
                                     x-kubernetes-map-type: atomic
                                   resourceFieldRef:
@@ -18344,7 +19020,7 @@ spec:
                                 Claims lists the names of resources, defined in spec.resourceClaims,
                                 that are used by this container.
 
-                                This is an alpha field and requires enabling the
+                                This field depends on the
                                 DynamicResourceAllocation feature gate.
 
                                 This field is immutable. It can only be set for containers.
@@ -18767,14 +19443,58 @@ spec:
                   provider manifests. Patches are applied in the order they are specified.
                   The `kind` field must match the target object, and
                   if `apiVersion` is specified it will only be applied to matching objects.
-                  This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396
+                  This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396.
+                  This will be deprecated in future releases in favor of `patches`.
                 items:
                   type: string
+                type: array
+              patches:
+                description: |-
+                  Patches are applied to the rendered provider manifests to customize the
+                  provider manifests. Patches support both strategic merge patch and RFC6902 JSON patches.
+                  Both `patches` and `manifestPatches` cannot be set at the same time.
+                items:
+                  description: Patch defines a generic patch to be applied to provider
+                    manifests.
+                  properties:
+                    patch:
+                      description: Patch is content of the patch to be applied. It
+                        should be an inline yaml blob-string.
+                      type: string
+                    target:
+                      description: Target defines the target object to which the patch
+                        should be applied.
+                      properties:
+                        group:
+                          description: Group is the API Group of the target object.
+                          type: string
+                        kind:
+                          description: Kind is the kind of the target object.
+                          type: string
+                        labelSelector:
+                          description: |-
+                            LabelSelector is a string that follows the label selection expression
+                            https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
+                          type: string
+                        name:
+                          description: Name is the name of the target object.
+                          type: string
+                        namespace:
+                          description: Namespace is the namespace of the target object.
+                          type: string
+                        version:
+                          description: Version is the API version of the target object.
+                          type: string
+                      type: object
+                  type: object
                 type: array
               version:
                 description: Version indicates the provider version.
                 type: string
             type: object
+            x-kubernetes-validations:
+            - message: Cannot set both 'patches' and 'manifestPatches'
+              rule: '!(has(self.manifestPatches) && has(self.patches))'
           status:
             description: IPAMProviderStatus defines the observed state of IPAMProvider.
             properties:
@@ -19507,8 +20227,8 @@ spec:
                                     most preferred is the one with the greatest sum of weights, i.e.
                                     for each node that meets all of the scheduling requirements (resource
                                     request, requiredDuringScheduling anti-affinity expressions, etc.),
-                                    compute a sum by iterating through the elements of this field and adding
-                                    "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                                    compute a sum by iterating through the elements of this field and subtracting
+                                    "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
                                     node(s) with the highest sum are the most preferred.
                                   items:
                                     description: The weights of all of the matched
@@ -19888,8 +20608,9 @@ spec:
                                     present in a Container.
                                   properties:
                                     name:
-                                      description: Name of the environment variable.
-                                        Must be a C_IDENTIFIER.
+                                      description: |-
+                                        Name of the environment variable.
+                                        May consist of any printable ASCII characters except '='.
                                       type: string
                                     value:
                                       description: |-
@@ -19946,6 +20667,43 @@ spec:
                                               type: string
                                           required:
                                           - fieldPath
+                                          type: object
+                                          x-kubernetes-map-type: atomic
+                                        fileKeyRef:
+                                          description: |-
+                                            FileKeyRef selects a key of the env file.
+                                            Requires the EnvFiles feature gate to be enabled.
+                                          properties:
+                                            key:
+                                              description: |-
+                                                The key within the env file. An invalid key will prevent the pod from starting.
+                                                The keys defined within a source may consist of any printable ASCII characters except '='.
+                                                During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+                                              type: string
+                                            optional:
+                                              default: false
+                                              description: |-
+                                                Specify whether the file or its key must be defined. If the file or key
+                                                does not exist, then the env var is not published.
+                                                If optional is set to true and the specified key does not exist,
+                                                the environment variable will not be set in the Pod's containers.
+
+                                                If optional is set to false and the specified key does not exist,
+                                                an error will be returned during Pod creation.
+                                              type: boolean
+                                            path:
+                                              description: |-
+                                                The path within the volume from which to select the file.
+                                                Must be relative and may not contain the '..' path or start with '..'.
+                                              type: string
+                                            volumeName:
+                                              description: The name of the volume
+                                                mount containing the env file.
+                                              type: string
+                                          required:
+                                          - key
+                                          - path
+                                          - volumeName
                                           type: object
                                           x-kubernetes-map-type: atomic
                                         resourceFieldRef:
@@ -20019,7 +20777,7 @@ spec:
                                       Claims lists the names of resources, defined in spec.resourceClaims,
                                       that are used by this container.
 
-                                      This is an alpha field and requires enabling the
+                                      This field depends on the
                                       DynamicResourceAllocation feature gate.
 
                                       This field is immutable. It can only be set for containers.
@@ -20981,8 +21739,8 @@ spec:
                               most preferred is the one with the greatest sum of weights, i.e.
                               for each node that meets all of the scheduling requirements (resource
                               request, requiredDuringScheduling anti-affinity expressions, etc.),
-                              compute a sum by iterating through the elements of this field and adding
-                              "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                              compute a sum by iterating through the elements of this field and subtracting
+                              "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
                               node(s) with the highest sum are the most preferred.
                             items:
                               description: The weights of all of the matched WeightedPodAffinityTerm
@@ -21360,8 +22118,9 @@ spec:
                               present in a Container.
                             properties:
                               name:
-                                description: Name of the environment variable. Must
-                                  be a C_IDENTIFIER.
+                                description: |-
+                                  Name of the environment variable.
+                                  May consist of any printable ASCII characters except '='.
                                 type: string
                               value:
                                 description: |-
@@ -21417,6 +22176,43 @@ spec:
                                         type: string
                                     required:
                                     - fieldPath
+                                    type: object
+                                    x-kubernetes-map-type: atomic
+                                  fileKeyRef:
+                                    description: |-
+                                      FileKeyRef selects a key of the env file.
+                                      Requires the EnvFiles feature gate to be enabled.
+                                    properties:
+                                      key:
+                                        description: |-
+                                          The key within the env file. An invalid key will prevent the pod from starting.
+                                          The keys defined within a source may consist of any printable ASCII characters except '='.
+                                          During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+                                        type: string
+                                      optional:
+                                        default: false
+                                        description: |-
+                                          Specify whether the file or its key must be defined. If the file or key
+                                          does not exist, then the env var is not published.
+                                          If optional is set to true and the specified key does not exist,
+                                          the environment variable will not be set in the Pod's containers.
+
+                                          If optional is set to false and the specified key does not exist,
+                                          an error will be returned during Pod creation.
+                                        type: boolean
+                                      path:
+                                        description: |-
+                                          The path within the volume from which to select the file.
+                                          Must be relative and may not contain the '..' path or start with '..'.
+                                        type: string
+                                      volumeName:
+                                        description: The name of the volume mount
+                                          containing the env file.
+                                        type: string
+                                    required:
+                                    - key
+                                    - path
+                                    - volumeName
                                     type: object
                                     x-kubernetes-map-type: atomic
                                   resourceFieldRef:
@@ -21487,7 +22283,7 @@ spec:
                                 Claims lists the names of resources, defined in spec.resourceClaims,
                                 that are used by this container.
 
-                                This is an alpha field and requires enabling the
+                                This field depends on the
                                 DynamicResourceAllocation feature gate.
 
                                 This field is immutable. It can only be set for containers.
@@ -21910,14 +22706,58 @@ spec:
                   provider manifests. Patches are applied in the order they are specified.
                   The `kind` field must match the target object, and
                   if `apiVersion` is specified it will only be applied to matching objects.
-                  This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396
+                  This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396.
+                  This will be deprecated in future releases in favor of `patches`.
                 items:
                   type: string
+                type: array
+              patches:
+                description: |-
+                  Patches are applied to the rendered provider manifests to customize the
+                  provider manifests. Patches support both strategic merge patch and RFC6902 JSON patches.
+                  Both `patches` and `manifestPatches` cannot be set at the same time.
+                items:
+                  description: Patch defines a generic patch to be applied to provider
+                    manifests.
+                  properties:
+                    patch:
+                      description: Patch is content of the patch to be applied. It
+                        should be an inline yaml blob-string.
+                      type: string
+                    target:
+                      description: Target defines the target object to which the patch
+                        should be applied.
+                      properties:
+                        group:
+                          description: Group is the API Group of the target object.
+                          type: string
+                        kind:
+                          description: Kind is the kind of the target object.
+                          type: string
+                        labelSelector:
+                          description: |-
+                            LabelSelector is a string that follows the label selection expression
+                            https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
+                          type: string
+                        name:
+                          description: Name is the name of the target object.
+                          type: string
+                        namespace:
+                          description: Namespace is the namespace of the target object.
+                          type: string
+                        version:
+                          description: Version is the API version of the target object.
+                          type: string
+                      type: object
+                  type: object
                 type: array
               version:
                 description: Version indicates the provider version.
                 type: string
             type: object
+            x-kubernetes-validations:
+            - message: Cannot set both 'patches' and 'manifestPatches'
+              rule: '!(has(self.manifestPatches) && has(self.patches))'
           status:
             description: RuntimeExtensionProviderStatus defines the observed state
               of RuntimeExtensionProvider.
@@ -22141,7 +22981,7 @@ spec:
         - --leader-elect
         command:
         - /manager
-        image: registry.k8s.io/capi-operator/cluster-api-operator:v0.24.1
+        image: registry.k8s.io/capi-operator/cluster-api-operator:v0.25.0
         imagePullPolicy: IfNotPresent
         name: manager
         ports:
