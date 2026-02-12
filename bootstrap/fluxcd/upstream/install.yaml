@@ -1119,6 +1119,9 @@ spec:
                 - AzureDevOpsBranch
                 - AzureDevOpsTag
                 - AzureDevOpsPullRequest
+                - GiteaBranch
+                - GiteaTag
+                - GiteaPullRequest
                 - OCIArtifactTag
                 - ACRArtifactTag
                 - ECRArtifactTag
@@ -1738,6 +1741,75 @@ rules:
   - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/part-of: flux-operator
+  name: flux-web-admin
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - fluxcd.controlplane.io
+  - source.toolkit.fluxcd.io
+  - source.extensions.fluxcd.io
+  - kustomize.toolkit.fluxcd.io
+  - helm.toolkit.fluxcd.io
+  - image.toolkit.fluxcd.io
+  - notification.toolkit.fluxcd.io
+  resources:
+  - '*'
+  verbs:
+  - patch
+  - reconcile
+  - suspend
+  - resume
+  - download
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - statefulsets
+  - daemonsets
+  verbs:
+  - patch
+  - restart
+- apiGroups:
+  - batch
+  resources:
+  - cronjobs
+  - jobs
+  verbs:
+  - create
+  - restart
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: flux-web-user
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: flux-operator-cluster-admin
@@ -1806,7 +1878,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: ghcr.io/controlplaneio-fluxcd/flux-operator:v0.41.0
+        image: ghcr.io/controlplaneio-fluxcd/flux-operator:v0.41.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
