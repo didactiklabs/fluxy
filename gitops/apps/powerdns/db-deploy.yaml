@@ -14,7 +14,7 @@ spec:
         app: pdns-mariadb
     spec:
       containers:
-        - image: mariadb:12.1.2
+        - image: mariadb:12.2.2
           name: mariadb
           ports:
             - name: mysql
