@@ -168,10 +168,10 @@
       "version_upper_bound": null,
       "release_prefix": null,
       "submodules": false,
-      "version": "v1.7.0",
-      "revision": "5736e02e3408d084b6e78531e4021d57b5b51da6",
-      "url": "https://api.github.com/repos/kubevirt/kubevirt/tarball/refs/tags/v1.7.0",
-      "hash": "sha256-0dfZbhcFSIU9TFxQ3UT8Sz+tgeiqVke+RxVwlxw49Hk="
+      "version": "v1.7.1",
+      "revision": "bb80d6873711fb04a9de04cba022b9c48c074977",
+      "url": "https://api.github.com/repos/kubevirt/kubevirt/tarball/refs/tags/v1.7.1",
+      "hash": "sha256-fG+iIWAbvgrtrUfDEXFWbxoJdNuQFN9grp4JHzSjlYs="
     },
     "kubevirt-monitoring": {
       "type": "Git",
