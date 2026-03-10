@@ -11,10 +11,10 @@
       "version_upper_bound": null,
       "release_prefix": null,
       "submodules": false,
-      "version": "v1.19.4",
-      "revision": "6cabab77c2da4e09de746b4d733b1969e4b9ed2b",
-      "url": "https://api.github.com/repos/cert-manager/cert-manager/tarball/refs/tags/v1.19.4",
-      "hash": "sha256-meWu8R33djzvszlj8H8++CHwDYtQh1optWgmiR/Gmk8="
+      "version": "v1.20.0",
+      "revision": "ae251b5f0f79a07215db253dccef13042e0fe2d8",
+      "url": "https://api.github.com/repos/cert-manager/cert-manager/tarball/refs/tags/v1.20.0",
+      "hash": "sha256-AeCgY7MZ/ZGyhiMZHOLjbLKbK13C8USmk58T6S7Z5jg="
     },
     "cloudnative-pg": {
       "type": "GitRelease",
