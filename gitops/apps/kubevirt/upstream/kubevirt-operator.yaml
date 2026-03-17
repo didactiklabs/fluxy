@@ -7618,6 +7618,7 @@ rules:
   - virtualmachineinstances
   verbs:
   - update
+  - patch
   - list
   - watch
 - apiGroups:
@@ -7668,6 +7669,12 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+  - apps
+  resources:
+  - controllerrevisions
+  verbs:
+  - get
 - apiGroups:
   - export.kubevirt.io
   resources:
@@ -8273,14 +8280,14 @@ spec:
         - virt-operator
         env:
         - name: VIRT_OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v1.7.1
+          value: quay.io/kubevirt/virt-operator:v1.7.2
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v1.7.1
-        image: quay.io/kubevirt/virt-operator:v1.7.1
+          value: v1.7.2
+        image: quay.io/kubevirt/virt-operator:v1.7.2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
