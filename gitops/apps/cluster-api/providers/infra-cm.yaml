@@ -9878,7 +9878,7 @@ data:
             env:
             - name: NO_PROXY
               value: 127.0.0.1,localhost
-            image: quay.io/capk/capk-manager:v0.11.1
+            image: quay.io/capk/capk-manager:v0.11.2
             imagePullPolicy: Always
             livenessProbe:
               httpGet:
