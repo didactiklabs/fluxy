@@ -28,7 +28,7 @@ spec:
               value: '8888'
             - name: ATUIN_OPEN_REGISTRATION
               value: 'true'
-          image: ghcr.io/atuinsh/atuin:0056c72
+          image: ghcr.io/atuinsh/atuin:f42068e
           name: atuin
           ports:
             - name: http
