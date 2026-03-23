@@ -29,3 +29,5 @@ spec:
     - backendRefs:
         - name: minio-generic
           port: 9000
+      timeouts:
+        request: "0s"
