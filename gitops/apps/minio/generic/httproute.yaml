@@ -32,3 +32,20 @@ spec:
       timeouts:
         backendRequest: 30m # Give Nix 30 minutes to complete the upload
         request: "0s"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: minio-upload-fix
+spec:
+  # This must match the exact service name your HTTPRoute routes to
+  host: minio-generic
+  trafficPolicy:
+    connectionPool:
+      http:
+        # Tells Envoy to wait up to 30 minutes before killing a quiet stream
+        idleTimeout: 30m
+      tcp:
+        tcpKeepalive:
+          time: 7200s
+          interval: 75s
