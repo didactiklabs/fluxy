@@ -30,4 +30,5 @@ spec:
         - name: minio-generic
           port: 9000
       timeouts:
+        backendRequest: 30m # Give Nix 30 minutes to complete the upload
         request: "0s"
