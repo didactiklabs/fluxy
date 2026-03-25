@@ -8287,7 +8287,7 @@ spec:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
           value: v1.7.2
-        image: quay.io/kubevirt/virt-operator:v1.7.2
+        image: quay.io/kubevirt/virt-operator:v1.8.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
