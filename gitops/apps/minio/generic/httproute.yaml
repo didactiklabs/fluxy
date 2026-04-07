@@ -30,7 +30,6 @@ spec:
         - name: minio-generic
           port: 9000
       timeouts:
-      timeouts:
         request: "3600s"
         backendRequest: "3600s"
 ---
