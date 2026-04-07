@@ -30,8 +30,9 @@ spec:
         - name: minio-generic
           port: 9000
       timeouts:
-        backendRequest: 30m
-        request: "0s"
+      timeouts:
+        request: "3600s"
+        backendRequest: "3600s"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
