@@ -14,6 +14,13 @@ spec:
       labels:
         app: vaultwarden
     spec:
+      # Workaround musl DNS resolver issues in K8s (parallel A/AAAA + ndots:5)
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+          - name: single-request
+          - name: single-request-reopen
       containers:
         - name: vaultwarden
           image: vaultwarden/server:1.35.4-alpine
@@ -74,37 +81,12 @@ spec:
             requests:
               memory: 64Mi
           volumeMounts:
-            - name: startup
-              mountPath: /etc/bitwarden_rs.d/
-            - name: cacert
-              mountPath: /usr/local/share/ca-certificates/ca.crt
-              subPath: ca.crt
             - name: data
               mountPath: /data
       volumes:
-        - name: startup
-          configMap:
-            name: startup
-        - name: cacert
-          secret:
-            secretName: vaultwarden-tls
-            items:
-              - key: ca.crt
-                path: ca.crt
         - name: data
           persistentVolumeClaim:
             claimName: vaultwarden-data
----
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: startup
-data:
-  bitwarden_rs.sh: |-
-    #!/usr/bin/env sh
-    echo "running startup commands..."
-    echo "update-ca-certificates"
-    update-ca-certificates
 ---
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
