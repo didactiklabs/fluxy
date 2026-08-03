@@ -1,6 +1,7 @@
 namespace: authentik
 resources:
-- ns.yaml
-- cnpg.yaml
-- authentik-secrets.yaml
-- httproute.yaml
+  - ns.yaml
+  - cnpg.yaml
+  - authentik-secrets.yaml
+  - httproute.yaml
+  - redis.yaml
