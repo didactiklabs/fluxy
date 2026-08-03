@@ -9,8 +9,11 @@ spec:
     name: authentik-postgres
   storage:
     size: 8Gi
+  startDelay: 3600
+  stopDelay: 1800
   postgresql:
     parameters:
+      recovery_init_sync_method: "syncfs"
       synchronous_commit: "off"
       wal_compression: "on"
       shared_buffers: "512MB"
