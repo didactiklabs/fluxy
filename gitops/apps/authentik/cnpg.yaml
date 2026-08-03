@@ -9,3 +9,19 @@ spec:
     name: authentik-postgres
   storage:
     size: 8Gi
+  postgresql:
+    parameters:
+      synchronous_commit: "off"
+      wal_compression: "on"
+      shared_buffers: "512MB"
+      effective_cache_size: "1GB"
+      work_mem: "16MB"
+      maintenance_work_mem: "128MB"
+      max_wal_size: "2GB"
+      checkpoint_timeout: "15min"
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
