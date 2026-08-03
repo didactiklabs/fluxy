@@ -19,6 +19,12 @@ spec:
           value: 'false'
         - name: AUTHENTIK_BOOTSTRAP_EMAIL
           value: 'contact@didactik.labs'
+        - name: AUTHENTIK_POSTGRESQL__USE_POOL
+          value: 'true'
+        - name: AUTHENTIK_WORKER__PROCESSES
+          value: '2'
+        - name: AUTHENTIK_WORKER__THREADS
+          value: '4'
         - name: AUTHENTIK_POSTGRESQL__PASSWORD
           valueFrom:
             secretKeyRef:
