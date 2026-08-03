@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentik-redis-master
+  labels:
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/instance: authentik
+    app.kubernetes.io/component: cache
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: redis
+      app.kubernetes.io/instance: authentik
+      app.kubernetes.io/component: cache
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: redis
+        app.kubernetes.io/instance: authentik
+        app.kubernetes.io/component: cache
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+      containers:
+        - name: redis
+          image: redis:7.4-alpine
+          imagePullPolicy: IfNotPresent
+          args:
+            - redis-server
+            - --save
+            - ""
+            - --appendonly
+            - "no"
+            - --maxmemory
+            - 256mb
+            - --maxmemory-policy
+            - allkeys-lru
+          ports:
+            - name: redis
+              containerPort: 6379
+          readinessProbe:
+            tcpSocket:
+              port: redis
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: redis
+            initialDelaySeconds: 15
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              memory: 384Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authentik-redis-master
+  labels:
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/instance: authentik
+    app.kubernetes.io/component: cache
+spec:
+  type: ClusterIP
+  ports:
+    - name: redis
+      port: 6379
+      targetPort: redis
+  selector:
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/instance: authentik
+    app.kubernetes.io/component: cache
