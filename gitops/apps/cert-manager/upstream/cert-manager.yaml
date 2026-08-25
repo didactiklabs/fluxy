@@ -16,7 +16,6 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: cert-manager
-
 ---
 # Source: cert-manager/templates/crd-acme.cert-manager.io_challenges.yaml
 apiVersion: apiextensions.k8s.io/v1
@@ -12415,7 +12414,6 @@ spec:
       storage: true
       subresources:
         status: {}
-
 ---
 # Source: cert-manager/templates/cainjector-serviceaccount.yaml
 apiVersion: v1
@@ -13480,7 +13478,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: cert-manager-webhook
-          image: "quay.io/jetstack/cert-manager-webhook:v1.20.0"
+          image: quay.io/jetstack/cert-manager-webhook:v1.21.1
           imagePullPolicy: IfNotPresent
           args:
           - --v=2
