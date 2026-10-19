@@ -43,6 +43,11 @@ spec:
               value: 'on'
             - name: MINIO_IDENTITY_OPENID_ROLE_POLICY
               value: 'consoleAdmin'
+            # Writes on this volume can stall past the 30s default per drive
+            # operation: MinIO then fails the upload (400) and marks the drive
+            # offline (503 SlowDown), breaking big nix cache pushes.
+            - name: MINIO_DRIVE_MAX_TIMEOUT
+              value: '2m'
           ports:
             - name: api
               containerPort: 9000
